@@ -5,38 +5,38 @@ import (
 )
 
 type Point struct {
-	X int
-	Y int
+	X int `json:"x"`
+	Y int `json:"y"`
 }
 
 type Widget struct {
-	id          string
-	name        string
-	point_start Point
-	point_end   Point
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Point_start Point  `json:"point_start"`
+	Point_end   Point  `json:"point_end"`
 }
 
 func NewWidget(name string, point_start Point, point_end Point) *Widget {
 	return &Widget{
-		id:          "W-" + uuid.New().String(),
-		name:        name,
-		point_start: point_start,
-		point_end:   point_end,
+		Id:          "W-" + uuid.New().String(),
+		Name:        name,
+		Point_start: point_start,
+		Point_end:   point_end,
 	}
 }
 
 func (w *Widget) GetID() string {
-	return w.id
+	return w.Id
 }
 
 func (w *Widget) GetName() string {
-	return w.name
+	return w.Name
 }
 
 func (w *Widget) GetPointStart() Point {
-	return w.point_start
+	return w.Point_start
 }
 
 func (w *Widget) GetPointEnd() Point {
-	return w.point_end
+	return w.Point_end
 }

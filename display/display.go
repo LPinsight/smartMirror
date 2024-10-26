@@ -6,18 +6,18 @@ import (
 	"github.com/LPinsight/smartMirror/widget"
 )
 
-type display struct {
-	display_hight int // The hight of the display in pixels
-	display_width int // The width of the display in pixels
+type Display struct {
+	Display_hight int `json:"display_hight"` // The hight of the display in pixels
+	Display_width int `json:"display_width"` // The width of the display in pixels
 
-	point_size int // The size of a point in pixels
+	Point_size int `json:"point_size"` // The size of a point in pixels
 
-	grid [][]*widget.Widget // The grid of points on the display
+	grid [][]*widget.Widget // The grid of the display
 
 	widgets map[string]*widget.Widget // The widgets on the display
 }
 
-func NewDisplay(display_hight int, display_width int, point_size int) *display {
+func NewDisplay(display_hight int, display_width int, point_size int) *Display {
 	// Caluculate the number of points which fits in the display
 	amount_hight_points := display_hight / point_size
 	amount_width_points := display_width / point_size
@@ -27,11 +27,11 @@ func NewDisplay(display_hight int, display_width int, point_size int) *display {
 		points[x] = make([]*widget.Widget, amount_hight_points)
 	}
 
-	return &display{
-		display_hight: display_hight,
-		display_width: display_width,
+	return &Display{
+		Display_hight: display_hight,
+		Display_width: display_width,
 
-		point_size: point_size,
+		Point_size: point_size,
 
 		grid: points,
 
@@ -40,7 +40,7 @@ func NewDisplay(display_hight int, display_width int, point_size int) *display {
 }
 
 // Get the widget at the given x and y position
-func (d *display) GetWidgetAtPoint(x int, y int) (*widget.Widget, error) {
+func (d *Display) GetWidgetAtPoint(x int, y int) (*widget.Widget, error) {
 	if x < 0 || x >= len(d.grid) || y < 0 || y >= len(d.grid[0]) {
 		return nil, errors.New("the given x and y position is out of bounds")
 	}
@@ -48,17 +48,22 @@ func (d *display) GetWidgetAtPoint(x int, y int) (*widget.Widget, error) {
 }
 
 // Get map of widgets
-func (d *display) GetWidgets() map[string]*widget.Widget {
+func (d *Display) GetWidgets() map[string]*widget.Widget {
 	return d.widgets
 }
 
 // Add a widget to the display
-func (d *display) AddWidget(w *widget.Widget) error {
+func (d *Display) AddWidget(w *widget.Widget) error {
 	// Check if start_point is larger than end_point
 	point_start := w.GetPointStart()
 	point_end := w.GetPointEnd()
 	if point_start.X > point_end.X || point_start.Y > point_end.Y {
 		return errors.New("the start point is larger than the end point")
+	}
+
+	// Check if the widget is in the display
+	if point_start.X < 0 || point_start.Y < 0 || point_end.X >= len(d.grid) || point_end.Y >= len(d.grid[0]) {
+		return errors.New("the widget cordiantes are out of bounds")
 	}
 
 	// Check if the widget overlaps with other widgets
@@ -78,7 +83,7 @@ func (d *display) AddWidget(w *widget.Widget) error {
 }
 
 // Remove a widget from the display
-func (d *display) RemoveWidget(w *widget.Widget) error {
+func (d *Display) RemoveWidget(w *widget.Widget) error {
 	// Check if the widget is on the display
 	if _, ok := d.widgets[w.GetID()]; !ok {
 		return errors.New("the widget does not exist on the display")
@@ -100,7 +105,7 @@ func (d *display) RemoveWidget(w *widget.Widget) error {
 }
 
 // Check if the widget overlaps with other widgets
-func (d *display) checkWidgetOverlap(w *widget.Widget) bool {
+func (d *Display) checkWidgetOverlap(w *widget.Widget) bool {
 	point_start := w.GetPointStart()
 	point_end := w.GetPointEnd()
 
