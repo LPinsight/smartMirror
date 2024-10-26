@@ -1,0 +1,44 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Output of the 'go build' and 'go install' commands
+/bin/
+/pkg/
+/dist/
+*.out
+
+# Logs and test data
+*.log
+*.test
+*.bench
+
+# Go module files and dependencies
+vendor/
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*~
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Coverage files
+coverage.out
+
+# Compiled static assets
+assets/bindata.go
+
+# Configuration files
+.env
+.env.*
+
+# GoLand settings
+*.iml
