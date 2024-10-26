@@ -1,32 +1,39 @@
 package main
 
 import (
-    "fmt"
-    "smart_mirror/config"
-    "smart_mirror/display"
-    "smart_mirror/widgets"
+	"fmt"
+
+	dp "github.com/LPinsight/smartMirror/display"
+	wg "github.com/LPinsight/smartMirror/widget"
 )
 
 func main() {
-    // Konfiguration laden
-    cfg := config.LoadConfig("config.json")
+	// Create display
+	display := dp.NewDisplay(10, 10, 1)
+	start_point := wg.Point{X: 0, Y: 0}
+	end_point := wg.Point{X: 2, Y: 2}
 
-    // Display erstellen
-    d := display.NewDisplay()
+	// Create a widget
+	widget1 := wg.NewWidget("widget1", start_point, end_point)
 
-    // Widgets erstellen und zum Display hinzufügen
-    timeWidget := widgets.NewTimeWidget()
-    weatherWidget := widgets.NewWeatherWidget()
-    newsWidget := widgets.NewNewsWidget()
+	display.AddWidget(widget1)
 
-    d.AddWidget(timeWidget)
-    d.AddWidget(weatherWidget)
-    d.AddWidget(newsWidget)
+	// 2
+	start_point2 := wg.Point{X: 3, Y: 2}
+	end_point2 := wg.Point{X: 3, Y: 3}
 
-    // Render loop (vereinfachtes Beispiel)
-    for {
-        d.Render()
-        fmt.Println("Smart Mirror aktualisiert...")
-        // Pause zwischen den Aktualisierungen hinzufügen
-    }
+	// Create a widget
+	widget2 := wg.NewWidget("widget2", start_point2, end_point2)
+
+	if err := display.AddWidget(widget2); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(display)
+
+	if err := display.RemoveWidget(wg.NewWidget("widget3", start_point2, end_point2)); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(display)
 }
