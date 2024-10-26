@@ -31,7 +31,7 @@ func main() {
 
 	fmt.Println(display)
 
-	if err := display.RemoveWidget(wg.NewWidget("widget3", start_point2, end_point2)); err != nil {
+	if err := display.RemoveWidget(widget1); err != nil {
 		panic(err)
 	}
 

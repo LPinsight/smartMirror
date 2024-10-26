@@ -2,7 +2,6 @@ package display
 
 import (
 	"errors"
-	"slices"
 
 	"github.com/LPinsight/smartMirror/widget"
 )
@@ -15,7 +14,7 @@ type display struct {
 
 	grid [][]*widget.Widget // The grid of points on the display
 
-	widgets []*widget.Widget // The widgets on the display
+	widgets map[string]*widget.Widget // The widgets on the display
 }
 
 func NewDisplay(display_hight int, display_width int, point_size int) *display {
@@ -35,6 +34,8 @@ func NewDisplay(display_hight int, display_width int, point_size int) *display {
 		point_size: point_size,
 
 		grid: points,
+
+		widgets: make(map[string]*widget.Widget),
 	}
 }
 
@@ -60,7 +61,7 @@ func (d *display) AddWidget(w *widget.Widget) error {
 		return errors.New("the widget overlaps with other widgets")
 	}
 
-	d.widgets = append(d.widgets, w)
+	d.widgets[w.GetID()] = w
 
 	for x := point_start.X; x <= point_end.X; x++ {
 		for y := point_start.Y; y <= point_end.Y; y++ {
@@ -71,14 +72,10 @@ func (d *display) AddWidget(w *widget.Widget) error {
 	return nil
 }
 
-func removeFromSlice(slice []*widget.Widget, s int) []*widget.Widget {
-	return append(slice[:s], slice[s+1:]...)
-}
-
 // Remove a widget from the display
 func (d *display) RemoveWidget(w *widget.Widget) error {
 	// Check if the widget is on the display
-	if slices.Contains(d.widgets, w) == false {
+	if _, ok := d.widgets[w.GetID()]; !ok {
 		return errors.New("the widget does not exist on the display")
 	}
 
@@ -92,17 +89,7 @@ func (d *display) RemoveWidget(w *widget.Widget) error {
 	}
 
 	// Remove the widget from widgets
-	index := -1
-	for i, widget := range d.widgets {
-		if widget == w {
-			index = i
-			break
-		}
-	}
-	if index == -1 {
-		return errors.New("the widget does not exist on the display")
-	}
-	d.widgets = removeFromSlice(d.widgets, index)
+	delete(d.widgets, w.GetID())
 
 	return nil
 }
