@@ -47,6 +47,11 @@ func (d *display) GetWidgetAtPoint(x int, y int) (*widget.Widget, error) {
 	return d.grid[x][y], nil
 }
 
+// Get map of widgets
+func (d *display) GetWidgets() map[string]*widget.Widget {
+	return d.widgets
+}
+
 // Add a widget to the display
 func (d *display) AddWidget(w *widget.Widget) error {
 	// Check if start_point is larger than end_point
