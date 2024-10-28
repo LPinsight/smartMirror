@@ -1,0 +1,50 @@
+@import './../../../scss/var';
+
+// ##########################################################
+// ##########################################################
+// ##########################################################
+
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  ul {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+
+    li {
+      height: 100%;
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 2rem 0 0;
+
+      &:last-child {
+        margin: 0;
+      }
+
+      a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        color: $white;
+        font-size: 2rem;
+        cursor: pointer;
+        transition: all 250ms;
+
+        &.active, &:hover {
+          color: $prime-dark;
+        }
+      }
+    }
+  }
+}

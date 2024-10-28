@@ -1,1 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: "Roboto";
+  src: url('./assets/fonts/Roboto-Regular.ttf') format("truetype");
+  font-weight: regular
+}
+
+@font-face{
+  font-family: "Roboto";
+  src: url('./assets/fonts/Roboto-Bold.ttf') format("truetype");
+  font-weight: bold;
+}
+
+@font-face{
+  font-family: "Roboto Condensed";
+  src: url('./assets/fonts/RobotoCondensed-Regular.ttf') format("truetype");
+  font-weight: regular,
+}
+
+@font-face{
+  font-family: "Roboto Condensed";
+  src: url('./assets/fonts/RobotoCondensed-Bold.ttf') format("truetype");
+  font-weight: bold;
+}
+
+// ##########################################################
+// ##########################################################
+// ##########################################################
+
+@import './scss/var';
+
+// ##########################################################
+// ##########################################################
+// ##########################################################
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  font-size: 10px;
+  background-color: $second;
+  color: $white;
+  font-family: $font1;
+  font-weight: regular;
+}
