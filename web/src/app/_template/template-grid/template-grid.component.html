@@ -1,9 +1,20 @@
+
+<button class="addWidget">
+  <mat-icon>add</mat-icon>
+  Widget hinzufügen
+</button>
+
 <div class="grid">
 
   <app-template-grid-widget
-    *ngFor="let widget of widgets; let x = index"
+    *ngFor="let widget of display.grid; let x = index"
     class="{{widget.id}}"
-    [widgetName]="widget.name"
+    (ping)="updateWidget($event)"
+    [widget]="widget"
+    [ngClass]="{
+      'placeholder' : widget.name  === 'placeholder'
+    }"
+    
     [ngStyle]="{
       'grid-row-start': widget.point_start.y,
       'grid-row-end': widget.point_end.y,

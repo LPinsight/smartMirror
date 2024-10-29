@@ -8,26 +8,42 @@
   background-color: $second-dark;
   transition: all 250ms;
   border-radius: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: relative;
+  z-index: 2;
+  
 
-  &.W-X {
-    background-color: $prime;
-    cursor: pointer;
-
-    &:hover {
-      background-color:  $prime-dark;
-    }
+  &.placeholder {
+    background-color: $second;
+    border: dashed 0.2rem $second-dark;
+    color: $second-dark;
+    z-index: 1;
   }
 }
 
-div {
-  border-radius: 1rem;
-  height: 100%;
-  width: 100%;
+div.widgetMenu,
+div.settingsMenu {
   display: flex;
   justify-content: center;
+  flex-direction: column;
   align-items: center;
-}
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
 
+  .settingsButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    cursor: pointer;
+  }
+
+  .deleteButton {
+    color: $red;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    cursor: pointer;
+  }
+}

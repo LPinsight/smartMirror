@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { MatIconModule } from '@angular/material/icon'
 
 import { AppComponent } from './app.component';
 import { PageConfigComponent } from './page-config/page-config.component';
@@ -22,7 +23,8 @@ import { TemplateGridWidgetComponent } from './_template/template-grid-widget/te
     TemplateGridWidgetComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]
