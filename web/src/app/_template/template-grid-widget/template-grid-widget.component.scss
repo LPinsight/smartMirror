@@ -17,6 +17,18 @@
     border: dashed 0.2rem $second-dark;
     color: $second-dark;
     z-index: 1;
+
+    &.edit {
+      background-color: $prime;
+      cursor: pointer;
+      &:hover {
+        background-color: $prime-dark;
+        color: $white;
+      }
+      &.selected {
+        background-color: $green;
+      }
+    }
   }
 }
 

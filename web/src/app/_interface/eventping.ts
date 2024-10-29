@@ -8,5 +8,6 @@ export interface Eventping {
 export enum eventLabel { 
   create,
   update,
-  delete
+  delete,
+  select, // Selection for new Widget
 }

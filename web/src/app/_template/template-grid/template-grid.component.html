@@ -1,8 +1,25 @@
 
-<button class="addWidget">
-  <mat-icon>add</mat-icon>
-  Widget hinzufügen
-</button>
+<div *ngIf="!editGrid" class="editBar">
+  <button (click)="editGrid=!editGrid">
+    <mat-icon>add</mat-icon>
+    Widget hinzufügen
+  </button>
+</div>
+
+<div *ngIf="editGrid" class="editBar">
+  <button class="saveWidget" (click)="createNewWidget($event)">
+    <mat-icon>add</mat-icon>
+    Widget hinzufügen
+  </button>
+  <button (click)="resetNewWidget($event)" >
+    <mat-icon>restart_alt</mat-icon>
+    Auswahl zurücksetzen
+  </button>
+  <button class="cancelWidget" (click)="cancelNewWidget()">
+    <mat-icon>cancel</mat-icon>
+    Abbruch
+  </button>
+</div>
 
 <div class="grid">
 
@@ -11,8 +28,11 @@
     class="{{widget.id}}"
     (ping)="updateWidget($event)"
     [widget]="widget"
+    [editGrid]="editGrid"
     [ngClass]="{
-      'placeholder' : widget.name  === 'placeholder'
+      'placeholder' : widget.name  === 'placeholder',
+      'edit': editGrid,
+      'selected': newWidgetPosition.indexOf(widget) > -1
     }"
     
     [ngStyle]="{

@@ -14,7 +14,7 @@ export class DataService {
     return this.display
   }
 
-  public getWidgets(): Widget[] {
+  private getWidgets(): Widget[] {
     return this.widgets
   }
 
@@ -28,15 +28,17 @@ export class DataService {
 
   private createPlaceholderGrid(): Widget[] {
     let grid: Widget[] = []
+    let id = 0
 
       for (let x = 1; x <= this.display.columns; x++){
         for (let y = 1; y <= this.display.rows; y++){
           grid.push({
-            id: undefined,
+            id: `placeholder-${id}`,
             name: 'placeholder',
             point_start: { x: x, y: y },
             point_end: { x: x+1, y: y+1 },
           })
+          id++
         }
       }
     

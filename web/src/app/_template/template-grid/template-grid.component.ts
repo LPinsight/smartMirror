@@ -14,6 +14,10 @@ export class TemplateGridComponent implements OnInit{
   public widgets: Widget[] = []
   public display: Display
 
+  public newWidgetPosition: Widget[] = []
+
+  public editGrid: boolean = false
+
   constructor(public elRef: ElementRef, public dataService: DataService) {
     this.display = dataService.getDisplay()
     
@@ -33,14 +37,89 @@ export class TemplateGridComponent implements OnInit{
     this.elRef.nativeElement.style.setProperty('--point-size', `${this.display.point_size}px`)
 
     this.updateView()
-    
   }
 
+  createNewWidget(event?: any) {
+    if (this.newWidgetPosition.length === 2) {
+     let [x1, y1, x2, y2] = this.getCorrektNewWidgetPosition (this.newWidgetPosition)
+
+      this.dataService.addWidget({
+        name: 'test',
+        point_start: { x: x1, y: y1 },
+        point_end: {x: x2, y: y2},
+      })
+      
+      this.updateView()
+      this.editGrid = false
+      this.resetNewWidget()
+    } else {
+      console.log("Bitte wähle zwei Felder aus");
+    }
+  }
+
+  private getCorrektNewWidgetPosition(pos: Widget[]): number[] {
+    if (
+      pos[0].point_start.x <= pos[1].point_start.x &&
+      pos[0].point_start.y <= pos[1].point_start.y) {
+      return [
+        pos[0].point_start.x,
+        pos[0].point_start.y,
+        pos[1].point_end.x,
+        pos[1].point_end.y,]
+    } else if (
+      pos[1].point_start.x <= pos[0].point_start.x &&
+      pos[1].point_start.y <= pos[0].point_start.y) {
+      return [
+        pos[1].point_start.x,
+        pos[1].point_start.y,
+        pos[0].point_end.x,
+        pos[0].point_end.y,]
+    } else if (pos[0].point_start.x <= pos[1].point_end.x) {
+        return [
+          pos[0].point_start.x,
+          pos[1].point_start.y,
+          pos[1].point_end.x,
+          pos[0].point_end.y]
+    } else {
+      return [
+        pos[1].point_start.x,
+        pos[0].point_start.y,
+        pos[0].point_end.x,
+        pos[1].point_end.y]
+    }
+
+
+    return []
+  }
+
+
+  public resetNewWidget(event?: any) {
+    this.newWidgetPosition = []
+  }
+
+  public cancelNewWidget(event?: any) {
+    this.resetNewWidget()
+    this.editGrid = false
+  }
 
   public updateWidget(event: Eventping) {
     if (event.label === eventLabel.delete) {
       this.dataService.deleteWidget(event.object)
       this.updateView()
+    }
+
+    if (event.label === eventLabel.select) {
+      if (this.newWidgetPosition.indexOf(event.object) === -1) {
+        if (this.newWidgetPosition.length < 2) {
+          this.newWidgetPosition.push(event.object)
+          console.log(this.newWidgetPosition);
+        } else {
+          console.log("Bitte maximal zwei Felder auswählen");
+        }
+      } else {
+        this.newWidgetPosition = this.newWidgetPosition.filter(item => item.id !== event.object.id)
+        console.log(this.newWidgetPosition);
+      }
     }
     
   }

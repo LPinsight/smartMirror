@@ -9,15 +9,12 @@ import { Widget } from 'src/app/_interface/widget';
 })
 export class TemplateGridWidgetComponent {
   @Input() widget!: Widget
+  @Input() editGrid!: boolean
   @Output() ping: EventEmitter<any> = new EventEmitter<any>()
 
   public showSettings: boolean = false
 
   constructor() {
-  }
-
-  public switchShowSettings(): void {    
-    this.showSettings = !this.showSettings
   }
 
   public deleteWidget(event?: any): void {
@@ -27,4 +24,16 @@ export class TemplateGridWidgetComponent {
     }
     this.ping.emit(eventObject)
   }
+
+  public selectPlacholderWidget(event?: any): void {
+    if (this.editGrid) {
+      const eventObject: Eventping = {
+        label: eventLabel.select,
+        object: this.widget
+      }
+      this.ping.emit(eventObject)
+    }
+  }
+
+
 }
