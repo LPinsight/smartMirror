@@ -1,3 +1,4 @@
+import { ToastrService } from 'ngx-toastr';
 import { DataService } from './../../_service/data.service';
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { Display } from 'src/app/_interface/display';
@@ -18,7 +19,11 @@ export class TemplateGridComponent implements OnInit{
 
   public editGrid: boolean = false
 
-  constructor(public elRef: ElementRef, public dataService: DataService) {
+  constructor(
+    public elRef: ElementRef,
+    public dataService: DataService,
+    public notification: ToastrService
+  ) {
     this.display = dataService.getDisplay()
     
     this.createGrid()
@@ -52,8 +57,10 @@ export class TemplateGridComponent implements OnInit{
       this.updateView()
       this.editGrid = false
       this.resetNewWidget()
+      this.notification.success('Widget wurde erfolgreich hinzugefügt', 'Widget Hinzufügen', { progressBar: true })
     } else {
-      console.log("Bitte wähle zwei Felder aus");
+      console.log();
+      this.notification.error('Bitte wähle zwei Felder aus', "Widget Hinzufügen", { progressBar: true })
     }
   }
 
@@ -112,13 +119,11 @@ export class TemplateGridComponent implements OnInit{
       if (this.newWidgetPosition.indexOf(event.object) === -1) {
         if (this.newWidgetPosition.length < 2) {
           this.newWidgetPosition.push(event.object)
-          console.log(this.newWidgetPosition);
         } else {
-          console.log("Bitte maximal zwei Felder auswählen");
+          this.notification.error('Bitte maximal zwei Felder auswählen', "Widget Hinzufügen", { progressBar: true })
         }
       } else {
         this.newWidgetPosition = this.newWidgetPosition.filter(item => item.id !== event.object.id)
-        console.log(this.newWidgetPosition);
       }
     }
     
