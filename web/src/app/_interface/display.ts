@@ -7,5 +7,5 @@ export interface Display {
   rows: number
   point_size: number, // point-size value list: [16,32,64,128,256]
   grid?: Widget[],
-  widgets?: undefined
+  widgets: Widget[]
 }

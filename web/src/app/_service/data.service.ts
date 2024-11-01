@@ -7,7 +7,6 @@ import { Widget } from '../_interface/widget';
 })
 export class DataService {
 
-  private widgets: Widget[]
   private display: Display
 
   public getDisplay(): Display {
@@ -15,15 +14,15 @@ export class DataService {
   }
 
   private getWidgets(): Widget[] {
-    return this.widgets
+    return this.display.widgets
   }
 
   public addWidget(widget: Widget): void {
-    this.widgets.push(widget)
+    this.display.widgets.push(widget)
   }
 
   public deleteWidget(widget: Widget): void {
-    this.widgets = this.widgets.filter(item => item.id !== widget.id)        
+    this.display.widgets = this.display.widgets.filter(item => item.id !== widget.id)        
   }
 
   private createPlaceholderGrid(): Widget[] {
@@ -46,7 +45,7 @@ export class DataService {
   }
 
   public createGrid(): Widget[] {
-    return this.widgets.concat(this.createPlaceholderGrid())
+    return this.display.widgets.concat(this.createPlaceholderGrid())
   }
 
   public updateDisplay(d: Display): Display {
@@ -57,6 +56,7 @@ export class DataService {
       rows: d.rows,
       point_size: d.point_size,
       grid: this.createGrid(),
+      widgets: d.widgets
     }
     
     return this.display
@@ -65,32 +65,33 @@ export class DataService {
   constructor() {
     this.display = {
       width: 1080,
-      height: 1080,
+      height: 1920,
       columns: 8,
-      rows: 8,
+      rows: 15,
       point_size: 128,
+      widgets: []
+      // widgets: [{
+      //   id:"W-1a898502-8fcc-40e5-8f1d-a01c8ca4c6b5",
+      //   name: "header_widget",
+      //   point_start: { x: 1, y: 1 },
+      //   point_end: { x: 9, y: 3 },
+      // },{
+      //   id:"W-2",
+      //   name: 'wetter_widget',
+      //   point_start: { x: 1, y: 3 },
+      //   point_end: { x: 5, y: 6 },
+      // },{
+      //   id:"W-3",
+      //   name: 'kalender_widget',
+      //   point_start: { x: 5, y: 3 },
+      //   point_end: { x: 7, y: 6 },
+      // },{
+      //   id:"W-4",
+      //   name: 'kalender_widget',
+      //   point_start: { x: 7, y: 3 },
+      //   point_end: { x: 9, y: 6 },
+      // }]
     }
 
-    this.widgets = [{
-      id:"W-1a898502-8fcc-40e5-8f1d-a01c8ca4c6b5",
-      name: "header_widget",
-      point_start: { x: 1, y: 1 },
-      point_end: { x: 9, y: 3 },
-    },{
-      id:"W-2",
-      name: 'wetter_widget',
-      point_start: { x: 1, y: 3 },
-      point_end: { x: 5, y: 6 },
-    },{
-      id:"W-3",
-      name: 'kalender_widget',
-      point_start: { x: 5, y: 3 },
-      point_end: { x: 7, y: 6 },
-    },{
-      id:"W-4",
-      name: 'kalender_widget',
-      point_start: { x: 7, y: 3 },
-      point_end: { x: 9, y: 6 },
-    }]
   }
 }
