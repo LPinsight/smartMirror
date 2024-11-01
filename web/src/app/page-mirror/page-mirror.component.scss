@@ -3,3 +3,27 @@
 // ##########################################################
 // ##########################################################
 // ##########################################################
+
+:host {
+  background-color: $black;
+  color: $white;
+  display: block;
+  // height: 100%;
+  // width: 100%;
+  height: var(--display-Height);
+  width: var(--display-Width);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+div.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), var(--point-size));
+  grid-template-rows: repeat(var(--grid-rows), var(--point-size));
+  // row-gap: 1rem;
+  column-gap: auto;
+  // overflow: hidden;
+  // justify-content: center;
+}

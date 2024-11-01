@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { PageConfigComponent } from './page-config/page-config.component';
@@ -12,6 +13,13 @@ import { TemplateHeaderNavComponent } from './_template/template-header-nav/temp
 import { TemplateGridComponent } from './_template/template-grid/template-grid.component';
 import { TemplateGridWidgetComponent } from './_template/template-grid-widget/template-grid-widget.component';
 import { ToastrModule } from 'ngx-toastr';
+
+const navigationRoutes: Routes = [
+  {path: 'settings', component: PageSettingsComponent},
+  {path: 'mirror', component: PageMirrorComponent},
+  {path: '', component: PageConfigComponent, pathMatch: 'full'},
+  // {path: '**', redirectTo: '/'},
+]
 
 @NgModule({
   declarations: [
@@ -27,6 +35,7 @@ import { ToastrModule } from 'ngx-toastr';
   imports: [
     BrowserModule,
     MatIconModule,
+    RouterModule.forRoot(navigationRoutes),
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
   ],

@@ -1,1 +1,19 @@
-<p>page-mirror works!</p>
+<div class="grid">
+
+  <app-template-grid-widget
+    *ngFor="let widget of display.grid; let x = index"
+    class="{{widget.id}}"
+    [widget]="widget"
+    [ngClass]="{
+      'placeholder' : widget.name  === 'placeholder'
+    }"
+    
+    [ngStyle]="{
+      'grid-row-start': widget.point_start.y,
+      'grid-row-end': widget.point_end.y,
+      'grid-column-start': widget.point_start.x,
+      'grid-column-end': widget.point_end.x}"
+
+  />
+
+</div>
