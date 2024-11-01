@@ -15,12 +15,15 @@ var display *dp.Display
 
 func main() {
 	// Initialisiere das Display
-	display = dp.NewDisplay(10, 10, 1)
 
 	// Erstelle einen neuen Router
 	router := mux.NewRouter()
 
 	// Definiere die API-Endpunkte
+
+	router.HandleFunc("/display", getDisplayHandler).Methods("GET")
+	router.HandleFunc("/display", createDisplayHandler).Methods("POST")
+
 	router.HandleFunc("/widgets", getWidgetsHandler).Methods("GET")
 	router.HandleFunc("/widgets", createWidgetHandler).Methods("POST")
 	router.HandleFunc("/widgets/{id}", deleteWidgetHandler).Methods("DELETE")
@@ -45,6 +48,12 @@ func getWidgetsHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(widgets)
 }
 
+// Handler für GET /display
+func getDisplayHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(display)
+}
+
 // Handler für POST /widgets
 func createWidgetHandler(w http.ResponseWriter, r *http.Request) {
 	var newWidget struct {
@@ -65,6 +74,25 @@ func createWidgetHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(widget)
+}
+
+// Handler für POST /display
+func createDisplayHandler(w http.ResponseWriter, r *http.Request) {
+	var newDisplay struct {
+		Display_hight int `json:"display_hight"` // The hight of the display in pixels
+		Display_width int `json:"display_width"` // The width of the display in pixels
+		Point_size    int `json:"point_size"`    // The size of a point in pixels
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&newDisplay); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	display = dp.NewDisplay(newDisplay.Display_hight, newDisplay.Display_width, newDisplay.Point_size)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(display)
 }
 
 // Handler für DELETE /widgets/{id}
