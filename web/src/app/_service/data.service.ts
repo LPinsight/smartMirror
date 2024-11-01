@@ -9,6 +9,24 @@ export class DataService {
 
   private display: Display
 
+  public createDisplay(name: string, height: number, width: number, point_size: number): Display {
+    let columns = Math.floor(width / point_size)
+    let rows = Math.floor(height / point_size)
+
+    return {
+      id: "D-45a1aad2-50fe-4c57-ac0b-cdd8fcbd5803",
+      name: name,
+      width: width,
+      height: height,
+      columns: columns,
+      rows: rows,
+      point_size: point_size,
+      widgets: []
+    }
+
+
+  }
+
   public getDisplay(): Display {
     return this.display
   }
@@ -50,6 +68,8 @@ export class DataService {
 
   public updateDisplay(d: Display): Display {
     this.display = {
+      id: d.id,
+      name: d.name,
       width: d.width,
       height: d.height,
       columns: d.columns,
@@ -64,6 +84,8 @@ export class DataService {
 
   constructor() {
     this.display = {
+      id: "D-45a1aad2-50fe-4c57-ac0b-cdd8fcbd5803",
+      name: "smartMirror",
       width: 1080,
       height: 1920,
       columns: 8,

@@ -1,6 +1,8 @@
 import { Widget } from "./widget";
 
 export interface Display {
+  id: string,
+  name: string,
   height: number,
   width: number,
   columns: number,

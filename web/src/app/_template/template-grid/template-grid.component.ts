@@ -12,11 +12,8 @@ import { Widget } from 'src/app/_interface/widget';
 })
 export class TemplateGridComponent implements OnInit{
 
-  public widgets: Widget[] = []
   public display: Display
-
   public newWidgetPosition: Widget[] = []
-
   public editGrid: boolean = false
 
   constructor(

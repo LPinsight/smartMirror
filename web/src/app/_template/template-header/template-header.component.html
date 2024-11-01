@@ -1,8 +1,17 @@
 <header>
-  <h1>
-    smart<br>
-    <span>Mirror</span>
-  </h1>
+  <div class="left">
+    <h1>smart<br><span>Mirror</span></h1>
+    <div class="form">
+      <label for="display">Display auswählen:</label>
+      <select name="display" id="display" [(ngModel)]="selectedDisplay">
+        <option value="">kein Display Ausgewählt</option>
+        <option 
+        *ngFor="let display of displayList; let x = index"
+        value="{{display.id}}">{{ display.name }}</option>
+      </select>
+    </div>
+    <button (click)="createNewDisplay($event)"><mat-icon>add_to_queue</mat-icon></button>
+  </div>
   <div id="nav">
     <app-template-header-nav></app-template-header-nav>
   </div>

@@ -14,15 +14,56 @@ header {
   justify-content: space-between;
   align-items: center;
 
-  h1 {
-    font-size: 2rem;
-    color: $white;
-    font-weight: bold;
-    span {
-      font-size: 4rem;
-      line-height: 2.8rem;
-      text-transform: uppercase;
-      color: $prime-dark;
+  div.left {
+    display: flex;
+
+    h1 {
+      font-size: 2rem;
+      color: $white;
+      font-weight: bold;
+      span {
+        font-size: 4rem;
+        line-height: 2.8rem;
+        text-transform: uppercase;
+        color: $prime-dark;
+      }
+    }
+  
+    div.form {
+      border-left: 0.3rem solid $prime-dark;
+      margin-left: 1rem;
+      padding-left: 0.5rem;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+
+      label {
+        display: flex;
+        justify-content: center;
+        color: $white;
+        font-size: 1.2rem;
+        width: 100%;
+      }
+      select {
+        background-color: transparent;
+        color: $prime-dark;
+        font-size: 1.5rem;
+        width: 100%;
+        cursor: pointer;
+        outline: none;
+        border: none;
+        text-align: center;
+        // border-bottom: 0.3rem solid $second-dark;
+      }  
+    }
+    button {
+      margin-top: 0;
+      // cursor: pointer;
+      // padding: 0.5rem;
+      // margin-left: 1rem;
+      // background-color: transparent;
+      // border: none;
     }
   }
 
