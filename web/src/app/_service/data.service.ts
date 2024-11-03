@@ -1,54 +1,76 @@
 import { Display } from './../_interface/display';
 import { Injectable } from '@angular/core';
 import { Widget } from '../_interface/widget';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  private display: Display
+  private display_alt: Display
+  private displays: Map<string, Display> = new Map<string, Display>
+  private URL: string = 'http://localhost:8080/'
+  
+  public fetchData() {
+    return this.http.get<{ [key: string]: Display }>(this.URL + 'displays')
+      .pipe(map((res) => {
+        let displays = new Map<string, Display> 
 
-  public createDisplay(name: string, height: number, width: number, point_size: number): Display {
-    let columns = Math.floor(width / point_size)
-    let rows = Math.floor(height / point_size)
+        for (let key in res) {
+          if (res.hasOwnProperty(key)) {
+            displays.set(key, res[key])
+          }
+        }
 
-    return {
-      id: "D-45a1aad2-50fe-4c57-ac0b-cdd8fcbd5803",
-      name: name,
-      width: width,
-      height: height,
-      columns: columns,
-      rows: rows,
-      point_size: point_size,
-      widgets: []
+        return displays
+      }))
+    
+    
+    
+  }
+
+
+
+  public createDisplay(name: string, height: number, width: number, point_size: number) {
+     let json = {
+      "name": name,
+      "width": width,
+      "height": height,
+      "point_size": point_size,
     }
-
-
+   
+    return this.http.post(this.URL + 'display', json, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(map((res) => {
+      return res
+    }))
   }
 
   public getDisplay(): Display {
-    return this.display
+    this.fetchData()
+    return this.display_alt
   }
 
   private getWidgets(): Widget[] {
-    return this.display.widgets
+    return this.display_alt.Widgets
   }
 
   public addWidget(widget: Widget): void {
-    this.display.widgets.push(widget)
+    this.display_alt.Widgets.push(widget)
   }
 
   public deleteWidget(widget: Widget): void {
-    this.display.widgets = this.display.widgets.filter(item => item.id !== widget.id)        
+    this.display_alt.Widgets = this.display_alt.Widgets.filter(item => item.id !== widget.id)        
   }
 
   private createPlaceholderGrid(): Widget[] {
     let grid: Widget[] = []
     let id = 0
 
-      for (let x = 1; x <= this.display.columns; x++){
-        for (let y = 1; y <= this.display.rows; y++){
+      for (let x = 1; x <= this.display_alt.Columns; x++){
+        for (let y = 1; y <= this.display_alt.Rows; y++){
           grid.push({
             id: `placeholder-${id}`,
             name: 'placeholder',
@@ -63,35 +85,35 @@ export class DataService {
   }
 
   public createGrid(): Widget[] {
-    return this.display.widgets.concat(this.createPlaceholderGrid())
+    return this.display_alt.Widgets.concat(this.createPlaceholderGrid())
   }
 
   public updateDisplay(d: Display): Display {
-    this.display = {
-      id: d.id,
-      name: d.name,
-      width: d.width,
-      height: d.height,
-      columns: d.columns,
-      rows: d.rows,
-      point_size: d.point_size,
+    this.display_alt = {
+      Id: d.Id,
+      Name: d.Name,
+      Width: d.Width,
+      Height: d.Height,
+      Columns: d.Columns,
+      Rows: d.Rows,
+      Point_size: d.Point_size,
       grid: this.createGrid(),
-      widgets: d.widgets
+      Widgets: d.Widgets
     }
     
-    return this.display
+    return this.display_alt
   }
 
-  constructor() {
-    this.display = {
-      id: "D-45a1aad2-50fe-4c57-ac0b-cdd8fcbd5803",
-      name: "smartMirror",
-      width: 1080,
-      height: 1920,
-      columns: 8,
-      rows: 15,
-      point_size: 128,
-      widgets: []
+  constructor(private http: HttpClient) {
+    this.display_alt = {
+      Id: "D-45a1aad2-50fe-4c57-ac0b-cdd8fcbd5803",
+      Name: "smartMirror",
+      Width: 1080,
+      Height: 1920,
+      Columns: 8,
+      Rows: 15,
+      Point_size: 128,
+      Widgets: []
       // widgets: [{
       //   id:"W-1a898502-8fcc-40e5-8f1d-a01c8ca4c6b5",
       //   name: "header_widget",

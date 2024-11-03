@@ -1,4 +1,4 @@
-import { Component, Output } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { Display } from 'src/app/_interface/display';
 import { AlertService } from 'src/app/_service/alert.service';
 import { DataService } from 'src/app/_service/data.service';
@@ -9,29 +9,34 @@ import Swal, { SweetAlertOptions } from 'sweetalert2';
   templateUrl: './template-header.component.html',
   styleUrls: ['./template-header.component.scss']
 })
-export class TemplateHeaderComponent {
-  @Output() selectedDisplay: string = 'D-45a1aad2-50fe-4c57-ac0b-cdd8fcbd5803'
-  public displayList: Display[]
+export class TemplateHeaderComponent implements OnInit{
+  @Output() selectedDisplay: string = ''
+  // public displayList: Map<string, Display> = new Map<string, Display> 
+  public displayList: any[] = []
 
   constructor(
     public alert: AlertService,
     public data: DataService) {
-    this.displayList = [{
-      id: "D-45a1aad2-50fe-4c57-ac0b-cdd8fcbd5803",
-      name: "smartMirror",
-      width: 1080,
-      height: 1920,
-      columns: 8,
-      rows: 15,
-      point_size: 128,
-      widgets: []
-    }]
+    
   }
 
-  public async createNewDisplay(event?: any) {
-    console.log(this.selectedDisplay);
-    
-    
+  ngOnInit(): void {
+    this.refreshDisplays()
+  }
+
+  public refreshDisplays(displays: Map<string, Display> = new Map<string, Display>) {
+    this.data.fetchData().subscribe(displays => {
+      this.displayList = []
+      displays.forEach(element => {
+        this.displayList.push({
+          Id: element.Id,
+          Name: element.Name
+        })
+      })
+    })
+  }
+
+  public async createNewDisplay(event?: any) {    
     const steps= ['1', '2', '3', '4']
     const swalQueue = Swal.mixin(this.alert.MixinConfig(steps))
     const values = ['','','','']
@@ -50,9 +55,11 @@ export class TemplateHeaderComponent {
         break;
       }
     }
-    if (currentStep === steps.length) {
-      let newDisplay = this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3]))
-      this.displayList.push(newDisplay)
+    if (currentStep === steps.length) {      
+      this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe(res => {
+        this.refreshDisplays()
+      })
+
     }
   }
 

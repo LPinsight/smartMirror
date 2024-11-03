@@ -6,8 +6,8 @@
       <select name="display" id="display" [(ngModel)]="selectedDisplay">
         <option value="">kein Display Ausgewählt</option>
         <option 
-        *ngFor="let display of displayList; let x = index"
-        value="{{display.id}}">{{ display.name }}</option>
+        *ngFor="let key of displayList"
+        value="{{key.Id}}">{{ key.Name }}</option>
       </select>
     </div>
     <button (click)="createNewDisplay($event)"><mat-icon>add_to_queue</mat-icon></button>

@@ -14,7 +14,7 @@ import { TemplateGridComponent } from './_template/template-grid/template-grid.c
 import { TemplateGridWidgetComponent } from './_template/template-grid-widget/template-grid-widget.component';
 import { ToastrModule } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
-import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { HttpClientModule } from '@angular/common/http';
 
 const navigationRoutes: Routes = [
   {path: 'settings', component: PageSettingsComponent},
@@ -41,7 +41,7 @@ const navigationRoutes: Routes = [
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
     FormsModule,
-    // SweetAlert2Module.forRoot(),
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
