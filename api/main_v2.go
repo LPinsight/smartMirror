@@ -155,7 +155,7 @@ func addWidgetToDisplayHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	displayMap[id].AddWidget(widget)
+	// displayMap[id].AddWidget(widget)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(widget)
