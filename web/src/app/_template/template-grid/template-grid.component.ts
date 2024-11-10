@@ -11,7 +11,7 @@ import { Widget } from 'src/app/_interface/widget';
   styleUrls: ['./template-grid.component.scss']
 })
 export class TemplateGridComponent implements OnInit{
-
+  public ALTdisplay: Display
   public display: Display
   public newWidgetPosition: Widget[] = []
   public editGrid: boolean = false
@@ -21,22 +21,34 @@ export class TemplateGridComponent implements OnInit{
     public dataService: DataService,
     public notification: ToastrService
   ) {
-    this.display = dataService.getDisplay()
-    
+    this.ALTdisplay = dataService.ALT_getDisplay()
+
+    this.display = this.createDisplayPlaceholder()
     this.createGrid()
   }
   
   ngOnInit() {
+
+    this.dataService.selectedDisplay$.subscribe((data) => {
+      if(data != undefined) {
+        this.display = data
+        this.createGrid()
+      }      
+    })
+    
   }
 
   public updateView(): void {
     this.display = this.dataService.updateDisplay(this.display)
+    // console.log(this.display);
+    
   }
 
   public createGrid() {
     this.elRef.nativeElement.style.setProperty('--grid-columns', this.display.Columns)
     this.elRef.nativeElement.style.setProperty('--grid-rows', this.display.Rows)
-    this.elRef.nativeElement.style.setProperty('--point-size', `${this.display.Point_size}px`)
+    // this.elRef.nativeElement.style.setProperty('--point-size', `${this.display.Point_size}px`)
+    this.elRef.nativeElement.style.setProperty('--point-size', `128px`)
 
     this.updateView()
   }
@@ -126,5 +138,18 @@ export class TemplateGridComponent implements OnInit{
     
   }
 
+
+  private createDisplayPlaceholder(): Display {
+    return {
+      Id: '',
+      Name: '',
+      Height: 0,
+      Width: 0,
+      Columns: 0,
+      Rows: 0,
+      Point_size: 0,
+      Widgets: []
+    }
+  }
 
 }

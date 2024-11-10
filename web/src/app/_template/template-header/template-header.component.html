@@ -3,11 +3,11 @@
     <h1>smart<br><span>Mirror</span></h1>
     <div class="form">
       <label for="display">Display auswählen:</label>
-      <select name="display" id="display" [(ngModel)]="selectedDisplay">
-        <option value="">kein Display Ausgewählt</option>
+      <select name="display" id="display" [(ngModel)]="selectedDisplay" (change)="onChangeSelection($event)" [compareWith]="compareKeys">
+        <option *ngIf="displayList.length <= 0" value="" disabled>kein Display vorhanden</option>
         <option 
-        *ngFor="let key of displayList"
-        value="{{key.Id}}">{{ key.Name }}</option>
+        *ngFor="let key of displayList; trackBy: trackById"
+        [value]="key.Id">{{ key.Name }} - {{key.Height}}:{{key.Width}} ({{key.Point_size}}) </option>
       </select>
     </div>
     <button (click)="createNewDisplay($event)"><mat-icon>add_to_queue</mat-icon></button>

@@ -10,30 +10,48 @@ import Swal, { SweetAlertOptions } from 'sweetalert2';
   styleUrls: ['./template-header.component.scss']
 })
 export class TemplateHeaderComponent implements OnInit{
-  @Output() selectedDisplay: string = ''
+  public selectedDisplay: string = ''
   // public displayList: Map<string, Display> = new Map<string, Display> 
   public displayList: any[] = []
 
   constructor(
-    public alert: AlertService,
-    public data: DataService) {
+    private alert: AlertService,
+    private data: DataService) {
     
   }
 
   ngOnInit(): void {
-    this.refreshDisplays()
+    this.data.displays$.subscribe((displays) => {
+      this.refreshDisplays(displays)
+      
+      setTimeout(() => {
+        const currentSelectedId = this.data.selectedIdSubject.getValue();
+        if (this.displayList.some(item => item.Id === currentSelectedId)) {
+          this.selectedDisplay = currentSelectedId;
+        } else {
+          this.selectedDisplay = this.displayList.length > 0 ? this.displayList[0].Id : '';
+          this.data.setSelectedId(this.selectedDisplay)
+        }
+      }, 0);
+      
+    })
   }
 
-  public refreshDisplays(displays: Map<string, Display> = new Map<string, Display>) {
-    this.data.fetchData().subscribe(displays => {
+  public onChangeSelection(event?: any) {
+    this.data.setSelectedId(this.selectedDisplay)
+  }
+
+  public refreshDisplays(displays: Map<string, Display> ) {
       this.displayList = []
       displays.forEach(element => {
         this.displayList.push({
           Id: element.Id,
-          Name: element.Name
+          Name: element.Name,
+          Width: element.Width,
+          Height: element.Height,
+          Point_size: element.Point_size,
         })
-      })
-    })
+      })      
   }
 
   public async createNewDisplay(event?: any) {    
@@ -56,11 +74,15 @@ export class TemplateHeaderComponent implements OnInit{
       }
     }
     if (currentStep === steps.length) {      
-      this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe(res => {
-        this.refreshDisplays()
-      })
-
+      this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe()
     }
   }
 
+  public trackById(index: number, item: any) {
+    return item.Id;
+  }
+
+  public compareKeys(key1: any, key2: any): boolean {
+    return key1 === key2;
+  }
 }

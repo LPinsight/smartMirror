@@ -2,18 +2,41 @@ import { Display } from './../_interface/display';
 import { Injectable } from '@angular/core';
 import { Widget } from '../_interface/widget';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
+  displaysSubject = new BehaviorSubject<Map<string, Display> >(new Map());
+  selectedIdSubject = new BehaviorSubject<string>('');
+
+  displays$ = this.displaysSubject.asObservable();
+  displayId$ = this.selectedIdSubject.asObservable();
+
+  setDisplays(displays: any) {
+    this.displaysSubject.next(displays)
+  }
+
+  setSelectedId(displayId: string) {
+    this.selectedIdSubject.next(displayId)
+  }
+
+  selectedDisplay$ = combineLatest([this.displays$, this.displayId$]).pipe(
+    map(([data, id]) => {
+      return data.get(id)
+    })
+  )
+
+
+
+
   private display_alt: Display
-  private displays: Map<string, Display> = new Map<string, Display>
+  // private displays: Map<string, Display> = new Map<string, Display>
   private URL: string = 'http://localhost:8080/'
   
-  public fetchData() {
+  public getDisplays() {
     return this.http.get<{ [key: string]: Display }>(this.URL + 'displays')
       .pipe(map((res) => {
         let displays = new Map<string, Display> 
@@ -23,15 +46,10 @@ export class DataService {
             displays.set(key, res[key])
           }
         }
-
+        this.setDisplays(displays)
         return displays
       }))
-    
-    
-    
   }
-
-
 
   public createDisplay(name: string, height: number, width: number, point_size: number) {
      let json = {
@@ -44,12 +62,12 @@ export class DataService {
     return this.http.post(this.URL + 'display', json, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(map((res) => {
+      this.getDisplays().subscribe()
       return res
     }))
   }
 
-  public getDisplay(): Display {
-    this.fetchData()
+  public ALT_getDisplay(): Display {
     return this.display_alt
   }
 
@@ -59,18 +77,22 @@ export class DataService {
 
   public addWidget(widget: Widget): void {
     this.display_alt.Widgets.push(widget)
+
+    // TODO:
+    // API-Request Add Widget
+    // New Display Request
   }
 
   public deleteWidget(widget: Widget): void {
     this.display_alt.Widgets = this.display_alt.Widgets.filter(item => item.id !== widget.id)        
   }
 
-  private createPlaceholderGrid(): Widget[] {
+  private createPlaceholderGrid(dp: Display): Widget[] {
     let grid: Widget[] = []
     let id = 0
 
-      for (let x = 1; x <= this.display_alt.Columns; x++){
-        for (let y = 1; y <= this.display_alt.Rows; y++){
+      for (let x = 1; x <= dp.Columns; x++){
+        for (let y = 1; y <= dp.Rows; y++){
           grid.push({
             id: `placeholder-${id}`,
             name: 'placeholder',
@@ -84,12 +106,24 @@ export class DataService {
     return grid
   }
 
-  public createGrid(): Widget[] {
-    return this.display_alt.Widgets.concat(this.createPlaceholderGrid())
+  public createGrid(widgets: Widget[], placeholder: Widget[] ): Widget[] {
+    // console.log('Widgets: ',widgets.length, widgets);
+    // console.log('Placeholder: ',placeholder.length, placeholder);
+
+
+    if (widgets.length == undefined) {
+      // console.log(2);      
+      return placeholder
+    } else {
+      // console.log(4);      
+      return widgets.concat(placeholder)
+    }
   }
 
-  public updateDisplay(d: Display): Display {
-    this.display_alt = {
+  public updateDisplay(d: Display): Display {   
+    // console.log(d);
+    
+    return {
       Id: d.Id,
       Name: d.Name,
       Width: d.Width,
@@ -97,11 +131,9 @@ export class DataService {
       Columns: d.Columns,
       Rows: d.Rows,
       Point_size: d.Point_size,
-      grid: this.createGrid(),
+      grid: this.createGrid(d.Widgets, this.createPlaceholderGrid(d)),
       Widgets: d.Widgets
     }
-    
-    return this.display_alt
   }
 
   constructor(private http: HttpClient) {

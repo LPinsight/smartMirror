@@ -14,7 +14,7 @@ export class PageMirrorComponent implements OnInit {
   public display: Display
 
   constructor(public elRef: ElementRef, public dataService: DataService) {
-    this.display = dataService.getDisplay()
+    this.display = dataService.ALT_getDisplay()
     
     this.createGrid()
   }
