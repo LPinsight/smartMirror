@@ -59,7 +59,7 @@ export class DataService {
       "point_size": point_size,
     }
    
-    return this.http.post(this.URL + 'display', json, {
+    return this.http.post<Display>(this.URL + 'display', json, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(map((res) => {
       this.getDisplays().subscribe()

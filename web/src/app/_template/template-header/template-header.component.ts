@@ -1,4 +1,5 @@
 import { Component, OnInit, Output } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Display } from 'src/app/_interface/display';
 import { AlertService } from 'src/app/_service/alert.service';
 import { DataService } from 'src/app/_service/data.service';
@@ -16,7 +17,8 @@ export class TemplateHeaderComponent implements OnInit{
 
   constructor(
     private alert: AlertService,
-    private data: DataService) {
+    private data: DataService,
+    private notification: ToastrService) {
     
   }
 
@@ -74,7 +76,10 @@ export class TemplateHeaderComponent implements OnInit{
       }
     }
     if (currentStep === steps.length) {      
-      this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe()
+      this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe(res => {
+        this.data.setSelectedId(res.Id)
+        this.notification.success('Display wurde erfolgreich hinzugefügt', 'Display Hinzufügen', { progressBar: true })
+      })
     }
   }
 
