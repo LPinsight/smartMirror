@@ -36,14 +36,18 @@ func NewDisplay(name string, height int, width int, point_size int) *Display {
 }
 
 // Add a Widget
-// func (d *Display) AddWidget(w *widget.Widget) {
-// 	d.Widgets[w.GetID()] = w
-// }
+func (d *Display) AddWidget(w *widget.Widget) {
+	d.Widgets = append(d.Widgets, w)
+}
 
 // Remove a Widget
-// func (d *Display) removeWidget(w *widget.Widget) {
-// 	delete(d.Widgets, w.GetID())
-// }
+func (d *Display) RemoveWidget(id string) {
+	for i, widget := range d.Widgets {
+		if widget.Id == id {
+			d.Widgets = append(d.Widgets[:i], d.Widgets[i+1:]...)
+		}
+	}
+}
 
 func (d *Display) GetID() string {
 	return d.Id

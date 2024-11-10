@@ -11,7 +11,6 @@ import { Widget } from 'src/app/_interface/widget';
   styleUrls: ['./template-grid.component.scss']
 })
 export class TemplateGridComponent implements OnInit{
-  public ALTdisplay: Display
   public display: Display
   public newWidgetPosition: Widget[] = []
   public editGrid: boolean = false
@@ -21,8 +20,6 @@ export class TemplateGridComponent implements OnInit{
     public dataService: DataService,
     public notification: ToastrService
   ) {
-    this.ALTdisplay = dataService.ALT_getDisplay()
-
     this.display = this.createDisplayPlaceholder()
     this.createGrid()
   }
@@ -61,12 +58,11 @@ export class TemplateGridComponent implements OnInit{
         name: 'test',
         point_start: { x: x1, y: y1 },
         point_end: {x: x2, y: y2},
+      }).subscribe(_ => {
+        this.editGrid = false
+        this.resetNewWidget()
+        this.notification.success('Widget wurde erfolgreich hinzugefügt', 'Widget Hinzufügen', { progressBar: true })
       })
-      
-      this.updateView()
-      this.editGrid = false
-      this.resetNewWidget()
-      this.notification.success('Widget wurde erfolgreich hinzugefügt', 'Widget Hinzufügen', { progressBar: true })
     } else {
       console.log();
       this.notification.error('Bitte wähle zwei Felder aus', "Widget Hinzufügen", { progressBar: true })
@@ -85,12 +81,16 @@ export class TemplateGridComponent implements OnInit{
     } else if (
       pos[1].point_start.x <= pos[0].point_start.x &&
       pos[1].point_start.y <= pos[0].point_start.y) {
+        console.log(2);
+
       return [
         pos[1].point_start.x,
         pos[1].point_start.y,
         pos[0].point_end.x,
         pos[0].point_end.y,]
-    } else if (pos[0].point_start.x <= pos[1].point_end.x) {
+    } else if (
+      pos[0].point_start.x <= pos[1].point_end.x &&
+      pos[0].point_start.y >= pos[1].point_start.y) {
         return [
           pos[0].point_start.x,
           pos[1].point_start.y,
@@ -120,8 +120,9 @@ export class TemplateGridComponent implements OnInit{
 
   public updateWidget(event: Eventping) {
     if (event.label === eventLabel.delete) {
-      this.dataService.deleteWidget(event.object)
-      this.updateView()
+      this.dataService.deleteWidget(event.object).subscribe(_ => {
+        this.notification.success('Widget wurde erfolgreich entfernt', 'Widget Entfernt', { progressBar: true })
+      })
     }
 
     if (event.label === eventLabel.select) {

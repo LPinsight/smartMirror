@@ -75,16 +75,33 @@ export class DataService {
     return this.display_alt.Widgets
   }
 
-  public addWidget(widget: Widget): void {
-    this.display_alt.Widgets.push(widget)
+  public addWidget(widget: Widget) {
+    let json = {
+      "name": widget.name,
+      "point_start": widget.point_start,
+      "point_end": widget.point_end,
+    }
+   
+    return this.http.post(this.URL + 'display/' + this.selectedIdSubject.getValue(), json, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(map((res) => {
+      this.getDisplays().subscribe()      
+      return res
+    }))
+
 
     // TODO:
     // API-Request Add Widget
     // New Display Request
   }
 
-  public deleteWidget(widget: Widget): void {
-    this.display_alt.Widgets = this.display_alt.Widgets.filter(item => item.id !== widget.id)        
+  public deleteWidget(widget: Widget) {
+    return this.http.delete(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/' + widget.id, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(map((res) => {
+      this.getDisplays().subscribe()      
+      return res
+    }))
   }
 
   private createPlaceholderGrid(dp: Display): Widget[] {

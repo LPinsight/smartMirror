@@ -33,7 +33,7 @@ func main() {
 	router.HandleFunc("/display/{id}", removeDisplayHandler).Methods("DELETE")
 
 	router.HandleFunc("/display/{id}", addWidgetToDisplayHandler).Methods("POST")
-	// router.HandleFunc("/display/{did}/{wid}", removeWidgetFromDisplayHandler).Methods("DELETE")
+	router.HandleFunc("/display/{did}/{wid}", removeWidgetFromDisplayHandler).Methods("DELETE")
 
 	corsRouter := enableCORS(router)
 
@@ -125,7 +125,6 @@ func removeDisplayHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	delete(displayMap, id)
-
 }
 
 // ##########################################################
@@ -155,8 +154,24 @@ func addWidgetToDisplayHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// displayMap[id].AddWidget(widget)
+	displayMap[id].AddWidget(widget)
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(widget)
+}
+
+// Handler für DELETE /display/{did}/{wid}
+func removeWidgetFromDisplayHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	displayId := vars["did"]
+	widgetId := vars["wid"]
+
+	if _, ok := displayMap[displayId]; !ok {
+		// return errors.New("the Display does not exist")
+		fmt.Println("The Display with the ID: " + displayId + " does not exist")
+		return
+	}
+
+	displayMap[displayId].RemoveWidget(widgetId)
+
 }
