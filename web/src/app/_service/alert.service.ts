@@ -89,4 +89,17 @@ export class AlertService {
 
     
   }
+
+  public newWidgetConfig(): SweetAlertOptions {
+    return {
+      title: 'Neues Widget',
+      text: 'Name für das Widget',
+      input: 'text',
+      inputPlaceholder: 'Widget Name',
+      icon: 'question',
+      showCloseButton: true,
+      showCancelButton: true,
+    }
+  }
+
 }

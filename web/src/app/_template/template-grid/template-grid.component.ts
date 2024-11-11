@@ -4,6 +4,8 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import { Display } from 'src/app/_interface/display';
 import { eventLabel, Eventping } from 'src/app/_interface/eventping';
 import { Widget } from 'src/app/_interface/widget';
+import Swal from 'sweetalert2';
+import { AlertService } from '../../_service/alert.service';
 
 @Component({
   selector: 'app-template-grid',
@@ -16,9 +18,10 @@ export class TemplateGridComponent implements OnInit{
   public editGrid: boolean = false
 
   constructor(
-    public elRef: ElementRef,
-    public dataService: DataService,
-    public notification: ToastrService
+    private alert: AlertService,
+    private elRef: ElementRef,
+    private dataService: DataService,
+    private notification: ToastrService
   ) {
     this.display = this.createDisplayPlaceholder()
     this.createGrid()
@@ -50,19 +53,25 @@ export class TemplateGridComponent implements OnInit{
     this.updateView()
   }
 
-  createNewWidget(event?: any) {
+  public async createNewWidget (event?: any) {
     if (this.newWidgetPosition.length === 2) {
      let [x1, y1, x2, y2] = this.getCorrektNewWidgetPosition (this.newWidgetPosition)
 
-      this.dataService.addWidget({
-        name: 'test',
-        point_start: { x: x1, y: y1 },
-        point_end: {x: x2, y: y2},
-      }).subscribe(_ => {
-        this.editGrid = false
-        this.resetNewWidget()
-        this.notification.success('Widget wurde erfolgreich hinzugefügt', 'Widget Hinzufügen', { progressBar: true })
-      })
+      const result = await Swal.fire(this.alert.newWidgetConfig())
+      if (result.value) {
+        this.dataService.addWidget({
+          name: result.value,
+          point_start: { x: x1, y: y1 },
+          point_end: {x: x2, y: y2},
+        }).subscribe(_ => {
+          this.editGrid = false
+          this.resetNewWidget()
+          this.notification.success('Widget ' + result.value +' wurde erfolgreich hinzugefügt', 'Widget Hinzufügen', { progressBar: true })
+        })
+      } else if (result.dismiss) {
+        return
+      }
+
     } else {
       console.log();
       this.notification.error('Bitte wähle zwei Felder aus', "Widget Hinzufügen", { progressBar: true })
@@ -121,7 +130,7 @@ export class TemplateGridComponent implements OnInit{
   public updateWidget(event: Eventping) {
     if (event.label === eventLabel.delete) {
       this.dataService.deleteWidget(event.object).subscribe(_ => {
-        this.notification.success('Widget wurde erfolgreich entfernt', 'Widget Entfernt', { progressBar: true })
+        this.notification.success('Widget '+ event.object.name +' wurde erfolgreich entfernt', 'Widget Entfernt', { progressBar: true })
       })
     }
 
