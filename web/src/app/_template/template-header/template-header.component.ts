@@ -12,27 +12,22 @@ import Swal, { SweetAlertOptions } from 'sweetalert2';
 })
 export class TemplateHeaderComponent implements OnInit{
   public selectedDisplay: string = ''
-  // public displayList: Map<string, Display> = new Map<string, Display> 
-  public displayList: any[] = []
+  public displayList: Map<string, Display> = new Map<string, Display> 
 
   constructor(
     private alert: AlertService,
     private data: DataService,
     private notification: ToastrService) {
-    
   }
 
   ngOnInit(): void {
     this.data.displays$.subscribe((displays) => {
-      this.refreshDisplays(displays)
-      
+      this.displayList = displays
+
       setTimeout(() => {
         const currentSelectedId = this.data.selectedIdSubject.getValue();
-        if (this.displayList.some(item => item.Id === currentSelectedId)) {
+        if (this.displayList.has(currentSelectedId)) {
           this.selectedDisplay = currentSelectedId;
-        } else {
-          this.selectedDisplay = this.displayList.length > 0 ? this.displayList[0].Id : '';
-          this.data.setSelectedId(this.selectedDisplay)
         }
       }, 0);
       
@@ -41,19 +36,6 @@ export class TemplateHeaderComponent implements OnInit{
 
   public onChangeSelection(event?: any) {
     this.data.setSelectedId(this.selectedDisplay)
-  }
-
-  public refreshDisplays(displays: Map<string, Display> ) {
-      this.displayList = []
-      displays.forEach(element => {
-        this.displayList.push({
-          Id: element.Id,
-          Name: element.Name,
-          Width: element.Width,
-          Height: element.Height,
-          Point_size: element.Point_size,
-        })
-      })      
   }
 
   public async createNewDisplay(event?: any) {    
@@ -77,7 +59,7 @@ export class TemplateHeaderComponent implements OnInit{
     }
     if (currentStep === steps.length) {      
       this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe(res => {
-        this.data.setSelectedId(res.Id)
+        // this.data.setSelectedId(res.Id) // neues Display auswählen
         this.notification.success('Display wurde erfolgreich hinzugefügt', 'Display Hinzufügen', { progressBar: true })
       })
     }

@@ -4,10 +4,10 @@
     <div class="form">
       <label for="display">Display auswählen:</label>
       <select name="display" id="display" [(ngModel)]="selectedDisplay" (change)="onChangeSelection($event)" [compareWith]="compareKeys">
-        <option *ngIf="displayList.length <= 0" value="" disabled>kein Display vorhanden</option>
+        <option *ngIf="displayList.size <= 0" value="" disabled>kein Display vorhanden</option>
         <option 
-        *ngFor="let key of displayList; trackBy: trackById"
-        [value]="key.Id">{{ key.Name }} - {{key.Height}}:{{key.Width}} ({{key.Point_size}}) </option>
+        *ngFor="let display of displayList | keyvalue; trackBy: trackById"
+        [value]="display.key">{{ display.value.Name }} - {{display.value.Height}}:{{display.value.Width}} ({{display.value.Point_size}}px) </option>
       </select>
     </div>
     <button (click)="createNewDisplay($event)"><mat-icon>add_to_queue</mat-icon></button>
