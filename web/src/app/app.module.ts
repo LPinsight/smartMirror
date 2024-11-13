@@ -15,6 +15,7 @@ import { TemplateGridWidgetComponent } from './_template/template-grid-widget/te
 import { ToastrModule } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { TemplateDisplayComponent } from './_template/template-display/template-display.component';
 
 const navigationRoutes: Routes = [
   {path: 'settings', component: PageSettingsComponent},
@@ -32,7 +33,8 @@ const navigationRoutes: Routes = [
     TemplateHeaderComponent,
     TemplateHeaderNavComponent,
     TemplateGridComponent,
-    TemplateGridWidgetComponent
+    TemplateGridWidgetComponent,
+    TemplateDisplayComponent
   ],
   imports: [
     BrowserModule,

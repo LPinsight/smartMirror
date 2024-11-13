@@ -31,6 +31,7 @@ func main() {
 	router.HandleFunc("/display/{id}", getDisplayHandler).Methods("GET")
 	router.HandleFunc("/display", createNewDisplayHandler).Methods("POST", "OPTIONS")
 	router.HandleFunc("/display/{id}", removeDisplayHandler).Methods("DELETE")
+	router.HandleFunc("/display/{id}", updateDisplayHandler).Methods("PUT")
 
 	router.HandleFunc("/display/{id}", addWidgetToDisplayHandler).Methods("POST")
 	router.HandleFunc("/display/{did}/{wid}", removeWidgetFromDisplayHandler).Methods("DELETE")
@@ -125,6 +126,40 @@ func removeDisplayHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	delete(displayMap, id)
+}
+
+// Handler für PUT /display/{id}
+func updateDisplayHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	var newDisplayData struct {
+		Name       string `json:"name"`       // The name of the display
+		Height     int    `json:"height"`     // The hight of the display in pixels
+		Width      int    `json:"width"`      // The width of the display in pixels
+		Point_size int    `json:"point_size"` // The size of a point in pixels
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&newDisplayData); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	if _, ok := displayMap[id]; !ok {
+		// return errors.New("the Display does not exist")
+		fmt.Println("The Display with the ID: " + id + " does not exist")
+		return
+	}
+
+	// TODO: Prüfen ob alle Werte vorhanden sind!
+	// TODO: Alte Widgets übernehmen ! Aktuell werden sie zurückgesetzt
+
+	var display = dp.NewDisplay(newDisplayData.Name, newDisplayData.Height, newDisplayData.Width, newDisplayData.Point_size)
+
+	displayMap[id] = display
+	displayMap[id].Id = id
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(display)
 }
 
 // ##########################################################

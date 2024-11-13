@@ -23,7 +23,7 @@ export class PageMirrorComponent implements OnInit {
   }
 
   public updateView(): void {
-    this.display = this.dataService.updateDisplay(this.display)
+    this.display = this.dataService.updateGrid(this.display)
 
     console.log(this.display);
     

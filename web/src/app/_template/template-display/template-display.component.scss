@@ -1,0 +1,64 @@
+@import './../../../scss/var';
+
+// ##########################################################
+// ##########################################################
+// ##########################################################
+
+:host {
+  width: 100%;
+  &.selected {
+    div.select {
+      color: darkgreen;
+    }
+  }
+}
+
+p {
+  font-size: 1.5rem;
+}
+
+h2 {
+  font-size: 2rem;
+}
+
+div {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+
+  &.content {
+    width: 100%;
+    border: 1px solid $prime-dark;
+    border-radius: 1rem;
+    flex-direction: row;
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    div.title {
+      padding: 0 1rem;
+      color: $prime-dark;
+
+      p {
+        // color: $second-dark;
+      }
+    }
+    div.details {
+      align-items: start;
+    }
+    div.buttons {
+      button {
+        margin: 0.3rem;
+
+        mat-icon {
+          font-size: 1.7rem;
+          width: 1.7rem;
+          height: 1.7rem;
+        }
+
+        &.delete {
+          background-color: $red;
+        }
+      }
+    }
+  }
+}

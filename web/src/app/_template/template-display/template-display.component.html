@@ -1,0 +1,24 @@
+<div class="content">
+  <div class="select">
+    <mat-icon *ngIf="selected">task_alt</mat-icon>
+    <mat-icon *ngIf="!selected">radio_button_unchecked</mat-icon>
+  </div>
+  <div class="title">
+    <h2>{{display.Name}}</h2>
+    <p *ngIf="display.Widgets.length == 1">{{display.Widgets.length}}x Widget </p>
+    <p *ngIf="display.Widgets.length != 1">{{display.Widgets.length}}x Widgets </p>
+  </div>
+  <div class="details">
+    <p>Höhe: {{display.Height}}px</p>
+    <p>Breite: {{display.Width}}px</p>
+    <p>Pixel: {{display.Point_size}}x{{display.Point_size}}px</p>
+  </div>
+  <div class="buttons">
+    <button (click)="edit($event)"><mat-icon>edit</mat-icon>Bearbeiten</button>
+    <button class="delete" (click)="remove($event)"><mat-icon>delete</mat-icon>Löschen</button>
+  </div>
+</div>
+
+
+
+

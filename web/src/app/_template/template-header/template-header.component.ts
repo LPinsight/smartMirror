@@ -49,7 +49,7 @@ export class TemplateHeaderComponent implements OnInit{
 
     for (currentStep = 0; currentStep < steps.length;) {
       
-      const result: any = await swalQueue.fire(this.alert.newDisplayConfig(currentStep, values))
+      const result: any = await swalQueue.fire(this.alert.newDisplayConfig(currentStep, values, true))
       
       if (result.value) {
         values[currentStep] = result.value

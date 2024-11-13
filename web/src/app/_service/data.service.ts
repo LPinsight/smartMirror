@@ -67,6 +67,31 @@ export class DataService {
     }))
   }
 
+  public removeDisplay(id: string) {
+    return this.http.delete<Display>(this.URL + 'display/' + id, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(map((res) => {
+      this.getDisplays().subscribe()
+      return res
+    }))
+  }
+
+  public updateDisplay(id: string, name: string, height: number, width: number, point_size: number) {
+    let json = {
+      "name": name,
+      "width": width,
+      "height": height,
+      "point_size": point_size,
+    }
+
+    return this.http.put<Display>(this.URL + 'display/' + id, json, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(map((res) => {
+      this.getDisplays().subscribe()
+      return res
+    }))
+  }
+
   public ALT_getDisplay(): Display {
     return this.display_alt
   }
@@ -137,7 +162,7 @@ export class DataService {
     }
   }
 
-  public updateDisplay(d: Display): Display {   
+  public updateGrid(d: Display): Display {   
     // console.log(d);
     
     return {

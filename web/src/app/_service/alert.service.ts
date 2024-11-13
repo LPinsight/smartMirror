@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
+import { Display } from '../_interface/display';
 
 @Injectable({
   providedIn: 'root'
@@ -22,8 +23,8 @@ export class AlertService {
     }
   }
 
-  public newDisplayConfig(id: number, values: string[]): SweetAlertOptions {
-    let title = 'new Display'
+  public newDisplayConfig(id: number, values: string[], neu: boolean): SweetAlertOptions {
+    let title = neu ? 'new Display' : 'edit Display'
 
     switch (id) {
       case 0: 
@@ -88,6 +89,18 @@ export class AlertService {
     }
 
     
+  }
+
+  public removeDisplayConfig(name: string): SweetAlertOptions {
+    return {
+      title: 'Display "' + name + '" entfernen',
+      text: 'Soll das Display wirklich entfernt werden?',
+      icon: 'question',
+      showCloseButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Display nicht entfernen',
+      denyButtonText: 'Display entfernen'
+    }
   }
 
   public newWidgetConfig(): SweetAlertOptions {
