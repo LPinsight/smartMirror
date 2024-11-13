@@ -28,6 +28,9 @@ export class TemplateHeaderComponent implements OnInit{
         const currentSelectedId = this.data.selectedIdSubject.getValue();
         if (this.displayList.has(currentSelectedId)) {
           this.selectedDisplay = currentSelectedId;
+        } else {
+          this.selectedDisplay = this.displayList.size > 0 ? this.displayList.keys().next().value! : '';
+          this.data.setSelectedId(this.selectedDisplay)
         }
       }, 0);
       
