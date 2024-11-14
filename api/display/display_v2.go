@@ -17,6 +17,13 @@ type Display struct {
 	// Widgets    map[string]*widget.Widget `json:widgets`
 }
 
+type newDisplayData struct {
+	Name       string `json:"name"`       // The name of the display
+	Height     int    `json:"height"`     // The hight of the display in pixels
+	Width      int    `json:"width"`      // The width of the display in pixels
+	Point_size int    `json:"point_size"` // The size of a point in pixels
+}
+
 func NewDisplay(name string, height int, width int, point_size int) *Display {
 
 	var columns = width / point_size
@@ -31,6 +38,24 @@ func NewDisplay(name string, height int, width int, point_size int) *Display {
 		Rows:       rows,
 		Point_size: point_size,
 		Widgets:    make([]*widget.Widget, 0),
+		// Widgets:    make(map[string]*widget.Widget),
+	}
+}
+
+func UpdateDisplay(newDisplay newDisplayData, display Display) *Display {
+
+	var columns = newDisplay.Width / newDisplay.Point_size
+	var rows = newDisplay.Height / newDisplay.Point_size
+
+	return &Display{
+		Id:         display.Id,
+		Name:       newDisplay.Name,
+		Height:     newDisplay.Height,
+		Width:      newDisplay.Width,
+		Columns:    columns,
+		Rows:       rows,
+		Point_size: newDisplay.Point_size,
+		Widgets:    display.Widgets,
 		// Widgets:    make(map[string]*widget.Widget),
 	}
 }

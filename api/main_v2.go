@@ -153,10 +153,9 @@ func updateDisplayHandler(w http.ResponseWriter, r *http.Request) {
 	// TODO: Prüfen ob alle Werte vorhanden sind!
 	// TODO: Alte Widgets übernehmen ! Aktuell werden sie zurückgesetzt
 
-	var display = dp.NewDisplay(newDisplayData.Name, newDisplayData.Height, newDisplayData.Width, newDisplayData.Point_size)
+	var display = dp.UpdateDisplay(newDisplayData, *displayMap[id])
 
 	displayMap[id] = display
-	displayMap[id].Id = id
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(display)
