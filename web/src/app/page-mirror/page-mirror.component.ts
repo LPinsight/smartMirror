@@ -13,8 +13,8 @@ export class PageMirrorComponent implements OnInit {
   public widgets: Widget[] = []
   public display: Display
 
-  constructor(public elRef: ElementRef, public dataService: DataService) {
-    this.display = dataService.ALT_getDisplay()
+  constructor(private elRef: ElementRef, private dataService: DataService) {
+    this.display = dataService.createDisplayPlaceholder()
     
     this.createGrid()
   }

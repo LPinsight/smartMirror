@@ -23,13 +23,14 @@ export class TemplateGridComponent implements OnInit{
     private dataService: DataService,
     private notification: ToastrService
   ) {
-    this.display = this.createDisplayPlaceholder()
+    this.display = dataService.createDisplayPlaceholder()
     this.createGrid()
   }
   
   ngOnInit() {
-
     this.dataService.selectedDisplay$.subscribe((data) => {
+      console.log(data);
+      
       if(data != undefined) {
         this.display = data
         this.createGrid()
@@ -146,20 +147,6 @@ export class TemplateGridComponent implements OnInit{
       }
     }
     
-  }
-
-
-  private createDisplayPlaceholder(): Display {
-    return {
-      Id: '',
-      Name: '',
-      Height: 0,
-      Width: 0,
-      Columns: 0,
-      Rows: 0,
-      Point_size: 0,
-      Widgets: []
-    }
   }
 
 }

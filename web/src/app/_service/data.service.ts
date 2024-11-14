@@ -8,6 +8,8 @@ import { BehaviorSubject, combineLatest, map } from 'rxjs';
   providedIn: 'root'
 })
 export class DataService {
+  // private displays: Map<string, Display> = new Map<string, Display>
+  private URL: string = 'http://localhost:8080/'
 
   displaysSubject = new BehaviorSubject<Map<string, Display> >(new Map());
   selectedIdSubject = new BehaviorSubject<string>('');
@@ -28,13 +30,6 @@ export class DataService {
       return data.get(id)
     })
   )
-
-
-
-
-  private display_alt: Display
-  // private displays: Map<string, Display> = new Map<string, Display>
-  private URL: string = 'http://localhost:8080/'
   
   public getDisplays() {
     return this.http.get<{ [key: string]: Display }>(this.URL + 'displays')
@@ -92,12 +87,17 @@ export class DataService {
     }))
   }
 
-  public ALT_getDisplay(): Display {
-    return this.display_alt
-  }
-
-  private getWidgets(): Widget[] {
-    return this.display_alt.Widgets
+  public createDisplayPlaceholder(): Display {
+    return {
+      Id: '',
+      Name: '',
+      Height: 0,
+      Width: 0,
+      Columns: 0,
+      Rows: 0,
+      Point_size: 0,
+      Widgets: []
+    }
   }
 
   public addWidget(widget: Widget) {
@@ -113,11 +113,6 @@ export class DataService {
       this.getDisplays().subscribe()      
       return res
     }))
-
-
-    // TODO:
-    // API-Request Add Widget
-    // New Display Request
   }
 
   public deleteWidget(widget: Widget) {
@@ -149,22 +144,14 @@ export class DataService {
   }
 
   public createGrid(widgets: Widget[], placeholder: Widget[] ): Widget[] {
-    // console.log('Widgets: ',widgets.length, widgets);
-    // console.log('Placeholder: ',placeholder.length, placeholder);
-
-
     if (widgets.length == undefined) {
-      // console.log(2);      
       return placeholder
-    } else {
-      // console.log(4);      
+    } else {  
       return widgets.concat(placeholder)
     }
   }
 
-  public updateGrid(d: Display): Display {   
-    // console.log(d);
-    
+  public updateGrid(d: Display): Display {    
     return {
       Id: d.Id,
       Name: d.Name,
@@ -179,37 +166,5 @@ export class DataService {
   }
 
   constructor(private http: HttpClient) {
-    this.display_alt = {
-      Id: "D-45a1aad2-50fe-4c57-ac0b-cdd8fcbd5803",
-      Name: "smartMirror",
-      Width: 1080,
-      Height: 1920,
-      Columns: 8,
-      Rows: 15,
-      Point_size: 128,
-      Widgets: []
-      // widgets: [{
-      //   id:"W-1a898502-8fcc-40e5-8f1d-a01c8ca4c6b5",
-      //   name: "header_widget",
-      //   point_start: { x: 1, y: 1 },
-      //   point_end: { x: 9, y: 3 },
-      // },{
-      //   id:"W-2",
-      //   name: 'wetter_widget',
-      //   point_start: { x: 1, y: 3 },
-      //   point_end: { x: 5, y: 6 },
-      // },{
-      //   id:"W-3",
-      //   name: 'kalender_widget',
-      //   point_start: { x: 5, y: 3 },
-      //   point_end: { x: 7, y: 6 },
-      // },{
-      //   id:"W-4",
-      //   name: 'kalender_widget',
-      //   point_start: { x: 7, y: 3 },
-      //   point_end: { x: 9, y: 6 },
-      // }]
-    }
-
   }
 }
