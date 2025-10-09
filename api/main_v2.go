@@ -36,6 +36,8 @@ func main() {
 	router.HandleFunc("/display/{id}", addWidgetToDisplayHandler).Methods("POST")
 	router.HandleFunc("/display/{did}/{wid}", removeWidgetFromDisplayHandler).Methods("DELETE")
 
+	router.HandleFunc("/display/{id}/location", SetLocationToDisplayHandler).Methods("POST")
+
 	corsRouter := enableCORS(router)
 
 	// Starte den HTTP-Server
@@ -208,4 +210,35 @@ func removeWidgetFromDisplayHandler(w http.ResponseWriter, r *http.Request) {
 
 	displayMap[displayId].RemoveWidget(widgetId)
 
+}
+
+// ##########################################################
+// Location
+// ##########################################################
+
+// Handler für POST /display/{id}/location
+func SetLocationToDisplayHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	var newLocation struct {
+		Lat float32 `json:"lat"`
+		Lon float32 `json:"lon"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&newLocation); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if _, ok := displayMap[id]; !ok {
+		// return errors.New("the Display does not exist")
+		fmt.Println("The Display with the ID: " + id + " does not exist")
+		return
+	}
+
+	displayMap[id].Location = newLocation
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(newLocation)
 }

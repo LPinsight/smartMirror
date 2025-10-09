@@ -6,8 +6,8 @@ import (
 )
 
 type Location struct {
-	Lat int `json:"lat"`
-	Lon int `json:"lon"`
+	Lat float32 `json:"lat"`
+	Lon float32 `json:"lon"`
 }
 
 type Display struct {
@@ -83,4 +83,9 @@ func (d *Display) RemoveWidget(id string) {
 
 func (d *Display) GetID() string {
 	return d.Id
+}
+
+// Set Location für das Display
+func (d *Display) SetLocation(l Location) {
+	d.Location = l
 }
