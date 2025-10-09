@@ -8,9 +8,10 @@ import Swal from 'sweetalert2';
 import { AlertService } from '../../_service/alert.service';
 
 @Component({
-  selector: 'app-template-grid',
-  templateUrl: './template-grid.component.html',
-  styleUrls: ['./template-grid.component.scss']
+    selector: 'app-template-grid',
+    templateUrl: './template-grid.component.html',
+    styleUrls: ['./template-grid.component.scss'],
+    standalone: false
 })
 export class TemplateGridComponent implements OnInit{
   public display: Display

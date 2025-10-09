@@ -6,9 +6,10 @@ import { AlertService } from '../../_service/alert.service';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-template-display',
-  templateUrl: './template-display.component.html',
-  styleUrls: ['./template-display.component.scss']
+    selector: 'app-template-display',
+    templateUrl: './template-display.component.html',
+    styleUrls: ['./template-display.component.scss'],
+    standalone: false
 })
 export class TemplateDisplayComponent implements OnInit {
   @Input()  display!: Display;

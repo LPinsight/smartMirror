@@ -9,9 +9,10 @@ L.Icon.Default.mergeOptions({
 });
 
 @Component({
-  selector: 'app-template-location',
-  templateUrl: './template-location.component.html',
-  styleUrls: ['./template-location.component.scss']
+    selector: 'app-template-location',
+    templateUrl: './template-location.component.html',
+    styleUrls: ['./template-location.component.scss'],
+    standalone: false
 })
 export class TemplateLocationComponent implements AfterViewInit{
   private map!: L.Map

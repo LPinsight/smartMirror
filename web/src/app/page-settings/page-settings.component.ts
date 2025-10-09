@@ -3,9 +3,10 @@ import { DataService } from '../_service/data.service';
 import { Display } from '../_interface/display';
 
 @Component({
-  selector: 'app-page-settings',
-  templateUrl: './page-settings.component.html',
-  styleUrls: ['./page-settings.component.scss']
+    selector: 'app-page-settings',
+    templateUrl: './page-settings.component.html',
+    styleUrls: ['./page-settings.component.scss'],
+    standalone: false
 })
 export class PageSettingsComponent implements OnInit{
   public displayList: Map<string, Display> = new Map<string, Display> 

@@ -6,9 +6,10 @@ import { DataService } from 'src/app/_service/data.service';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 
 @Component({
-  selector: 'app-template-header',
-  templateUrl: './template-header.component.html',
-  styleUrls: ['./template-header.component.scss']
+    selector: 'app-template-header',
+    templateUrl: './template-header.component.html',
+    styleUrls: ['./template-header.component.scss'],
+    standalone: false
 })
 export class TemplateHeaderComponent implements OnInit{
   public selectedDisplay: string = ''

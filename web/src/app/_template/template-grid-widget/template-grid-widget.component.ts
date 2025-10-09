@@ -3,9 +3,10 @@ import { eventLabel, Eventping } from 'src/app/_interface/eventping';
 import { Widget } from 'src/app/_interface/widget';
 
 @Component({
-  selector: 'app-template-grid-widget',
-  templateUrl: './template-grid-widget.component.html',
-  styleUrls: ['./template-grid-widget.component.scss']
+    selector: 'app-template-grid-widget',
+    templateUrl: './template-grid-widget.component.html',
+    styleUrls: ['./template-grid-widget.component.scss'],
+    standalone: false
 })
 export class TemplateGridWidgetComponent {
   @Input() widget!: Widget

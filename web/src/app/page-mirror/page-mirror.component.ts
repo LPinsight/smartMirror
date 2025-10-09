@@ -4,9 +4,10 @@ import { Widget } from '../_interface/widget';
 import { DataService } from '../_service/data.service';
 
 @Component({
-  selector: 'app-page-mirror',
-  templateUrl: './page-mirror.component.html',
-  styleUrls: ['./page-mirror.component.scss']
+    selector: 'app-page-mirror',
+    templateUrl: './page-mirror.component.html',
+    styleUrls: ['./page-mirror.component.scss'],
+    standalone: false
 })
 export class PageMirrorComponent implements OnInit {
 
