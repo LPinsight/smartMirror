@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { Display } from '../_interface/display';
-import { Widget } from '../_interface/widget';
-import { DataService } from '../_service/data.service';
+import { Display } from '@interface/display';
+import { Widget } from '@interface/widget';
+import { DataService } from '@service/data.service';
 
 @Component({
     selector: 'app-page-mirror',

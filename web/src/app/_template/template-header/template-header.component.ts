@@ -1,8 +1,8 @@
 import { Component, OnInit, Output } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { Display } from 'src/app/_interface/display';
-import { AlertService } from 'src/app/_service/alert.service';
-import { DataService } from 'src/app/_service/data.service';
+import { Display } from '@interface/display';
+import { AlertService } from '@service/alert.service';
+import { DataService } from '@service/data.service';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
 
 @Component({

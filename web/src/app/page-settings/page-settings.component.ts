@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { DataService } from '../_service/data.service';
-import { Display } from '../_interface/display';
+import { DataService } from '@service/data.service';
+import { Display } from '@interface/display';
 
 @Component({
     selector: 'app-page-settings',

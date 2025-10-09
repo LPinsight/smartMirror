@@ -16,10 +16,10 @@ var displayMap = make(map[string]*dp.Display)
 
 func main() {
 	// var display = dp.NewDisplay("test", 1920, 1080, 128)
-	// var display2 = dp.NewDisplay("smartMirror", 1920, 1080, 128)
+	var display2 = dp.NewDisplay("smartMirror", 1920, 1080, 128)
 
 	// displayMap[display.GetID()] = display
-	// displayMap[display2.GetID()] = display2
+	displayMap[display2.GetID()] = display2
 
 	// /\ TEST | \/ WIRK
 

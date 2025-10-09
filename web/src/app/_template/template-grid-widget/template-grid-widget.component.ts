@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { eventLabel, Eventping } from 'src/app/_interface/eventping';
-import { Widget } from 'src/app/_interface/widget';
+import { eventLabel, Eventping } from '@interface/eventping';
+import { Widget } from '@interface/widget';
 
 @Component({
     selector: 'app-template-grid-widget',

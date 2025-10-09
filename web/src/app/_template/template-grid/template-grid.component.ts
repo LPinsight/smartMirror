@@ -1,9 +1,9 @@
 import { ToastrService } from 'ngx-toastr';
 import { DataService } from './../../_service/data.service';
 import { Component, ElementRef, OnInit } from '@angular/core';
-import { Display } from 'src/app/_interface/display';
-import { eventLabel, Eventping } from 'src/app/_interface/eventping';
-import { Widget } from 'src/app/_interface/widget';
+import { Display } from '@interface/display';
+import { eventLabel, Eventping } from '@interface/eventping';
+import { Widget } from '@interface/widget';
 import Swal from 'sweetalert2';
 import { AlertService } from '../../_service/alert.service';
 

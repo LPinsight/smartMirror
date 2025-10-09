@@ -1,11 +1,11 @@
 import { AfterViewInit, Component } from '@angular/core';
-import { DataService } from '../../_service/data.service';
+import { DataService } from '@service/data.service';
 import * as L from 'leaflet';
 
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'assets/marker-icon-2x.png',
-  iconUrl: 'assets/marker-icon.png',
-  shadowUrl: 'assets/marker-shadow.png',
+  iconRetinaUrl: './../../assets/marker-icon-2x.png',
+  iconUrl: './../../assets/marker-icon.png',
+  shadowUrl: './../../assets/marker-shadow.png',
 });
 
 @Component({
