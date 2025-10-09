@@ -16,6 +16,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { TemplateDisplayComponent } from './_template/template-display/template-display.component';
+import { TemplateLocationComponent } from './_template/template-location/template-location.component';
 
 const navigationRoutes: Routes = [
   {path: 'settings', component: PageSettingsComponent},
@@ -34,7 +35,8 @@ const navigationRoutes: Routes = [
     TemplateHeaderNavComponent,
     TemplateGridComponent,
     TemplateGridWidgetComponent,
-    TemplateDisplayComponent
+    TemplateDisplayComponent,
+    TemplateLocationComponent
   ],
   imports: [
     BrowserModule,
