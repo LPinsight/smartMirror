@@ -14,7 +14,7 @@ import { TemplateGridComponent } from './_template/template-grid/template-grid.c
 import { TemplateGridWidgetComponent } from './_template/template-grid-widget/template-grid-widget.component';
 import { ToastrModule } from 'ngx-toastr';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TemplateDisplayComponent } from './_template/template-display/template-display.component';
 import { TemplateLocationComponent } from './_template/template-location/template-location.component';
 
@@ -25,29 +25,22 @@ const navigationRoutes: Routes = [
   // {path: '**', redirectTo: '/'},
 ]
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    PageConfigComponent,
-    PageSettingsComponent,
-    PageMirrorComponent,
-    TemplateHeaderComponent,
-    TemplateHeaderNavComponent,
-    TemplateGridComponent,
-    TemplateGridWidgetComponent,
-    TemplateDisplayComponent,
-    TemplateLocationComponent
-  ],
-  imports: [
-    BrowserModule,
-    MatIconModule,
-    RouterModule.forRoot(navigationRoutes),
-    BrowserAnimationsModule,
-    ToastrModule.forRoot(),
-    FormsModule,
-    HttpClientModule,
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        PageConfigComponent,
+        PageSettingsComponent,
+        PageMirrorComponent,
+        TemplateHeaderComponent,
+        TemplateHeaderNavComponent,
+        TemplateGridComponent,
+        TemplateGridWidgetComponent,
+        TemplateDisplayComponent,
+        TemplateLocationComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        MatIconModule,
+        RouterModule.forRoot(navigationRoutes),
+        BrowserAnimationsModule,
+        ToastrModule.forRoot(),
+        FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule { }
