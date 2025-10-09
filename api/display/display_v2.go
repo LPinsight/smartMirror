@@ -5,6 +5,11 @@ import (
 	"github.com/google/uuid"
 )
 
+type Location struct {
+	Lat int `json:"lat"`
+	Lon int `json:"lon"`
+}
+
 type Display struct {
 	Id         string           `json:"id"`
 	Name       string           `json:"name"`
@@ -13,6 +18,7 @@ type Display struct {
 	Columns    int              `json:"columns"`
 	Rows       int              `json:"rows"`
 	Point_size int              `json:"point_size"`
+	Location   Location         `json:"location"`
 	Widgets    []*widget.Widget `json:"widgets"`
 	// Widgets    map[string]*widget.Widget `json:widgets`
 }
@@ -55,6 +61,7 @@ func UpdateDisplay(newDisplay newDisplayData, display Display) *Display {
 		Columns:    columns,
 		Rows:       rows,
 		Point_size: newDisplay.Point_size,
+		Location:   display.Location,
 		Widgets:    display.Widgets,
 		// Widgets:    make(map[string]*widget.Widget),
 	}
