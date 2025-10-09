@@ -1,13 +1,14 @@
 <app-template-header></app-template-header>
 <div class="content">
   <div class="display">
-    <app-template-display
-    *ngFor="let display of displayList | keyvalue"
-    [display]="display.value"
+    @for (display of displayList | keyvalue; track display) {
+      <app-template-display
+        [display]="display.value"
     [ngClass]="{
       'selected' : display.key === selectedId,
     }"
-    ></app-template-display>
+      ></app-template-display>
+    }
   </div>
   <div class="settings">
     <h1>Einstellungen für {{displayList.get(selectedId)?.name}}</h1>

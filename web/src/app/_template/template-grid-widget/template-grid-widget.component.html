@@ -2,26 +2,30 @@
 Placeholder Widget
 ########################################################## -->
 
-<div class="widgetMenu" *ngIf="widget.name == 'placeholder'" (click)="selectPlacholderWidget($event)">
-  <h2>start: {{widget.point_start.x}}:{{widget.point_start.y}}</h2>
-  <h2>ende: {{widget.point_end.x}}:{{widget.point_end.y}}</h2>
-</div>
+@if (widget.name == 'placeholder') {
+  <div class="widgetMenu" (click)="selectPlacholderWidget($event)">
+    <h2>start: {{widget.point_start.x}}:{{widget.point_start.y}}</h2>
+    <h2>ende: {{widget.point_end.x}}:{{widget.point_end.y}}</h2>
+  </div>
+}
 
 <!-- ##########################################################
 Widget
 ########################################################## -->
 
-<div class="widgetMenu" *ngIf="!showSettings && widget.name != 'placeholder'">
-  <h1>{{widget.name}}</h1>
-  <h2>start: {{widget.point_start.x}}:{{widget.point_start.y}}</h2>
-  <h2>ende: {{widget.point_end.x}}:{{widget.point_end.y}}</h2>
-  <mat-icon (click)="showSettings=!showSettings" class="settingsButton">settings</mat-icon>
-</div>
+@if (!showSettings && widget.name != 'placeholder') {
+  <div class="widgetMenu">
+    <h1>{{widget.name}}</h1>
+    <h2>start: {{widget.point_start.x}}:{{widget.point_start.y}}</h2>
+    <h2>ende: {{widget.point_end.x}}:{{widget.point_end.y}}</h2>
+    <mat-icon (click)="showSettings=!showSettings" class="settingsButton">settings</mat-icon>
+  </div>
+}
 
-<div class="settingsMenu" *ngIf="showSettings">
-  <mat-icon (click)="showSettings=!showSettings" class="settingsButton">close</mat-icon>
-  <mat-icon (click)="deleteWidget($event)" class="deleteButton">delete</mat-icon>
-  <h2>{{widget.name}}</h2>
-
-
-</div>
+@if (showSettings) {
+  <div class="settingsMenu">
+    <mat-icon (click)="showSettings=!showSettings" class="settingsButton">close</mat-icon>
+    <mat-icon (click)="deleteWidget($event)" class="deleteButton">delete</mat-icon>
+    <h2>{{widget.name}}</h2>
+  </div>
+}

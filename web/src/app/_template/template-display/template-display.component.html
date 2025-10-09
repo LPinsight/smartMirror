@@ -1,12 +1,20 @@
 <div class="content">
   <div class="select">
-    <mat-icon *ngIf="selected">task_alt</mat-icon>
-    <mat-icon *ngIf="!selected">radio_button_unchecked</mat-icon>
+    @if (selected) {
+      <mat-icon>task_alt</mat-icon>
+    }
+    @if (!selected) {
+      <mat-icon>radio_button_unchecked</mat-icon>
+    }
   </div>
   <div class="title">
     <h2>{{display.name}}</h2>
-    <p *ngIf="display.widgets.length == 1">{{display.widgets.length}}x Widget </p>
-    <p *ngIf="display.widgets.length != 1">{{display.widgets.length}}x Widgets </p>
+    @if (display.widgets.length == 1) {
+      <p>{{display.widgets.length}}x Widget </p>
+    }
+    @if (display.widgets.length != 1) {
+      <p>{{display.widgets.length}}x Widgets </p>
+    }
   </div>
   <div class="details">
     <p>Höhe: {{display.height}}px</p>
