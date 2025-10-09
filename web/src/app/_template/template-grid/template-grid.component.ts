@@ -46,8 +46,8 @@ export class TemplateGridComponent implements OnInit{
   }
 
   public createGrid() {
-    this.elRef.nativeElement.style.setProperty('--grid-columns', this.display.Columns)
-    this.elRef.nativeElement.style.setProperty('--grid-rows', this.display.Rows)
+    this.elRef.nativeElement.style.setProperty('--grid-columns', this.display.columns)
+    this.elRef.nativeElement.style.setProperty('--grid-rows', this.display.rows)
     // this.elRef.nativeElement.style.setProperty('--point-size', `${this.display.Point_size}px`)
     this.elRef.nativeElement.style.setProperty('--point-size', `128px`)
 

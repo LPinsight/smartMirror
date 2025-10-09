@@ -6,14 +6,14 @@ import (
 )
 
 type Display struct {
-	Id         string           `json:id`
-	Name       string           `json:name`
-	Height     int              `json:height`
-	Width      int              `json:width`
-	Columns    int              `json:columns`
-	Rows       int              `json:rows`
-	Point_size int              `json:point_size`
-	Widgets    []*widget.Widget `json:widgets`
+	Id         string           `json:"id"`
+	Name       string           `json:"name"`
+	Height     int              `json:"height"`
+	Width      int              `json:"width"`
+	Columns    int              `json:"columns"`
+	Rows       int              `json:"rows"`
+	Point_size int              `json:"point_size"`
+	Widgets    []*widget.Widget `json:"widgets"`
 	// Widgets    map[string]*widget.Widget `json:widgets`
 }
 

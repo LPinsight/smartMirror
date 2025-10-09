@@ -89,14 +89,14 @@ export class DataService {
 
   public createDisplayPlaceholder(): Display {
     return {
-      Id: '',
-      Name: '',
-      Height: 0,
-      Width: 0,
-      Columns: 0,
-      Rows: 0,
-      Point_size: 0,
-      Widgets: []
+      id: '',
+      name: '',
+      height: 0,
+      width: 0,
+      columns: 0,
+      rows: 0,
+      point_size: 0,
+      widgets: []
     }
   }
 
@@ -128,8 +128,8 @@ export class DataService {
     let grid: Widget[] = []
     let id = 0
 
-      for (let x = 1; x <= dp.Columns; x++){
-        for (let y = 1; y <= dp.Rows; y++){
+      for (let x = 1; x <= dp.columns; x++){
+        for (let y = 1; y <= dp.rows; y++){
           grid.push({
             id: `placeholder-${id}`,
             name: 'placeholder',
@@ -153,15 +153,15 @@ export class DataService {
 
   public updateGrid(d: Display): Display {    
     return {
-      Id: d.Id,
-      Name: d.Name,
-      Width: d.Width,
-      Height: d.Height,
-      Columns: d.Columns,
-      Rows: d.Rows,
-      Point_size: d.Point_size,
-      grid: this.createGrid(d.Widgets, this.createPlaceholderGrid(d)),
-      Widgets: d.Widgets
+      id: d.id,
+      name: d.name,
+      width: d.width,
+      height: d.height,
+      columns: d.columns,
+      rows: d.rows,
+      point_size: d.point_size,
+      grid: this.createGrid(d.widgets, this.createPlaceholderGrid(d)),
+      widgets: d.widgets
     }
   }
 

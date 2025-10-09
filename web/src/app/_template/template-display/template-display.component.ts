@@ -24,7 +24,7 @@ export class TemplateDisplayComponent implements OnInit {
 
   ngOnInit() {
     this.data.displayId$.subscribe(id => {
-      if (this.display.Id == id) {
+      if (this.display.id == id) {
         this.selected = true        
       } else {
         this.selected = false
@@ -35,10 +35,10 @@ export class TemplateDisplayComponent implements OnInit {
   public async edit(event?: any) {
     const steps= ['1', '2', '3', '4']
     const swalQueue = Swal.mixin(this.alert.MixinConfig(steps))
-    const values = [this.display.Name,
-                    this.display.Height.toString(),
-                    this.display.Width.toString(),
-                    this.display.Point_size.toString()]
+    const values = [this.display.name,
+                    this.display.height.toString(),
+                    this.display.width.toString(),
+                    this.display.point_size.toString()]
     let currentStep
 
     for (currentStep = 0; currentStep < steps.length;) {
@@ -55,7 +55,7 @@ export class TemplateDisplayComponent implements OnInit {
       }
     }
     if (currentStep === steps.length) {      
-      this.data.updateDisplay(this.display.Id, values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe(res => {
+      this.data.updateDisplay(this.display.id, values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe(res => {
         this.notification.success('Display wurde erfolgreich angepasst', 'Display aktualisiert', { progressBar: true })
       })
     }
@@ -63,10 +63,10 @@ export class TemplateDisplayComponent implements OnInit {
 
 
   public async remove(event?: any) {    
-    const result = await Swal.fire(this.alert.removeDisplayConfig(this.display.Name))
+    const result = await Swal.fire(this.alert.removeDisplayConfig(this.display.name))
 
     if(result.isDenied) {
-      this.data.removeDisplay(this.display.Id).subscribe(res => {
+      this.data.removeDisplay(this.display.id).subscribe(res => {
         this.notification.success('Display wurde erfolgreich entfernt', 'Display entfernen', { progressBar: true })
       })
     }
