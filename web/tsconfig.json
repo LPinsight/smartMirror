@@ -10,6 +10,7 @@
       "@template/*": ["./src/app/_template/*"],
       "@assets/*": ["./src/assets/*"]
     },
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "strict": true,

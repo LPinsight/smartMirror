@@ -1,4 +1,4 @@
-import { Display } from './../_interface/display';
+import { Display, Location } from './../_interface/display';
 import { Injectable } from '@angular/core';
 import { Widget } from '../_interface/widget';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -96,6 +96,10 @@ export class DataService {
       columns: 0,
       rows: 0,
       point_size: 0,
+      location: {
+        lat: 0,
+        lon: 0
+      },
       widgets: []
     }
   }
@@ -160,9 +164,24 @@ export class DataService {
       columns: d.columns,
       rows: d.rows,
       point_size: d.point_size,
+      location: d.location,
       grid: this.createGrid(d.widgets, this.createPlaceholderGrid(d)),
       widgets: d.widgets
     }
+  }
+
+public SetLocation(location: Location) {
+    let json = {
+      "lat": location.lat,
+      "lon": location.lon
+    }
+   
+    return this.http.post(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/location', json, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(map((res) => {
+      this.getDisplays().subscribe()      
+      return res
+    }))
   }
 
   constructor(private http: HttpClient) {

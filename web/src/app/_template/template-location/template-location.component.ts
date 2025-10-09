@@ -1,6 +1,8 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { DataService } from '@service/data.service';
+import { Location } from '@interface/display';
 import * as L from 'leaflet';
+import { ToastrService } from 'ngx-toastr';
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: './../../assets/marker-icon-2x.png',
@@ -33,7 +35,8 @@ export class TemplateLocationComponent implements AfterViewInit{
     tiles.addTo(this.map);
   }
 
-  constructor(private data: DataService) {
+  constructor(private dataService: DataService,
+      private notification: ToastrService) {
 
   }
 
@@ -51,7 +54,21 @@ export class TemplateLocationComponent implements AfterViewInit{
   }
 
   click () {
-    console.log("");
+    if(this.markerLayer.getLayers().length == 0) {
+      this.notification.error('Bitte Standort in der Karte setzen', "Standort setzen", { progressBar: true })
+      return
+    }
+
+    this.markerLayer.eachLayer((layer) => {      
+      if (layer instanceof L.Marker) {
+        this.dataService.SetLocation({
+          lat: layer.getLatLng().lat,
+          lon: layer.getLatLng().lng,
+        }).subscribe( _ => {
+          this.notification.success('Standort erfolgreich gesetzt', "Standort gesetzt", { progressBar: true })
+        })
+      }
+    });
     
     // console.log('Center: ', this.map?.getCenter());
     // console.log('Zoom: ', this.map?.getZoom());
