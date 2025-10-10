@@ -5,6 +5,7 @@ import * as L from 'leaflet';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { AlertService } from '@service/alert.service';
+import { GeocodingService } from '../../_service/geocoding.service';
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: './../../assets/marker-icon-2x.png',
@@ -54,19 +55,21 @@ export class TemplateLocationComponent implements AfterViewInit{
     });
 
     tiles.addTo(this.map);
+
+    this.markerLayer = L.layerGroup().addTo(this.map)
+    this.homeLayer = L.layerGroup().addTo(this.map)
   }
 
   constructor(
     private dataService: DataService,
-      private alert: AlertService,
-      private notification: ToastrService) {
+    private geocodingService: GeocodingService,
+    private alert: AlertService,
+    private notification: ToastrService) {
 
   }
 
   ngAfterViewInit() {
     this.initMap()
-    this.markerLayer = L.layerGroup().addTo(this.map)
-    this.homeLayer = L.layerGroup().addTo(this.map)
   
     this.map.on('click', (event) => {
       this.setMarker(event.latlng, this.markerLayer, 'neuer Standort')
@@ -110,6 +113,7 @@ export class TemplateLocationComponent implements AfterViewInit{
         this.notification.error('Kein Standort zum ausgewählten Display vorhanden', "Kein Standort vorhanden", { progressBar: true })
       return
     }
+
     const result = await Swal.fire(this.alert.removeLocationConfig())
 
     if (result.isDenied) {
@@ -120,6 +124,18 @@ export class TemplateLocationComponent implements AfterViewInit{
         this.notification.success('Standort erfolgreich entfernt', "Standort entfernt", { progressBar: true })
       })
     }    
+  }
+
+  async searchAddress(address: string) {
+    this.geocodingService.searchAddress(address).subscribe(res => {
+      if(!res) {
+        this.notification.warning('Adresse nicht gefunden', 'Suche', { progressBar: true });
+        return;
+      }
+
+      this.setMarker({ lat: res.location.lat, lng: res.location.lon }, this.markerLayer, 'neuer Standort<br>');
+      this.setView(res.location);
+    })
   }
 
   setView(location: Location){

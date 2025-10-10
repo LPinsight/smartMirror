@@ -2,4 +2,7 @@
 <button class="save" (click)="saveLocation()" ><mat-icon>save</mat-icon>Standort speichern</button>
 <button class="delete" (click)="removeLocation()" ><mat-icon>delete</mat-icon>Standort entfernen</button>
 <button (click)="setView(location)" ><mat-icon>replay</mat-icon>Ansicht zurücksetzen</button>
+
+<input #addrInput type="text" placeholder="Adresse suchen" (keyup.enter)="searchAddress(addrInput.value)">
+<button (click)="searchAddress(addrInput.value)"><mat-icon>search</mat-icon>Suchen</button>
 <div id="map"></div>
