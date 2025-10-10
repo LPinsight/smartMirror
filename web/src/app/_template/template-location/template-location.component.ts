@@ -22,17 +22,19 @@ export class TemplateLocationComponent implements AfterViewInit{
     set location(value: Location){
       this._location = value
       if (!this.map) return; // Map noch nicht initialisiert -> warten
+      this.markerLayer.clearLayers()
 
       if(value.lat !== 0 && value.lon !== 0){
         this.setHome(value);
       } else {
         this.removeHome();
+        this.resetView()
       }
-
     }
     get location(): Location {
       return this._location
     }
+    
   private map!: L.Map
   private markerLayer!: L.LayerGroup<any>;
   private homeLayer!: L.LayerGroup<any>;
@@ -63,10 +65,7 @@ export class TemplateLocationComponent implements AfterViewInit{
     this.homeLayer = L.layerGroup().addTo(this.map)
   
     this.map.on('click', (event) => {
-      this.markerLayer.clearLayers()
-      this.map.closePopup()
-      let marker = L.marker(event.latlng).addTo(this.markerLayer)
-      marker.bindTooltip('neuer Standort', {permanent: true}).openTooltip()
+      this.setMarker(event.latlng, this.markerLayer, 'neuer Standort')
     })
   }
 
@@ -76,10 +75,8 @@ export class TemplateLocationComponent implements AfterViewInit{
       lng: location.lon
     } 
 
-    this.homeLayer.clearLayers()
-    this.map.closePopup()
-    let marker = L.marker(latlng).addTo(this.homeLayer)
-    marker.bindTooltip('Spiegel Standort', {permanent: true}).openTooltip()
+    this.setMarker(latlng, this.homeLayer, 'Spiegel Standort')
+    this.map.setView(latlng, 12)
   }
 
   removeHome(){
@@ -97,14 +94,27 @@ export class TemplateLocationComponent implements AfterViewInit{
         this.dataService.setLocation({
           lat: layer.getLatLng().lat,
           lon: layer.getLatLng().lng,
-        }).subscribe( _ => {
+        }).subscribe( res => {
           this.notification.success('Standort erfolgreich gesetzt', "Standort gesetzt", { progressBar: true })
-          this.markerLayer.clearLayers()
+          // let latlng = {
+          //   lat: res.lat,
+          //   lng: res.lon
+          // } 
+          // this.map.setView(latlng, 12)
         })
       }
     });
   }
 
+  resetView(){
+    this.map.setView({lat: 51.35149, lng: 10.45412}, 6)
+  }
 
+  setMarker(latlng: L.LatLngExpression, Layer: L.LayerGroup, markerTitle: string){
+      Layer.clearLayers()
+      this.map.closePopup()
+      let marker = L.marker(latlng).addTo(Layer)
+      marker.bindTooltip(markerTitle, {permanent: true}).openTooltip()
+  }
 
 }

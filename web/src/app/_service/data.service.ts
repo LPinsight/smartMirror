@@ -1,8 +1,9 @@
-import { Display, Location } from './../_interface/display';
+// import { Display, Location } from './../_interface/display';
 import { Injectable } from '@angular/core';
 import { Widget } from '../_interface/widget';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, combineLatest, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { Display, Location } from '@interface/display';
 
 @Injectable({
   providedIn: 'root'
@@ -170,15 +171,15 @@ export class DataService {
     }
   }
 
-  public setLocation(location: Location) {
+  public setLocation(location: Location): Observable<Location> {
     let json = {
       "lat": location.lat,
       "lon": location.lon
     }
    
-    return this.http.post(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/location', json, {
+    return this.http.post<Location>(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/location', json, {
       headers: { 'Content-Type': 'application/json' }
-    }).pipe(map((res) => {
+    }).pipe(map((res: Location) => {
       this.getDisplays().subscribe()      
       return res
     }))
