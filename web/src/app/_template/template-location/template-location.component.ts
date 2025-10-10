@@ -3,6 +3,8 @@ import { DataService } from '@service/data.service';
 import { Display, Location } from '@interface/display';
 import * as L from 'leaflet';
 import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
+import { AlertService } from '@service/alert.service';
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: './../../assets/marker-icon-2x.png',
@@ -28,7 +30,7 @@ export class TemplateLocationComponent implements AfterViewInit{
         this.setHome(value);
       } else {
         this.removeHome();
-        this.resetView()
+        this.setView(value)
       }
     }
     get location(): Location {
@@ -54,7 +56,9 @@ export class TemplateLocationComponent implements AfterViewInit{
     tiles.addTo(this.map);
   }
 
-  constructor(private dataService: DataService,
+  constructor(
+    private dataService: DataService,
+      private alert: AlertService,
       private notification: ToastrService) {
 
   }
@@ -76,7 +80,7 @@ export class TemplateLocationComponent implements AfterViewInit{
     } 
 
     this.setMarker(latlng, this.homeLayer, 'Spiegel Standort')
-    this.map.setView(latlng, 12)
+    this.setView(location)
   }
 
   removeHome(){
@@ -94,20 +98,36 @@ export class TemplateLocationComponent implements AfterViewInit{
         this.dataService.setLocation({
           lat: layer.getLatLng().lat,
           lon: layer.getLatLng().lng,
-        }).subscribe( res => {
+        }).subscribe( _ => {
           this.notification.success('Standort erfolgreich gesetzt', "Standort gesetzt", { progressBar: true })
-          // let latlng = {
-          //   lat: res.lat,
-          //   lng: res.lon
-          // } 
-          // this.map.setView(latlng, 12)
         })
       }
     });
   }
 
-  resetView(){
-    this.map.setView({lat: 51.35149, lng: 10.45412}, 6)
+  async removeLocation () {
+    if (this._location.lat == 0 && this._location.lon == 0) {
+        this.notification.error('Kein Standort zum ausgewählten Display vorhanden', "Kein Standort vorhanden", { progressBar: true })
+      return
+    }
+    const result = await Swal.fire(this.alert.removeLocationConfig())
+
+    if (result.isDenied) {
+      this.dataService.setLocation({
+            lat: 0,
+            lon: 0,
+      }).subscribe( _ => {
+        this.notification.success('Standort erfolgreich entfernt', "Standort entfernt", { progressBar: true })
+      })
+    }    
+  }
+
+  setView(location: Location){
+    if (location.lat == 0 && location.lon == 0) {
+      this.map.setView({lat: 51.35149, lng: 10.45412}, 6)
+    } else {
+    this.map.setView({ lat: location.lat, lng: location.lon} , 12)
+    }
   }
 
   setMarker(latlng: L.LatLngExpression, Layer: L.LayerGroup, markerTitle: string){

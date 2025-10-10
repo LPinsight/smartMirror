@@ -115,4 +115,16 @@ export class AlertService {
     }
   }
 
+  public removeLocationConfig(): SweetAlertOptions {
+    return {
+      title: 'Standort entfernen',
+      text: 'Soll der Standort wirklich entfernt werden?',
+      icon: 'question',
+      showCloseButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Standort nicht entfernen',
+      denyButtonText: 'Standort entfernen'
+    }
+  }
+
 }

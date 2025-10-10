@@ -1,3 +1,5 @@
 <h3>Standort: {{location.lat}} | {{location.lon}}</h3>
-<button (click)="saveLocation()" >Standort speichern</button>
+<button class="save" (click)="saveLocation()" ><mat-icon>save</mat-icon>Standort speichern</button>
+<button class="delete" (click)="removeLocation()" ><mat-icon>delete</mat-icon>Standort entfernen</button>
+<button (click)="setView(location)" ><mat-icon>replay</mat-icon>Ansicht zurücksetzen</button>
 <div id="map"></div>

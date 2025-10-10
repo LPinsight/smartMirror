@@ -4,6 +4,24 @@
 // ##########################################################
 // ##########################################################
 
+button {
+  margin: 0.3rem;
+
+  mat-icon {
+    font-size: 1.7rem;
+    width: 1.7rem;
+    height: 1.7rem;
+    margin-right: 0.3rem;
+  }
+  &.save {
+    background-color: $green;
+  }
+  &.delete {
+    background-color: $red;
+  }
+
+}
+
 div#map {
   display: block;
   height: 60rem;
