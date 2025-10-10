@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '@service/data.service';
-import { Display } from '@interface/display';
+import { Display, Location } from '@interface/display';
 
 @Component({
     selector: 'app-page-settings',
@@ -27,6 +27,13 @@ export class PageSettingsComponent implements OnInit{
     this.data.displayId$.subscribe(id => {
       this.selectedId = id
     })
+  }
+
+  public getLocation(): Location {
+    let display = this.displayList.get(this.selectedId)
+    if (display) return display?.location
+    
+    return {lat: 0, lon: 0}
   }
 
 }

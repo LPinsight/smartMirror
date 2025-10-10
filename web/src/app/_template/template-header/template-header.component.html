@@ -7,7 +7,7 @@
         @if (displayList.size <= 0) {
           <option value="" disabled>kein Display vorhanden</option>
         }
-        @for (display of displayList | keyvalue; track trackById($index, display)) {
+        @for (display of displayList | keyvalue; track display.key) {
           <option
           [value]="display.key">{{ display.value.name }} - {{display.value.height}}:{{display.value.width}} ({{display.value.point_size}}px) </option>
         }

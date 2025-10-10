@@ -1,7 +1,7 @@
 <app-template-header></app-template-header>
 <div class="content">
   <div class="display">
-    @for (display of displayList | keyvalue; track display) {
+    @for (display of displayList | keyvalue; track display.key) {
       <app-template-display
         [display]="display.value"
     [ngClass]="{
@@ -12,6 +12,7 @@
   </div>
   <div class="settings">
     <h1>Einstellungen für {{displayList.get(selectedId)?.name}}</h1>
-    <app-template-location></app-template-location>
+    <h3>Standort: {{displayList.get(selectedId)?.location?.lat}} | {{displayList.get(selectedId)?.location?.lon}}</h3>
+    <app-template-location [location]="getLocation()"></app-template-location>
   </div>
 </div>

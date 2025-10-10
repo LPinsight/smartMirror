@@ -170,7 +170,7 @@ export class DataService {
     }
   }
 
-public SetLocation(location: Location) {
+  public setLocation(location: Location) {
     let json = {
       "lat": location.lat,
       "lon": location.lon

@@ -1,6 +1,6 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { DataService } from '@service/data.service';
-import { Location } from '@interface/display';
+import { Display, Location } from '@interface/display';
 import * as L from 'leaflet';
 import { ToastrService } from 'ngx-toastr';
 
@@ -17,8 +17,25 @@ L.Icon.Default.mergeOptions({
     standalone: false
 })
 export class TemplateLocationComponent implements AfterViewInit{
+  private _location!: Location;
+  @Input()
+    set location(value: Location){
+      this._location = value
+      if (!this.map) return; // Map noch nicht initialisiert -> warten
+
+      if(value.lat !== 0 && value.lon !== 0){
+        this.setHome(value);
+      } else {
+        this.removeHome();
+      }
+
+    }
+    get location(): Location {
+      return this._location
+    }
   private map!: L.Map
   private markerLayer!: L.LayerGroup<any>;
+  private homeLayer!: L.LayerGroup<any>;
 
   private initMap() {
     this.map = L.map('map', {
@@ -43,17 +60,33 @@ export class TemplateLocationComponent implements AfterViewInit{
   ngAfterViewInit() {
     this.initMap()
     this.markerLayer = L.layerGroup().addTo(this.map)
-
+    this.homeLayer = L.layerGroup().addTo(this.map)
+  
     this.map.on('click', (event) => {
       this.markerLayer.clearLayers()
       this.map.closePopup()
       let marker = L.marker(event.latlng).addTo(this.markerLayer)
-      marker.bindTooltip('Display Standort').openTooltip()
+      marker.bindTooltip('neuer Standort', {permanent: true}).openTooltip()
     })
-      
   }
 
-  click () {
+  setHome(location: Location){
+    let latlng = {
+      lat: location.lat,
+      lng: location.lon
+    } 
+
+    this.homeLayer.clearLayers()
+    this.map.closePopup()
+    let marker = L.marker(latlng).addTo(this.homeLayer)
+    marker.bindTooltip('Spiegel Standort', {permanent: true}).openTooltip()
+  }
+
+  removeHome(){
+    this.homeLayer.clearLayers()
+  }
+
+  saveLocation () {
     if(this.markerLayer.getLayers().length == 0) {
       this.notification.error('Bitte Standort in der Karte setzen', "Standort setzen", { progressBar: true })
       return
@@ -61,17 +94,15 @@ export class TemplateLocationComponent implements AfterViewInit{
 
     this.markerLayer.eachLayer((layer) => {      
       if (layer instanceof L.Marker) {
-        this.dataService.SetLocation({
+        this.dataService.setLocation({
           lat: layer.getLatLng().lat,
           lon: layer.getLatLng().lng,
         }).subscribe( _ => {
           this.notification.success('Standort erfolgreich gesetzt', "Standort gesetzt", { progressBar: true })
+          this.markerLayer.clearLayers()
         })
       }
     });
-    
-    // console.log('Center: ', this.map?.getCenter());
-    // console.log('Zoom: ', this.map?.getZoom());
   }
 
 
