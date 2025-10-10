@@ -62,7 +62,6 @@ export class TemplateDisplayComponent implements OnInit {
     }
   }
 
-
   public async remove(event?: any) {    
     const result = await Swal.fire(this.alert.removeDisplayConfig(this.display.name))
 
@@ -71,6 +70,10 @@ export class TemplateDisplayComponent implements OnInit {
         this.notification.success('Display wurde erfolgreich entfernt', 'Display entfernen', { progressBar: true })
       })
     }
+  }
+
+  chanceDisplay(){
+    this.data.setSelectedId(this.display.id)
   }
 
 }

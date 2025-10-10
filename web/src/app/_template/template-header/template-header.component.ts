@@ -34,7 +34,12 @@ export class TemplateHeaderComponent implements OnInit{
           this.data.setSelectedId(this.selectedDisplay)
         }
       }, 0);
-      
+    })
+
+    this.data.displayId$.subscribe(id => {
+      if (this.selectedDisplay !== id) {
+        this.selectedDisplay = id
+      }
     })
   }
 
@@ -62,7 +67,7 @@ export class TemplateHeaderComponent implements OnInit{
       }
     }
     if (currentStep === steps.length) {      
-      this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe(res => {
+      this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe(_ => {
         // this.data.setSelectedId(res.Id) // neues Display auswählen
         this.notification.success('Display wurde erfolgreich hinzugefügt', 'Display Hinzufügen', { progressBar: true })
       })

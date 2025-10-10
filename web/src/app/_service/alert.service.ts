@@ -138,4 +138,16 @@ export class AlertService {
     }
   }
 
+  public activeNewDisplayConfig(displayName: string): SweetAlertOptions {
+    return {
+      title: 'Neues Display aktivieren',
+      text: 'Soll das neue Display "' + displayName + '" gleich ausgewählt werden?',
+      icon: 'question',
+      showCloseButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Display auswählen',
+      denyButtonText: 'Auswahl beibehalten'
+    }
+  }
+
 }

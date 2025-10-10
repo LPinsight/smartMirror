@@ -1,129 +1,99 @@
 package display
 
-// import (
-// 	"errors"
+import (
+	"github.com/LPinsight/smartMirror/widget"
+	"github.com/google/uuid"
+)
 
-// 	"github.com/google/uuid"
+type Location struct {
+	Lat float32 `json:"lat"`
+	Lon float32 `json:"lon"`
+}
 
-// 	"github.com/LPinsight/smartMirror/widget"
-// )
+type Display struct {
+	Id         string           `json:"id"`
+	Name       string           `json:"name"`
+	Height     int              `json:"height"`
+	Width      int              `json:"width"`
+	Columns    int              `json:"columns"`
+	Rows       int              `json:"rows"`
+	Point_size int              `json:"point_size"`
+	Active     bool             `json:"active"`
+	Location   Location         `json:"location"`
+	Widgets    []*widget.Widget `json:"widgets"`
+	// Widgets    map[string]*widget.Widget `json:widgets`
+}
 
-// type Display struct {
-// 	Id            string `json:"id"`
-// 	Display_hight int    `json:"display_hight"` // The hight of the display in pixels
-// 	Display_width int    `json:"display_width"` // The width of the display in pixels
-// 	Columns       int    `json:"display_columns"`
-// 	Rows          int    `json:"display_rows"`
+type newDisplayData struct {
+	Name       string `json:"name"`       // The name of the display
+	Height     int    `json:"height"`     // The hight of the display in pixels
+	Width      int    `json:"width"`      // The width of the display in pixels
+	Point_size int    `json:"point_size"` // The size of a point in pixels
+}
 
-// 	Point_size int `json:"point_size"` // The size of a point in pixels
+func NewDisplay(name string, height int, width int, point_size int, active bool) *Display {
 
-// 	Grid [][]*widget.Widget // The grid of the display
+	var columns = width / point_size
+	var rows = height / point_size
 
-// 	Widgets map[string]*widget.Widget `json:"widgets"` // The widgets on the display
-// }
+	return &Display{
+		Id:         "D-" + uuid.New().String(),
+		Name:       name,
+		Height:     height,
+		Width:      width,
+		Columns:    columns,
+		Rows:       rows,
+		Point_size: point_size,
+		Active:     active,
+		Widgets:    make([]*widget.Widget, 0),
+		// Widgets:    make(map[string]*widget.Widget),
+	}
+}
 
-// func NewDisplay(display_hight int, display_width int, point_size int) *Display {
-// 	// Caluculate the number of points which fits in the display
-// 	amount_hight_points := display_hight / point_size
-// 	amount_width_points := display_width / point_size
+func UpdateDisplay(newDisplay newDisplayData, display Display) *Display {
 
-// 	points := make([][]*widget.Widget, amount_width_points+1)
-// 	for x := 0; x <= amount_width_points; x++ {
-// 		points[x] = make([]*widget.Widget, amount_hight_points+1)
-// 	}
+	var columns = newDisplay.Width / newDisplay.Point_size
+	var rows = newDisplay.Height / newDisplay.Point_size
 
-// 	return &Display{
-// 		Id:            "D-" + uuid.New().String(),
-// 		Display_hight: display_hight,
-// 		Display_width: display_width,
-// 		Columns:       amount_width_points,
-// 		Rows:          amount_hight_points,
+	return &Display{
+		Id:         display.Id,
+		Name:       newDisplay.Name,
+		Height:     newDisplay.Height,
+		Width:      newDisplay.Width,
+		Columns:    columns,
+		Rows:       rows,
+		Point_size: newDisplay.Point_size,
+		Location:   display.Location,
+		Active:     display.Active,
+		Widgets:    display.Widgets,
+		// Widgets:    make(map[string]*widget.Widget),
+	}
+}
 
-// 		Point_size: point_size,
+// Add a Widget
+func (d *Display) AddWidget(w *widget.Widget) {
+	d.Widgets = append(d.Widgets, w)
+}
 
-// 		Grid: points,
+// Remove a Widget
+func (d *Display) RemoveWidget(id string) {
+	for i, widget := range d.Widgets {
+		if widget.Id == id {
+			d.Widgets = append(d.Widgets[:i], d.Widgets[i+1:]...)
+		}
+	}
+}
 
-// 		Widgets: w(map[string]*widget.Widget),
-// 	}
-// }
+func (d *Display) GetID() string {
+	return d.Id
+}
 
-// // Get the widget at the given x and y position
-// func (d *Display) GetWidgetAtPoint(x int, y int) (*widget.Widget, error) {
-// 	if x < 0 || x >= len(d.Grid) || y < 0 || y >= len(d.Grid[0]) {
-// 		return nil, errors.New("the given x and y position is out of bounds")
-// 	}
-// 	return d.Grid[x][y], nil
-// }
+// Set Location für das Display
+func (d *Display) SetLocation(l Location) {
+	d.Location = l
+}
 
-// // Get map of widgets
-// func (d *Display) GetWidgets() map[string]*widget.Widget {
-// 	return d.Widgets
-// }
-
-// // Add a widget to the display
-// func (d *Display) AddWidget(w *widget.Widget) error {
-// 	// Check if start_point is larger than end_point
-// 	point_start := w.GetPointStart()
-// 	point_end := w.GetPointEnd()
-// 	if point_start.X > point_end.X || point_start.Y > point_end.Y {
-// 		return errors.New("the start point is larger than the end point")
-// 	}
-
-// 	// Check if the widget is in the display
-// 	if point_start.X < 0 || point_start.Y < 0 || point_end.X > len(d.Grid) || point_end.Y > len(d.Grid[0]) {
-// 		return errors.New("the widget cordiantes are out of bounds")
-// 	}
-
-// 	// Check if the widget overlaps with other widgets
-// 	if d.checkWidgetOverlap(w) {
-// 		return errors.New("the widget overlaps with other widgets")
-// 	}
-
-// 	d.Widgets[w.GetID()] = w
-
-// 	for x := point_start.X; x <= point_end.X; x++ {
-// 		for y := point_start.Y; y <= point_end.Y; y++ {
-// 			d.Grid[x][y] = w
-// 		}
-// 	}
-
-// 	return nil
-// }
-
-// // Remove a widget from the display
-// func (d *Display) RemoveWidget(w *widget.Widget) error {
-// 	// Check if the widget is on the display
-// 	if _, ok := d.Widgets[w.GetID()]; !ok {
-// 		return errors.New("the widget does not exist on the display")
-// 	}
-
-// 	// Remove the widget from grid
-// 	point_start := w.GetPointStart()
-// 	point_end := w.GetPointEnd()
-// 	for x := point_start.X; x <= point_end.X; x++ {
-// 		for y := point_start.Y; y <= point_end.Y; y++ {
-// 			d.Grid[x][y] = nil
-// 		}
-// 	}
-
-// 	// Remove the widget from widgets
-// 	delete(d.Widgets, w.GetID())
-
-// 	return nil
-// }
-
-// // Check if the widget overlaps with other widgets
-// func (d *Display) checkWidgetOverlap(w *widget.Widget) bool {
-// 	point_start := w.GetPointStart()
-// 	point_end := w.GetPointEnd()
-
-// 	for x := point_start.X; x < point_end.X; x++ {
-// 		for y := point_start.Y; y < point_end.Y; y++ {
-// 			if d.Grid[x][y] != nil {
-// 				return true
-// 			}
-// 		}
-// 	}
-
-// 	return false
-// }
+// Set Active für das Display
+func (d *Display) SetActive(active bool) {
+	d.Active = active
+}

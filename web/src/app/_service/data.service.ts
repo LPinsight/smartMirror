@@ -1,9 +1,11 @@
 // import { Display, Location } from './../_interface/display';
 import { Injectable } from '@angular/core';
-import { Widget } from '../_interface/widget';
+import { Widget } from '@interface/widget';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, combineLatest, map, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, Observable, switchMap, tap, of, from } from 'rxjs';
 import { Display, Location } from '@interface/display';
+import Swal from 'sweetalert2';
+import { AlertService } from '@service/alert.service';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +26,9 @@ export class DataService {
 
   setSelectedId(displayId: string) {
     this.selectedIdSubject.next(displayId)
+    if (displayId) {
+      this.setDisplayActive(displayId).subscribe()
+    }
   }
 
   selectedDisplay$ = combineLatest([this.displays$, this.displayId$]).pipe(
@@ -40,6 +45,9 @@ export class DataService {
         for (let key in res) {
           if (res.hasOwnProperty(key)) {
             displays.set(key, res[key])
+            if(res[key].active) {
+              this.selectedIdSubject.next(key)
+            }
           }
         }
         this.setDisplays(displays)
@@ -48,19 +56,33 @@ export class DataService {
   }
 
   public createDisplay(name: string, height: number, width: number, point_size: number) {
-     let json = {
-      "name": name,
-      "width": width,
-      "height": height,
-      "point_size": point_size,
-    }
-   
-    return this.http.post<Display>(this.URL + 'display', json, {
-      headers: { 'Content-Type': 'application/json' }
-    }).pipe(map((res) => {
-      this.getDisplays().subscribe()
-      return res
-    }))
+    let isFirst = this.displaysSubject.getValue().size === 0
+
+    const obs$ = isFirst
+      ? of(true)
+      : from(Swal.fire(this.alert.activeNewDisplayConfig(name))).pipe(
+        map(result => result.isConfirmed)
+      )
+
+    return obs$.pipe(
+      switchMap(active => {        
+        const json = {
+          name,
+          width,
+          height,
+          point_size,
+          active
+        }
+
+        return this.http.post<Display>(this.URL + 'display', json, {
+          headers: { 'Content-Type': 'application/json' }
+        }).pipe(
+          tap((res: Display) => this.getDisplays().subscribe(_ => {
+            if (active) this.selectedIdSubject.next(res.id)
+          }))
+        )
+      })
+    )
   }
 
   public removeDisplay(id: string) {
@@ -97,6 +119,7 @@ export class DataService {
       columns: 0,
       rows: 0,
       point_size: 0,
+      active: false,
       location: {
         lat: 0,
         lon: 0
@@ -166,6 +189,7 @@ export class DataService {
       rows: d.rows,
       point_size: d.point_size,
       location: d.location,
+      active: d.active,
       grid: this.createGrid(d.widgets, this.createPlaceholderGrid(d)),
       widgets: d.widgets
     }
@@ -185,6 +209,20 @@ export class DataService {
     }))
   }
 
-  constructor(private http: HttpClient) {
+  private setDisplayActive(displayID: string) {
+    let json = {
+      "id": displayID,
+    }
+   
+    return this.http.post(this.URL + 'display/active', json, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(map((res) => {
+      this.getDisplays().subscribe()      
+      return res
+    }))
+  }
+
+  constructor(private http: HttpClient,
+      private alert: AlertService) {
   }
 }

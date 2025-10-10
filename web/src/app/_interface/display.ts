@@ -9,6 +9,7 @@ export interface Display {
   rows: number
   point_size: number, // point-size value list: [16,32,64,128,256]
   location: Location,
+  active: boolean
   grid?: Widget[],
   widgets: Widget[]
 }
