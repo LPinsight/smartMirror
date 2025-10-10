@@ -1,8 +1,14 @@
-<h3>Standort: {{location.lat}} | {{location.lon}}</h3>
-<button class="save" (click)="saveLocation()" ><mat-icon>save</mat-icon>Standort speichern</button>
-<button class="delete" (click)="removeLocation()" ><mat-icon>delete</mat-icon>Standort entfernen</button>
-<button (click)="setView(location)" ><mat-icon>replay</mat-icon>Ansicht zurücksetzen</button>
+<!-- <h3>Standort: {{location.lat}} | {{location.lon}}</h3> -->
+<h1>Standort für <span>{{display?.name}}</span> hinterlegen</h1>
 
-<input #addrInput type="text" placeholder="Adresse suchen" (keyup.enter)="searchAddress(addrInput.value)">
-<button (click)="searchAddress(addrInput.value)"><mat-icon>search</mat-icon>Suchen</button>
+<div id="buttons">
+  <button class="save" (click)="saveLocation()" ><mat-icon>save</mat-icon>Standort speichern</button>
+  <button class="delete" (click)="removeLocation()" ><mat-icon>delete</mat-icon>Standort entfernen</button>
+  <button (click)="setView(location)" ><mat-icon>replay</mat-icon>Ansicht zurücksetzen</button>
+</div>
+
+<div id="addressSearch">
+  <input #addrInput type="text" placeholder="Adresse suchen" (keyup.enter)="searchAddress(addrInput.value)">
+  <button (click)="searchAddress(addrInput.value)"><mat-icon>search</mat-icon>Adresse suchen</button>
+</div>
 <div id="map"></div>

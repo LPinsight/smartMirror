@@ -7,11 +7,16 @@
 div.content {
   padding: 1rem;
   display: flex;
+  justify-content: center;
+
+  div {
+    margin: 0 2.5rem;
+  }
 
   div.display {
     min-width: 45rem;
-    padding-right: 1rem;
   }
   div.settings {
+    min-width: 45rem;
   }
 }

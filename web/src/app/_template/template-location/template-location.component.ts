@@ -20,6 +20,7 @@ L.Icon.Default.mergeOptions({
     standalone: false
 })
 export class TemplateLocationComponent implements AfterViewInit{
+  @Input() display: Display | undefined
   private _location!: Location;
   @Input()
     set location(value: Location){
@@ -43,6 +44,8 @@ export class TemplateLocationComponent implements AfterViewInit{
   private homeLayer!: L.LayerGroup<any>;
 
   private initMap() {
+    if (this.map) this.map.remove()
+
     this.map = L.map('map', {
       center: [ 51.35149, 10.45412 ],
       zoom: 6
@@ -70,10 +73,15 @@ export class TemplateLocationComponent implements AfterViewInit{
 
   ngAfterViewInit() {
     this.initMap()
+    setTimeout(() => this.map.invalidateSize(), 100);
   
     this.map.on('click', (event) => {
       this.setMarker(event.latlng, this.markerLayer, 'neuer Standort')
     })
+  }
+
+  ngOnDestroy() {
+    if (this.map) this.map.remove()
   }
 
   setHome(location: Location){
@@ -90,14 +98,16 @@ export class TemplateLocationComponent implements AfterViewInit{
     this.homeLayer.clearLayers()
   }
 
-  saveLocation () {
+  async saveLocation () {
     if(this.markerLayer.getLayers().length == 0) {
       this.notification.error('Bitte Standort in der Karte setzen', "Standort setzen", { progressBar: true })
       return
     }
 
+    const result = await Swal.fire(this.alert.addLocationConfig(this.display!.name))
+
     this.markerLayer.eachLayer((layer) => {      
-      if (layer instanceof L.Marker) {
+      if (layer instanceof L.Marker && result.isConfirmed) {
         this.dataService.setLocation({
           lat: layer.getLatLng().lat,
           lon: layer.getLatLng().lng,
@@ -114,7 +124,7 @@ export class TemplateLocationComponent implements AfterViewInit{
       return
     }
 
-    const result = await Swal.fire(this.alert.removeLocationConfig())
+    const result = await Swal.fire(this.alert.removeLocationConfig(this.display!.name))
 
     if (result.isDenied) {
       this.dataService.setLocation({
@@ -142,14 +152,19 @@ export class TemplateLocationComponent implements AfterViewInit{
     if (location.lat == 0 && location.lon == 0) {
       this.map.setView({lat: 51.35149, lng: 10.45412}, 6)
     } else {
-    this.map.setView({ lat: location.lat, lng: location.lon} , 12)
+    this.map.setView({ lat: location.lat, lng: location.lon} , 16)
     }
   }
 
   setMarker(latlng: L.LatLngExpression, Layer: L.LayerGroup, markerTitle: string){
-      Layer.clearLayers()
+    let marker: L.Marker  
+    Layer.clearLayers()
       this.map.closePopup()
-      let marker = L.marker(latlng).addTo(Layer)
+      if (Layer == this.homeLayer) {
+        marker = L.marker(latlng).addTo(Layer)
+      } else {
+        marker = L.marker(latlng, {draggable: true}).addTo(Layer)
+      }
       marker.bindTooltip(markerTitle, {permanent: true}).openTooltip()
   }
 

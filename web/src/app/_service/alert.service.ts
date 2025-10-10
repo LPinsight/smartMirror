@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import Swal, { SweetAlertOptions } from 'sweetalert2';
-import { Display } from '../_interface/display';
+import { SweetAlertOptions } from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -115,10 +114,22 @@ export class AlertService {
     }
   }
 
-  public removeLocationConfig(): SweetAlertOptions {
+  public addLocationConfig(displayName: string): SweetAlertOptions {
+    return {
+      title: 'Standort hinzufügen',
+      text: 'Soll der Standort wirklich im Display "' + displayName + '" gespeichert werden?',
+      icon: 'question',
+      showCloseButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Standort speichern',
+      denyButtonText: 'Standort nicht speichern'
+    }
+  }
+
+  public removeLocationConfig(displayName: string): SweetAlertOptions {
     return {
       title: 'Standort entfernen',
-      text: 'Soll der Standort wirklich entfernt werden?',
+      text: 'Soll der Standort wirklich vom Display "' + displayName + '" entfernt werden?',
       icon: 'question',
       showCloseButton: true,
       showDenyButton: true,

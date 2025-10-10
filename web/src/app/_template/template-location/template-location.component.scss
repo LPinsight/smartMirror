@@ -4,6 +4,39 @@
 // ##########################################################
 // ##########################################################
 
+h1 {
+  text-align: center;
+  font-weight: normal;
+
+  span {
+    color: $prime-dark;
+    font-weight: bold;
+  }
+}
+
+div#buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+  
+}
+
+div#addressSearch {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+
+  input {
+    width: 45rem;
+    padding-left: 1rem;
+    background: none;
+    border: none;
+    border-bottom: 1px solid $prime-dark;
+    outline: none;
+    color: #fff;
+  }
+}
+
 button {
   margin: 0.3rem;
 
@@ -19,14 +52,14 @@ button {
   &.delete {
     background-color: $red;
   }
-
 }
 
 div#map {
   display: block;
   height: 60rem;
   width: 60rem;
-  border: 1px solid $prime;
+  // border: 1px solid $prime;
+  border-radius: 1rem;
   overflow: hidden;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }

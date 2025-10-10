@@ -11,8 +11,7 @@
     }
   </div>
   <div class="settings">
-    <h1>Einstellungen für {{displayList.get(selectedId)?.name}}</h1>
-    <h3>Standort: {{displayList.get(selectedId)?.location?.lat}} | {{displayList.get(selectedId)?.location?.lon}}</h3>
-    <app-template-location [location]="getLocation()"></app-template-location>
+    <!-- <h1>Einstellungen für {{displayList.get(selectedId)?.name}}</h1> -->
+    <app-template-location [location]="getLocation()" [display]=displayList.get(selectedId)></app-template-location>
   </div>
 </div>
