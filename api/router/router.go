@@ -28,6 +28,8 @@ func NewRouter() http.Handler {
 	displaysRouter := router.PathPrefix("/displays").Subrouter()
 	displaysRouter.HandleFunc("", handler.GetAllDisplaysHandler).Methods("GET", "OPTIONS")
 
+	RegisterPlugins(router)
+
 	return router
 }
 

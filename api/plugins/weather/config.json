@@ -1,0 +1,5 @@
+{
+  "unit": "Celsius",
+  "showHumidity": true,
+  "updateInterval": 60000
+}
