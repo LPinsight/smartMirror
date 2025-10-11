@@ -135,7 +135,7 @@ export class DataService {
       "point_end": widget.point_end,
     }
    
-    return this.http.post(this.URL + 'display/' + this.selectedIdSubject.getValue(), json, {
+    return this.http.post(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/widget', json, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(map((res) => {
       this.getDisplays().subscribe()      
@@ -144,7 +144,7 @@ export class DataService {
   }
 
   public deleteWidget(widget: Widget) {
-    return this.http.delete(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/' + widget.id, {
+    return this.http.delete(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/widget/' + widget.id, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(map((res) => {
       this.getDisplays().subscribe()      
@@ -201,7 +201,7 @@ export class DataService {
       "lon": location.lon
     }
    
-    return this.http.post<Location>(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/location', json, {
+    return this.http.put<Location>(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/location', json, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(map((res: Location) => {
       this.getDisplays().subscribe()      
@@ -210,11 +210,8 @@ export class DataService {
   }
 
   private setDisplayActive(displayID: string) {
-    let json = {
-      "id": displayID,
-    }
    
-    return this.http.post(this.URL + 'display/active', json, {
+    return this.http.put(this.URL + 'display/'+ displayID +'/active', {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(map((res) => {
       this.getDisplays().subscribe()      

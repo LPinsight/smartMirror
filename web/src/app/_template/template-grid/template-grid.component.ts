@@ -25,13 +25,11 @@ export class TemplateGridComponent implements OnInit{
     private notification: ToastrService
   ) {
     this.display = dataService.createDisplayPlaceholder()
-    this.createGrid()
   }
   
   ngOnInit() {
     this.dataService.selectedDisplay$.subscribe((data) => {
-      console.log(data);
-      
+            
       if(data != undefined) {
         this.display = data
         this.createGrid()
@@ -42,14 +40,12 @@ export class TemplateGridComponent implements OnInit{
 
   public updateView(): void {
     this.display = this.dataService.updateGrid(this.display)
-    // console.log(this.display);
-    
   }
 
-  public createGrid() {
+  public createGrid() {    
     this.elRef.nativeElement.style.setProperty('--grid-columns', this.display.columns)
     this.elRef.nativeElement.style.setProperty('--grid-rows', this.display.rows)
-    // this.elRef.nativeElement.style.setProperty('--point-size', `${this.display.Point_size}px`)
+    // this.elRef.nativeElement.style.setProperty('--point-size', `${this.display.point_size}px`)
     this.elRef.nativeElement.style.setProperty('--point-size', `128px`)
 
     this.updateView()
@@ -75,7 +71,6 @@ export class TemplateGridComponent implements OnInit{
       }
 
     } else {
-      console.log();
       this.notification.error('Bitte wähle zwei Felder aus', "Widget Hinzufügen", { progressBar: true })
     }
   }
