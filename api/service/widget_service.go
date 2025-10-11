@@ -35,8 +35,9 @@ func (s *WidgetService) GetByID(id string) (*iface.Widget, error) {
 // Widget erstellen
 func (s *WidgetService) Create(data iface.WidgetData) *iface.Widget {
 	widget := &iface.Widget{
-		ID:   utils.NewWidgetID(),
-		Name: data.Name,
+		ID:         utils.NewWidgetID(),
+		Name:       data.Name,
+		PluginName: data.PluginName,
 		// Type:        data.Type,
 		PointStart: data.PointStart,
 		PointEnd:   data.PointEnd,

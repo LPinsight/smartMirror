@@ -1,6 +1,6 @@
 <div class="grid">
 
-  @for (widget of display.grid; track widget; let x = $index) {
+  <!-- @for (widget of display.grid; track widget; let x = $index) {
     <app-template-grid-widget
       class="{{widget.id}}"
       [widget]="widget"
@@ -13,6 +13,21 @@
       'grid-column-start': widget.point_start.x,
       'grid-column-end': widget.point_end.x}"
       />
+  } -->
+
+<!-- [config]="widget.config" -->
+
+  @for (widget of display.grid; track widget; let x = $index) {
+    <app-template-dynamic-widget
+        [pluginName]="widget.plugin_name"
+        
+        [ngStyle]="{
+          'grid-row-start': widget.point_start.y,
+          'grid-row-end': widget.point_end.y,
+          'grid-column-start': widget.point_start.x,
+          'grid-column-end': widget.point_end.x
+        }"
+        class="{{widget.id}}" />
   }
 
 </div>

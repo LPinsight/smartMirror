@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TemplateDisplayComponent } from './_template/template-display/template-display.component';
 import { TemplateLocationComponent } from './_template/template-location/template-location.component';
+import { TemplateDynamicWidgetComponent } from './_template/template-dynamic-widget/template-dynamic-widget.component';
 
 const navigationRoutes: Routes = [
   {path: 'settings', component: PageSettingsComponent},
@@ -35,7 +36,8 @@ const navigationRoutes: Routes = [
         TemplateGridComponent,
         TemplateGridWidgetComponent,
         TemplateDisplayComponent,
-        TemplateLocationComponent
+        TemplateLocationComponent,
+        TemplateDynamicWidgetComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         MatIconModule,

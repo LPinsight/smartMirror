@@ -39,7 +39,8 @@ export class TemplateGridComponent implements OnInit{
   }
 
   public updateView(): void {
-    this.display = this.dataService.updateGrid(this.display)
+    this.display = this.dataService.updateGrid(this.display, true)
+    
   }
 
   public createGrid() {    
@@ -59,6 +60,7 @@ export class TemplateGridComponent implements OnInit{
       if (result.value) {
         this.dataService.addWidget({
           name: result.value,
+          plugin_name: result.value, //TODO: Plugin aus liste oder ähnlich wählen
           point_start: { x: x1, y: y1 },
           point_end: {x: x2, y: y2},
         }).subscribe(_ => {

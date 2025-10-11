@@ -1,6 +1,6 @@
 export interface Widget {
   id?: string;
-  // plugin: string;      // Name des Plugins
+  plugin_name: string;      // Name des Plugins
   name: string
   point_start: point;
   point_end: point;

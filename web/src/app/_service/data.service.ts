@@ -131,6 +131,7 @@ export class DataService {
   public addWidget(widget: Widget) {
     let json = {
       "name": widget.name,
+      "plugin_name": widget.plugin_name,
       "point_start": widget.point_start,
       "point_end": widget.point_end,
     }
@@ -161,6 +162,7 @@ export class DataService {
           grid.push({
             id: `placeholder-${id}`,
             name: 'placeholder',
+            plugin_name: 'placeholder',
             point_start: { x: x, y: y },
             point_end: { x: x+1, y: y+1 },
           })
@@ -179,19 +181,35 @@ export class DataService {
     }
   }
 
-  public updateGrid(d: Display): Display {    
-    return {
-      id: d.id,
-      name: d.name,
-      width: d.width,
-      height: d.height,
-      columns: d.columns,
-      rows: d.rows,
-      point_size: d.point_size,
-      location: d.location,
-      active: d.active,
-      grid: this.createGrid(d.widgets, this.createPlaceholderGrid(d)),
-      widgets: d.widgets
+  public updateGrid(d: Display, config: boolean): Display {    
+    if (config) {      
+      return {
+        id: d.id,
+        name: d.name,
+        width: d.width,
+        height: d.height,
+        columns: d.columns,
+        rows: d.rows,
+        point_size: d.point_size,
+        location: d.location,
+        active: d.active,
+        grid: this.createGrid(d.widgets, this.createPlaceholderGrid(d)),
+        widgets: d.widgets
+      }
+    } else {
+      return {
+        id: d.id,
+        name: d.name,
+        width: d.width,
+        height: d.height,
+        columns: d.columns,
+        rows: d.rows,
+        point_size: d.point_size,
+        location: d.location,
+        active: d.active,
+        grid: this.createGrid(d.widgets, []),
+        widgets: d.widgets
+      }
     }
   }
 

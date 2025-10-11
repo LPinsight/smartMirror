@@ -6,20 +6,20 @@ type Point struct {
 }
 
 type Widget struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-	// Type        string      `json:"type"`
-	PointStart Point `json:"point_start"`
-	PointEnd   Point `json:"point_end"`
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	PluginName string `json:"plugin_name"`
+	PointStart Point  `json:"point_start"`
+	PointEnd   Point  `json:"point_end"`
 	// RefreshRate int         `json:"refreshRate"`
-	// Config      interface{} `json:"config,omitempty"`
+	Config interface{} `json:"config,omitempty"`
 }
 
 type WidgetData struct {
-	Name string `json:"name"`
-	// Type        string      `json:"type"`
-	PointStart Point `json:"point_start"`
-	PointEnd   Point `json:"point_end"`
+	Name       string `json:"name"`
+	PluginName string `json:"plugin_name"`
+	PointStart Point  `json:"point_start"`
+	PointEnd   Point  `json:"point_end"`
 	// RefreshRate int         `json:"refreshRate"`
-	// Config      interface{} `json:"config,omitempty"`
+	// Config interface{} `json:"config,omitempty"`
 }
