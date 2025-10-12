@@ -12,6 +12,11 @@
   </div>
   <div class="settings">
     <!-- <h1>Einstellungen für {{displayList.get(selectedId)?.name}}</h1> -->
-    <app-template-location [location]="getLocation()" [display]=displayList.get(selectedId)></app-template-location>
+    <app-template-location [location]="getLocation()" [display]="displayList.get(selectedId)"></app-template-location>
+  </div>
+  <div class="plugins">
+    @for (plugin of pluginList | keyvalue; track plugin.key) {
+      <app-template-plugin-list [plugin]="plugin.value"></app-template-plugin-list>
+    }
   </div>
 </div>

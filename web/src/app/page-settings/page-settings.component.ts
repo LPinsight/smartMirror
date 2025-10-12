@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '@service/data.service';
 import { Display, Location } from '@interface/display';
+import { Plugin } from '@interface/widget';
+import { PluginService } from '@service/plugin.service';
 
 @Component({
     selector: 'app-page-settings',
@@ -10,23 +12,33 @@ import { Display, Location } from '@interface/display';
 })
 export class PageSettingsComponent implements OnInit{
   public displayList: Map<string, Display> = new Map<string, Display> 
+  // public pluginList: Plugin[] = []
+  public pluginList: Map<string, Plugin> = new Map<string, Plugin>();
   public selectedId: string = ''
 
   constructor(
-    private data: DataService
+    private dataService: DataService,
+    private pluginService: PluginService
   ) {
 
   }
 
   ngOnInit() {
-    this.data.displays$.subscribe(displays => {
+    this.dataService.displays$.subscribe(displays => {
       this.displayList = displays
       
     })
 
-    this.data.displayId$.subscribe(id => {
+    this.dataService.displayId$.subscribe(id => {
       this.selectedId = id
     })
+
+    this.pluginService.plugins$.subscribe(plugins => {
+      this.pluginList = plugins
+      console.log(plugins);
+      
+
+    }) 
   }
 
   public getLocation(): Location {

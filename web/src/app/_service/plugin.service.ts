@@ -5,7 +5,7 @@ import { Plugin } from "@interface/widget";
 
 @Injectable({ providedIn: 'root' })
 export class PluginService {
-  pluginsSubject = new BehaviorSubject<Plugin[]>([]);
+  pluginsSubject = new BehaviorSubject<Map<string, Plugin>>(new Map());
   plugins$ = this.pluginsSubject.asObservable();
 
   private URL: string = 'http://localhost:8080/'
@@ -13,9 +13,9 @@ export class PluginService {
 
   constructor(private http: HttpClient) {}
 
-  public getPlugins(): Observable<Plugin[]> {
-    return this.http.get<Plugin[]>(this.URL + 'plugins').pipe(
-      tap(plugins => this.pluginsSubject.next(plugins))
+  public getPlugins(): Observable<{[key: string]: Plugin}> {
+    return this.http.get<{[key: string]: Plugin}>(this.URL + 'plugins').pipe(
+      tap(plugins => this.pluginsSubject.next(new Map(Object.entries(plugins))))
     );
   }
 
@@ -25,7 +25,7 @@ export class PluginService {
   }
 
   public getPluginByName(name: string) {
-    return this.pluginsSubject.getValue().find(p => p.name === name);
+    return this.pluginsSubject.getValue().get(name);
   }
 
   // async loadScript(url: string): Promise<void> {

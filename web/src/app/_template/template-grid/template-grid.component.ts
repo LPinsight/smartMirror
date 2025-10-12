@@ -89,7 +89,6 @@ export class TemplateGridComponent implements OnInit{
     } else if (
       pos[1].point_start.x <= pos[0].point_start.x &&
       pos[1].point_start.y <= pos[0].point_start.y) {
-        console.log(2);
 
       return [
         pos[1].point_start.x,

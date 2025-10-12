@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { DataService } from '@service/data.service';
+import { PluginService } from '@service/plugin.service';
 
 @Component({
     selector: 'app-root',
@@ -9,8 +10,12 @@ import { DataService } from '@service/data.service';
 })
 export class AppComponent {
 
-  constructor(private data: DataService) {
-    data.getDisplays().subscribe()
+  constructor(
+    private dataService: DataService,
+    private pluginService: PluginService
+  ) {
+    dataService.getDisplays().subscribe()
+    pluginService.getPlugins().subscribe()
 
   }
 }

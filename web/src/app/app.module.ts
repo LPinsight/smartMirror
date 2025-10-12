@@ -18,6 +18,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { TemplateDisplayComponent } from './_template/template-display/template-display.component';
 import { TemplateLocationComponent } from './_template/template-location/template-location.component';
 import { TemplateDynamicWidgetComponent } from './_template/template-dynamic-widget/template-dynamic-widget.component';
+import { TemplatePluginListComponent } from './_template/template-plugin-list/template-plugin-list.component';
 
 const navigationRoutes: Routes = [
   {path: 'settings', component: PageSettingsComponent},
@@ -37,7 +38,8 @@ const navigationRoutes: Routes = [
         TemplateGridWidgetComponent,
         TemplateDisplayComponent,
         TemplateLocationComponent,
-        TemplateDynamicWidgetComponent
+        TemplateDynamicWidgetComponent,
+        TemplatePluginListComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         MatIconModule,
