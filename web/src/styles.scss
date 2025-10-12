@@ -108,7 +108,8 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 1rem 1rem 0 1rem;
+  // margin: 1rem 1rem 0 1rem;
+  margin: 0.3rem;
   border-radius: 1rem;
   border: none;
   cursor: pointer;
@@ -116,5 +117,18 @@ button {
   &:hover {
     background-color: $prime-dark;
     color: $white;
+  }
+
+  mat-icon.mat-icon {
+    font-size: 1.7rem;
+    width: 1.7rem;
+    height: 1.7rem;
+    margin-right: 0.3rem;
+  }
+  &.save {
+    background-color: $green;
+  }
+  &.delete {
+    background-color: $red;
   }
 }

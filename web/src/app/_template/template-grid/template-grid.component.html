@@ -10,7 +10,7 @@
 
 @if (editGrid) {
   <div class="editBar">
-    <button class="saveWidget" (click)="createNewWidget($event)">
+    <button class="save" (click)="createNewWidget($event)">
       <mat-icon>add</mat-icon>
       Widget hinzufügen
     </button>
@@ -18,7 +18,7 @@
       <mat-icon>restart_alt</mat-icon>
       Auswahl zurücksetzen
     </button>
-    <button class="cancelWidget" (click)="cancelNewWidget()">
+    <button class="delete" (click)="cancelNewWidget()">
       <mat-icon>close</mat-icon>
       Abbruch
     </button>

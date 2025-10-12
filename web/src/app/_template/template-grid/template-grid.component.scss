@@ -17,21 +17,22 @@ div.editBar {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  margin-top: 0.5rem;
   button {
-    &.cancelWidget {
-      background-color: $red;
-      &:hover {
-        color: $red;
-        background-color: $prime-dark;
-      }
-    }
-    &.saveWidget {
-      background-color: $green;
-      &:hover {
-        background-color: $prime-dark;
-        color: $green;
-      }
-    }
+    // &.cancelWidget {
+    //   background-color: $red;
+    //   &:hover {
+    //     color: $red;
+    //     background-color: $prime-dark;
+    //   }
+    // }
+    // &.saveWidget {
+    //   background-color: $green;
+    //   &:hover {
+    //     background-color: $prime-dark;
+    //     color: $green;
+    //   }
+    // }
   }
 }
 
