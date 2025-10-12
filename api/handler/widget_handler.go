@@ -4,12 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	iface "github.com/LPinsight/smartMirror/interface"
 	"github.com/LPinsight/smartMirror/service"
+	"github.com/gorilla/mux"
 )
 
-var widgetService = service.NewWidgetService()
+var widgetService = service.NewWidgetService(pluginService)
 
 // GET /api/widgets
 func GetAllWidgets(w http.ResponseWriter, r *http.Request) {

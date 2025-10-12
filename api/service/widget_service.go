@@ -2,19 +2,22 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
 	iface "github.com/LPinsight/smartMirror/interface"
 	"github.com/LPinsight/smartMirror/utils"
 )
 
 type WidgetService struct {
-	widgets map[string]*iface.Widget
+	widgets       map[string]*iface.Widget
+	pluginService *PluginService
 }
 
 // Konstruktor
-func NewWidgetService() *WidgetService {
+func NewWidgetService(PluginService *PluginService) *WidgetService {
 	return &WidgetService{
-		widgets: make(map[string]*iface.Widget),
+		widgets:       make(map[string]*iface.Widget),
+		pluginService: PluginService,
 	}
 }
 
@@ -34,6 +37,10 @@ func (s *WidgetService) GetByID(id string) (*iface.Widget, error) {
 
 // Widget erstellen
 func (s *WidgetService) Create(data iface.WidgetData) *iface.Widget {
+
+	config, _ := s.pluginService.GetConfig(data.PluginName)
+	fmt.Println(config)
+
 	widget := &iface.Widget{
 		ID:         utils.NewWidgetID(),
 		Name:       data.Name,
@@ -42,7 +49,7 @@ func (s *WidgetService) Create(data iface.WidgetData) *iface.Widget {
 		PointStart: data.PointStart,
 		PointEnd:   data.PointEnd,
 		// RefreshRate: data.RefreshRate,
-		// Config:      data.Config,
+		Config: config,
 	}
 	s.widgets[widget.ID] = widget
 	return widget
