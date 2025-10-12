@@ -109,8 +109,6 @@ func (s *DisplayService) SetActive(id string) error {
 
 // Widget hinzufügen
 func (s *DisplayService) AddWidget(displayID string, w *iface.WidgetData) (*iface.Widget, error) {
-	// TODO: Plugin Config hinterlegen / laden
-	// TODO: plugin_service anlegen beim start jedes Plugin laden / speichern | damit dort die Config rausgeholt werden kann
 	d, ok := s.displays[displayID]
 	if !ok {
 		return nil, errors.New("display not found")
