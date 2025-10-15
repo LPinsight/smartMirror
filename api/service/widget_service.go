@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 
 	iface "github.com/LPinsight/smartMirror/interface"
 	"github.com/LPinsight/smartMirror/utils"
@@ -39,7 +38,6 @@ func (s *WidgetService) GetByID(id string) (*iface.Widget, error) {
 func (s *WidgetService) Create(data iface.WidgetData) *iface.Widget {
 
 	config, _ := s.pluginService.GetConfig(data.PluginName)
-	fmt.Println(config)
 
 	widget := &iface.Widget{
 		ID:         utils.NewWidgetID(),
