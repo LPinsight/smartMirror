@@ -44,18 +44,23 @@ div.settingsMenu {
   height: 100%;
   width: 100%;
 
-  .settingsButton {
+  mat-icon.settingsButton {
     position: absolute;
     top: 1rem;
     right: 1rem;
     cursor: pointer;
   }
 
-  .deleteButton {
+  mat-icon.deleteButton {
     color: $red;
     position: absolute;
     top: 1rem;
     left: 1rem;
     cursor: pointer;
+  }
+
+  h2.widgetTitle {
+    position: absolute;
+    top: 1rem;
   }
 }

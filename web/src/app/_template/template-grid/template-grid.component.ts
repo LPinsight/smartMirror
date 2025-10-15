@@ -6,6 +6,7 @@ import { eventLabel, Eventping } from '@interface/eventping';
 import { Widget } from '@interface/widget';
 import Swal from 'sweetalert2';
 import { AlertService } from '../../_service/alert.service';
+import { PluginService } from '../../_service/plugin.service';
 
 @Component({
     selector: 'app-template-grid',
@@ -22,6 +23,7 @@ export class TemplateGridComponent implements OnInit{
     private alert: AlertService,
     private elRef: ElementRef,
     private dataService: DataService,
+    private pluginService: PluginService,
     private notification: ToastrService
   ) {
     this.display = dataService.createDisplayPlaceholder()
@@ -54,22 +56,46 @@ export class TemplateGridComponent implements OnInit{
 
   public async createNewWidget (event?: any) {
     if (this.newWidgetPosition.length === 2) {
-     let [x1, y1, x2, y2] = this.getCorrektNewWidgetPosition (this.newWidgetPosition)
+      let [x1, y1, x2, y2] = this.getCorrektNewWidgetPosition (this.newWidgetPosition)
 
-      const result = await Swal.fire(this.alert.newWidgetConfig())
-      if (result.value) {
+      const steps= ['1', '2']
+      const swalQueue = Swal.mixin(this.alert.MixinConfig(steps))
+      const values = ['','']
+      let currentStep
+
+      const pluginMap = this.pluginService.pluginsSubject.getValue();
+      if (pluginMap.size === 0) {
+        Swal.fire('Keine Plugins gefunden', '', 'info');
+        return;
+      }
+      const pluginList = Object.fromEntries(
+        Array.from(pluginMap.values()).map(plugin => [plugin.name, plugin.name])
+      );
+
+      for (currentStep = 0; currentStep < steps.length;) {
+        const result = await swalQueue.fire(this.alert.newWidgetConfig(currentStep, values, pluginList))
+        
+        if (result.value) {
+          values[currentStep] = result.value
+          currentStep++;
+        } else if(result.dismiss === Swal.DismissReason.cancel) {
+          currentStep--
+        } else if (result.dismiss === Swal.DismissReason.close) {
+          break;
+        }
+      }
+
+      if (currentStep === steps.length) {
         this.dataService.addWidget({
-          name: result.value,
-          plugin_name: result.value, //TODO: Plugin aus liste oder ähnlich wählen
+          name: values[1],
+          plugin_name: values[0],
           point_start: { x: x1, y: y1 },
           point_end: {x: x2, y: y2},
         }).subscribe(_ => {
           this.editGrid = false
           this.resetNewWidget()
-          this.notification.success('Widget ' + result.value +' wurde erfolgreich hinzugefügt', 'Widget Hinzufügen', { progressBar: true })
+          this.notification.success('Widget ' + values[1] +' wurde erfolgreich hinzugefügt', 'Widget Hinzufügen', { progressBar: true })
         })
-      } else if (result.dismiss) {
-        return
       }
 
     } else {

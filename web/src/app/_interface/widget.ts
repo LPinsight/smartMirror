@@ -17,3 +17,9 @@ export interface Plugin {
   uiUrl: string;
   config: any;
 }
+
+export interface PluginConfig {
+  name: string;
+  inputType: any;
+  default: any;
+}

@@ -15,7 +15,7 @@ Widget
 
 @if (!showSettings && widget.name != 'placeholder') {
   <div class="widgetMenu">
-    <h1>{{widget.name}}</h1>
+    <h1>"{{widget.name}}" - {{widget.plugin_name}}</h1>
     <h2>start: {{widget.point_start.x}}:{{widget.point_start.y}}</h2>
     <h2>ende: {{widget.point_end.x}}:{{widget.point_end.y}}</h2>
     <mat-icon (click)="showSettings=!showSettings" class="settingsButton">settings</mat-icon>
@@ -26,6 +26,11 @@ Widget
   <div class="settingsMenu">
     <mat-icon (click)="showSettings=!showSettings" class="settingsButton">close</mat-icon>
     <mat-icon (click)="deleteWidget($event)" class="deleteButton">delete</mat-icon>
-    <h2>{{widget.name}}</h2>
+    <h2 class="widgetTitle">"{{widget.name}}" - {{widget.plugin_name}}</h2>
+
+    <div>
+      <label for="test01">Test1</label>
+      <input type="text" title="test01" placeholder="test01">
+    </div>
   </div>
 }

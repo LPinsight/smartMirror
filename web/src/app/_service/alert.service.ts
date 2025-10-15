@@ -102,15 +102,42 @@ export class AlertService {
     }
   }
 
-  public newWidgetConfig(): SweetAlertOptions {
-    return {
-      title: 'Neues Widget',
-      text: 'Name für das Widget',
-      input: 'text',
-      inputPlaceholder: 'Widget Name',
-      icon: 'question',
-      showCloseButton: true,
-      showCancelButton: true,
+  public newWidgetConfig(id: number, values: string[], pluginList: {}): SweetAlertOptions {
+    let title = 'Neues Widget';
+
+    switch (id) {
+      case 0: 
+        return {
+          title: title,
+          currentProgressStep: 0,
+          text: 'Plugin auswählen',
+          input: 'select',
+          inputOptions: pluginList,
+          inputPlaceholder: 'Plugin auswählen',
+          icon: 'question',
+          showCloseButton: true,
+          focusConfirm: false,
+          inputValue: values[0]
+        }
+      case 1: 
+        return {
+          title: title,
+          currentProgressStep: 1,
+          text: 'Name für das Widget',
+          input: 'text',
+          inputPlaceholder: 'Widget Name',
+          icon: 'question',
+          showCloseButton: true,
+          showCancelButton: true,
+          focusConfirm: false,
+          inputValue: values[1]
+        }
+      default:
+        return {
+          title: title,
+          text: 'id not found',
+          icon: 'error'
+        }
     }
   }
 
