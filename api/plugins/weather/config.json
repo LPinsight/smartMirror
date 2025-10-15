@@ -1,5 +1,17 @@
 {
-  "unit": "Celsius",
-  "showHumidity": true,
-  "updateInterval": 60000
+  "unit": {
+    "name": "unit",
+    "inputType": ["Celsius", "Fahrenheit"],
+    "default": "Celsius"
+  },
+  "showHumidity": {
+    "name": "showHumidity",
+    "inputType": "checkbox",
+    "default": true
+  },
+  "updateInterval": {
+    "name": "updateInterval",
+    "inputType": "number",
+    "default": 60000
+  }
 }

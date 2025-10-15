@@ -38,7 +38,7 @@ func (s *PluginService) Create(data iface.Plugin) *iface.Plugin {
 	return &data
 }
 
-func (s *PluginService) GetConfig(name string) (map[string]interface{}, error) {
+func (s *PluginService) GetConfig(name string) (iface.PluginConfig, error) {
 	plugin, ok := s.plugins[name]
 	if !ok {
 		return nil, errors.New("plugin not found")
