@@ -1,17 +1,14 @@
-{
-  "unit": {
-    "name": "unit",
-    "inputType": ["Celsius", "Fahrenheit"],
-    "default": "Celsius"
-  },
-  "showHumidity": {
-    "name": "showHumidity",
-    "inputType": "checkbox",
-    "default": true
-  },
-  "updateInterval": {
-    "name": "updateInterval",
-    "inputType": "number",
-    "default": 60000
-  }
-}
+[{
+  "name": "unit",
+  "inputType": ["Celsius", "Fahrenheit"],
+  "default": "Celsius"
+},{
+  "name": "showHumidity",
+  "inputType": "checkbox",
+  "default": true
+},{
+  "name": "updateInterval",
+  "inputType": "number",
+  "default": 60000
+}]
+

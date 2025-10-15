@@ -35,13 +35,13 @@ func RegisterPlugins() map[string]*iface.Plugin {
 		// config.json
 		cfgPath := filepath.Join(pluginDir, name, "config.json")
 		cfgData, _ := os.ReadFile(cfgPath)
-		cfg := iface.PluginConfig{}
+		cfg := []iface.ConfigOption{}
 		json.Unmarshal(cfgData, &cfg)
 
 		// api.json
 		apiPath := filepath.Join(pluginDir, name, "api.json")
 		apiData, _ := os.ReadFile(apiPath)
-		api := map[string]interface{}{}
+		api := iface.PluginAPI{}
 		json.Unmarshal(apiData, &api)
 
 		uiUrl := fmt.Sprintf("/plugins/%s/main.js", name)

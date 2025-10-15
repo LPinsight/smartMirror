@@ -38,10 +38,18 @@ func (s *PluginService) Create(data iface.Plugin) *iface.Plugin {
 	return &data
 }
 
-func (s *PluginService) GetConfig(name string) (iface.PluginConfig, error) {
+func (s *PluginService) GetConfig(name string) ([]iface.ConfigOption, error) {
 	plugin, ok := s.plugins[name]
 	if !ok {
 		return nil, errors.New("plugin not found")
 	}
 	return plugin.Config, nil
+}
+
+func (s *PluginService) GetAPI(name string) (iface.PluginAPI, error) {
+	plugin, ok := s.plugins[name]
+	if !ok {
+		return iface.PluginAPI{}, errors.New("plugin not found")
+	}
+	return plugin.Api, nil
 }

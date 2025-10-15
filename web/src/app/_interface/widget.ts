@@ -15,11 +15,23 @@ interface point {
 export interface Plugin {
   name: string;
   uiUrl: string;
-  config: any;
+  config: PluginConfig[];
+  api: PluginAPI;
 }
 
 export interface PluginConfig {
   name: string;
   inputType: any;
   default: any;
+}
+
+export interface PluginAPI {
+  port: number;
+  endpoints: PluginEndpoint[];
+}
+
+export interface PluginEndpoint {
+  path: string;
+  methods: string[];
+  handler: string;
 }

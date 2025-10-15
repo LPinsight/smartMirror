@@ -28,7 +28,7 @@ func RegisterPlugins(router *mux.Router) {
 
 	for _, plugin := range plugins {
 		// Plugin-Port
-		port := int(plugin.Api["port"].(float64))
+		port := plugin.Api.Port
 
 		// Proxy: alles unter /plugins/<name>/ weiterleiten
 		prefix := "/plugins/" + plugin.Name
