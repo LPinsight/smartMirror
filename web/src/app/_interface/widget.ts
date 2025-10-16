@@ -4,7 +4,7 @@ export interface Widget {
   name: string
   point_start: point;
   point_end: point;
-  // config: any;         // widget-spezifische Konfiguration
+  // config?: PluginConfig[];         // widget-spezifische Konfiguration
 }
 
 interface point {

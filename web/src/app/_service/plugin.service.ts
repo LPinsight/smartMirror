@@ -9,7 +9,6 @@ export class PluginService {
   plugins$ = this.pluginsSubject.asObservable();
 
   private URL: string = 'http://localhost:8080/'
-  private loaded: Set<string> = new Set();
 
   constructor(private http: HttpClient) {}
 
@@ -20,28 +19,24 @@ export class PluginService {
   }
 
   public getPluginData(pluginName: string, endpoint: string): Observable<any> {
-    const url = `${this.URL}plugins/${pluginName}${endpoint}`;
+    const url = `${this.URL}plugins/${pluginName}/api/${endpoint}`;
     return this.http.get(url, { headers: { 'Content-Type': 'application/json' } });
   }
 
-  public getPluginByName(name: string) {
-    return this.pluginsSubject.getValue().get(name);
+  public getPluginByName(name: string): Plugin {
+    return this.pluginsSubject.getValue().get(name) as Plugin;
   }
 
-  // async loadScript(url: string): Promise<void> {
-  //   if (this.loaded.has(url)) return;
-  //   await new Promise<void>((resolve, reject) => {
-  //     const script = document.createElement('script');
-  //     script.src = url;
-  //     script.type = 'module';
-  //     script.onload = () => {
-  //       this.loaded.add(url);
-  //       resolve();
-  //     };
-  //     script.onerror = reject;
-  //     document.head.appendChild(script);
-  //   });
-  // }
+  public getPluginLoaderInfo(name: string): { elementName: string; scriptUrl: string } | undefined {
+    const plugin = this.getPluginByName(name);
+    if (!plugin) return undefined;
+
+    return {
+      elementName: `${plugin.name}-plugin`,
+      scriptUrl: plugin.uiUrl.startsWith('http') ? plugin.uiUrl : `${this.URL}${plugin.uiUrl}`
+    };
+  }
+
 
 
 

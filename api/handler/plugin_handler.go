@@ -44,7 +44,7 @@ func RegisterPlugins() map[string]*iface.Plugin {
 		api := iface.PluginAPI{}
 		json.Unmarshal(apiData, &api)
 
-		uiUrl := fmt.Sprintf("/plugins/%s/main.js", name)
+		uiUrl := fmt.Sprintf("plugins/%s/ui/main.js", name)
 
 		pluginService.Create(iface.Plugin{
 			Name:   name,

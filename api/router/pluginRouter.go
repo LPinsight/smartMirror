@@ -30,13 +30,18 @@ func RegisterPlugins(router *mux.Router) {
 		// Plugin-Port
 		port := plugin.Api.Port
 
-		// Proxy: alles unter /plugins/<name>/ weiterleiten
-		prefix := "/plugins/" + plugin.Name
+		// Proxy: alles unter /plugins/<name>/api/ weiterleiten
+		apiPrefix := fmt.Sprintf("/plugins/%s/api/", plugin.Name)
 		target := fmt.Sprintf("http://localhost:%d", port)
-		router.PathPrefix(prefix).Handler(proxyHandler(target, prefix))
+		router.PathPrefix(apiPrefix).Handler(proxyHandler(target, apiPrefix))
 
-		fmt.Printf("Proxy für Plugin %s registriert: %s -> %s\n", plugin.Name, prefix, target)
+		fmt.Printf("Proxy für Plugin %s registriert: %s -> %s\n", plugin.Name, apiPrefix, target)
 	}
+
+	// Statische UI-Dateien bereitstellen (alles andere außer /api/)
+	router.PathPrefix("/plugins/").Handler(
+		http.StripPrefix("/plugins/",
+			http.FileServer(http.Dir("./plugins"))))
 
 	// Endpoint: liefert alle Plugins inkl. config + UI
 	router.HandleFunc("/plugins", handler.GetAllPlugins).Methods("GET")

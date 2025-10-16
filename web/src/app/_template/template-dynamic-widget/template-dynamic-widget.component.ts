@@ -1,4 +1,4 @@
-import { Component, EnvironmentInjector, Input, OnInit, ViewContainerRef } from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { PluginService } from '@service/plugin.service';
 
 @Component({
@@ -10,33 +10,40 @@ import { PluginService } from '@service/plugin.service';
 export class TemplateDynamicWidgetComponent implements OnInit {
   @Input() pluginName!: string;
   @Input() config: any;
-
+  
   constructor(
-    private vc: ViewContainerRef,
-    private injector: EnvironmentInjector,
+    private el: ElementRef,
     private pluginService: PluginService,
   ) {}
 
   async ngOnInit() {
-    // const plugin = this.pluginService.getPluginByName(this.pluginName);
-    // if (!plugin) {
-    //   console.warn('Plugin nicht gefunden:', this.pluginName);
-    //   return;
-    // }
+    this.pluginService.getPlugins().subscribe(async _ => {
+      const info = this.pluginService.getPluginLoaderInfo(this.pluginName);
+      if (!info) return console.warn('Plugin not found', this.pluginName);
 
-    // // Plugin-Script laden (z. B. /plugins/weather/main.js)
-    // await this.pluginService.loadScript(plugin.uiUrl);
+      await this.loadScript(info.scriptUrl);
 
-    // // Plugin-Komponente aus globalem Scope holen
-    // const module = (window as any)[plugin.name];
-    // if (!module?.default) {
-    //   console.error(`Plugin ${plugin.name} exportiert keine Standard-Komponente`);
-    //   return;
-    // }
+      const pluginEl = document.createElement(info.elementName);
+      this.el.nativeElement.innerHTML = '';
+      this.el.nativeElement.appendChild(pluginEl);
+      
+    })
+  }
 
-    // // Dynamisch Komponente einfügen
-    // const component = module.default;
-    // this.vc.createComponent(component, { environmentInjector: this.injector });
+  private loadScript(url: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      // Script nur laden, wenn es noch nicht existiert
+      if (document.querySelector(`script[src="${url}"]`)) {
+        return resolve();
+      }
+
+      const script = document.createElement('script');
+      script.src = url;
+      script.type = 'module';
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load ${url}`));
+      document.body.appendChild(script);
+    });
   }
 
 }
