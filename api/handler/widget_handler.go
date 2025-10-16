@@ -41,24 +41,24 @@ func CreateWidget(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, widget, http.StatusCreated)
 }
 
-// PUT /api/widgets/{id}
-func UpdateWidget(w http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)["id"]
+// // PUT /api/widgets/{id}
+// func UpdateWidget(w http.ResponseWriter, r *http.Request) {
+// 	id := mux.Vars(r)["id"]
 
-	var data iface.WidgetData
-	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
+// 	var data iface.WidgetData
+// 	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+// 		http.Error(w, err.Error(), http.StatusBadRequest)
+// 		return
+// 	}
 
-	widget, err := widgetService.Update(id, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
-		return
-	}
+// 	widget, err := widgetService.Update(id, data)
+// 	if err != nil {
+// 		http.Error(w, err.Error(), http.StatusNotFound)
+// 		return
+// 	}
 
-	writeJSON(w, widget, http.StatusOK)
-}
+// 	writeJSON(w, widget, http.StatusOK)
+// }
 
 // DELETE /api/widgets/{id}
 func DeleteWidget(w http.ResponseWriter, r *http.Request) {
@@ -73,6 +73,27 @@ func DeleteWidget(w http.ResponseWriter, r *http.Request) {
 }
 
 // PUT /api/display/{id}/widget/{id}
+func UpdateWidget(w http.ResponseWriter, r *http.Request) {
+	displayID := mux.Vars(r)["id"]
+	widgetID := mux.Vars(r)["wid"]
+
+	var data iface.WidgetData
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// widget, err := displayService.AddWidget(displayID, &widgetData)
+	err := displayService.UpdateWidget(displayID, widgetID, data)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// PUT /api/display/{id}/widget/{id}/config
 func UpdateWidgetConfig(w http.ResponseWriter, r *http.Request) {
 	displayID := mux.Vars(r)["id"]
 	widgetID := mux.Vars(r)["wid"]

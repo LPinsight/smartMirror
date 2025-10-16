@@ -1,31 +1,32 @@
 [{
-  "name": "unit",
+  "name": "API Key",
+  "inputType": "text",
+  "default": "XXXXX-XXXXX-XXXXX-XXXXX",
+  "placeholder": "API Key"
+},{
+  "name": "Spiegel Standort",
+  "inputType": "checkbox",
+  "default": true,
+  "placeholder": ""
+},{
+  "name": "Alternative Koordinate (lat)",
+  "inputType": "text",
+  "default": "",
+  "placeholder": "falls abweichend"
+},{
+  "name": "Alternative Koordinate (lon)",
+  "inputType": "text",
+  "default": "",
+  "placeholder": "falls abweichend"
+},{
+  "name": "Einheit",
   "inputType": ["Celsius", "Fahrenheit"],
-  "default": "Celsius"
-},{
-  "name": "API-Key",
-  "inputType": "text",
-  "default": "XXXXX-XXXXX-XXXXX-XXXXX"
-},
-
-
-
-
-{
-  "name": "showHumidity",
-  "inputType": "checkbox",
-  "default": true
-},{
-  "name": "Adresse",
-  "inputType": "text",
-  "default": "Adresse hier"
-},{
-  "name": "defaultLocation",
-  "inputType": "checkbox",
-  "default": true
-},{
+  "default": "Celsius",
+  "placeholder": "string"
+}, {
   "name": "updateInterval",
   "inputType": "number",
-  "default": 60000
+  "default": 60000,
+  "placeholder": "string"
 }]
 

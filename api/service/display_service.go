@@ -139,6 +139,23 @@ func (s *DisplayService) RemoveWidget(displayID, widgetID string) error {
 	return errors.New("widget not found")
 }
 
+// Widget updaten
+func (s *DisplayService) UpdateWidget(displayID, widgetID string, widgetData iface.WidgetData) error {
+	d, ok := s.displays[displayID]
+	if !ok {
+		return errors.New("display not found")
+	}
+
+	for _, w := range d.Widgets {
+		if w.ID == widgetID {
+			w.Name = widgetData.Name
+			return nil
+		}
+	}
+
+	return errors.New("widget not found")
+}
+
 // Widget Config updaten
 func (s *DisplayService) UpdateWidgetConfig(displayID, widgetID string, config map[string]interface{}) error {
 	d, ok := s.displays[displayID]

@@ -59,6 +59,13 @@ div.settingsMenu {
     cursor: pointer;
   }
 
+  mat-icon.editButton {
+    position: absolute;
+    top: 1rem;
+    right: 4.5rem;
+    cursor: pointer;
+  }
+
   h1.widgetTitle {
     position: absolute;
     top: 1rem;

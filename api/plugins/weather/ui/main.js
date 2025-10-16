@@ -1,6 +1,7 @@
 class WeatherPlugin extends HTMLElement {
   async connectedCallback() {
     const config = this.config || {};
+
     // 1. CSS laden
     const style = document.createElement('link');
     style.rel = 'stylesheet';
@@ -20,7 +21,6 @@ class WeatherPlugin extends HTMLElement {
         tempEl.textContent = `${data.current_weather.temperature}°C`;
       });
 
-      console.log(config);
       
   }
 }

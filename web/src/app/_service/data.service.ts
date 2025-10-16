@@ -153,14 +153,19 @@ export class DataService {
     }))
   }
 
+  public updateWidget(widget: Widget) {
+    return this.http.put(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/widget/' + widget.id, widget, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(map((res) => {      
+      this.getDisplays().subscribe()      
+      return res
+    }))
+  }
+
   public updateWidgetConfig(widget: Widget, config:WidgetConfig) {
-    console.log(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/widget/' + widget.id);
-    
-    return this.http.put(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/widget/' + widget.id, config, {
+    return this.http.put(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/widget/' + widget.id + '/config', config, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(map((res) => {
-      console.log(res);
-      
       this.getDisplays().subscribe()      
       return res
     }))

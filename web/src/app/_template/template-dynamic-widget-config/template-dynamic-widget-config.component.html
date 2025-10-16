@@ -24,7 +24,7 @@
     <!-- Text -->
     @if (!['checkbox','number'].includes(opt.inputType) && !isArray(opt.inputType)) {
         <label>{{opt.name}}: </label>
-        <input type="text" [formControlName]="opt.name" />
+        <input type="text" [formControlName]="opt.name" placeholder="{{opt.placeholder}}" />
     }
   </div>
   }

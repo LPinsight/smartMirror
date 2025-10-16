@@ -31,6 +31,14 @@ export class TemplateGridWidgetComponent {
     this.ping.emit(eventObject)
   }
 
+  public editWidget(event?: any): void {
+    const eventObject: Eventping = {
+      label: eventLabel.update,
+      object: this.widget
+    }
+    this.ping.emit(eventObject)
+  }
+
   public selectPlacholderWidget(event?: any): void {
     if (this.editGrid) {
       const eventObject: Eventping = {

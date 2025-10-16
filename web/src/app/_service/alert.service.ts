@@ -141,6 +141,21 @@ export class AlertService {
     }
   }
 
+  public updateWidgetName (widgetName: string): SweetAlertOptions {
+    return {
+      title: 'Widget Name anpassen',
+      text: 'Neuer Widget Name für "' + widgetName + '" eingeben.',
+      input: 'text',
+      inputPlaceholder: 'Widget Name',
+      inputValue: widgetName,
+      icon: 'question',
+      showCloseButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Name anpassen',
+      denyButtonText: 'Abbruch'
+    }
+  }
+
   public addLocationConfig(displayName: string): SweetAlertOptions {
     return {
       title: 'Standort hinzufügen',

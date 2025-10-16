@@ -151,11 +151,20 @@ export class TemplateGridComponent implements OnInit{
     this.editGrid = false
   }
 
-  public updateWidget(event: Eventping) {
+  public async updateWidget(event: Eventping) {
     if (event.label === eventLabel.delete) {
       this.dataService.deleteWidget(event.object).subscribe(_ => {
         this.notification.success('Widget '+ event.object.name +' wurde erfolgreich entfernt', 'Widget Entfernt', { progressBar: true })
       })
+    }
+
+    if(event.label === eventLabel.update) {
+      const result = await Swal.fire(this.alert.updateWidgetName(event.object.name))
+      if(result.value) {
+        console.log("neuer Name: ", result.value);
+        event.object.name = result.value
+        this.dataService.updateWidget(event.object).subscribe()        
+      }
     }
 
     if (event.label === eventLabel.select) {

@@ -30,7 +30,8 @@ func NewRouter() http.Handler {
 	// /display/<id>/widget/<wid>
 	WidgetById := widgetRouter.PathPrefix("/{wid:W-[0-9a-fA-F-]+}").Subrouter()
 	WidgetById.HandleFunc("", handler.RemoveWidgetFromDisplay).Methods("DELETE", "OPTIONS")
-	WidgetById.HandleFunc("", handler.UpdateWidgetConfig).Methods("PUT", "OPTIONS")
+	WidgetById.HandleFunc("", handler.UpdateWidget).Methods("PUT", "OPTIONS")
+	WidgetById.HandleFunc("/config", handler.UpdateWidgetConfig).Methods("PUT", "OPTIONS")
 
 	// /displays
 	displaysRouter := router.PathPrefix("/displays").Subrouter()

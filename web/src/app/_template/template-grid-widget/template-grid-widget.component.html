@@ -25,6 +25,7 @@ Widget
 @if (showSettings) {
   <div class="settingsMenu">
     <mat-icon (click)="showSettings=!showSettings" class="settingsButton">close</mat-icon>
+    <mat-icon (click)="editWidget($event)" class="editButton">edit</mat-icon>
     <mat-icon (click)="deleteWidget($event)" class="deleteButton">delete</mat-icon>
     <h1 class="widgetTitle">"{{widget.name}}" - {{widget.plugin_name}}</h1>
 
