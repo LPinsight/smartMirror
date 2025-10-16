@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	iface "github.com/LPinsight/smartMirror/interface"
@@ -75,7 +74,6 @@ func DeleteWidget(w http.ResponseWriter, r *http.Request) {
 
 // PUT /api/display/{id}/widget/{id}
 func UpdateWidgetConfig(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("test")
 	displayID := mux.Vars(r)["id"]
 	widgetID := mux.Vars(r)["wid"]
 
