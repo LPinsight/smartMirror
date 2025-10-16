@@ -29,8 +29,7 @@ Widget
     <h2 class="widgetTitle">"{{widget.name}}" - {{widget.plugin_name}}</h2>
 
     <div>
-      <label for="test01">Test1</label>
-      <input type="text" title="test01" placeholder="test01">
+      <app-template-dynamic-widget-config [configMeta]="pluginConfig" [widget]="widget"/>
     </div>
   </div>
 }

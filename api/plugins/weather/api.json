@@ -1,7 +1,6 @@
 {
   "port": 9001,
   "endpoints": [
-    { "path": "/data", "methods": ["GET", "OPTIONS"], "handler": "DataHandler" },
-    { "path": "/test", "methods": ["GET", "OPTIONS"], "handler": "TestHandler" }
+    { "path": "/data", "methods": ["GET", "OPTIONS"], "handler": "DataHandler" }
   ]
 }

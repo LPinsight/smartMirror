@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable, tap } from "rxjs";
-import { Plugin } from "@interface/widget";
+import { Plugin, PluginConfig } from "@interface/widget";
 
 @Injectable({ providedIn: 'root' })
 export class PluginService {
@@ -25,6 +25,12 @@ export class PluginService {
 
   public getPluginByName(name: string): Plugin {
     return this.pluginsSubject.getValue().get(name) as Plugin;
+  }
+
+  public getConfigByName(name: string): PluginConfig[] | undefined {
+    const plugin = this.getPluginByName(name);
+    if (!plugin) return undefined;
+    return plugin.config
   }
 
   public getPluginLoaderInfo(name: string): { elementName: string; scriptUrl: string } | undefined {

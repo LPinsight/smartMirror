@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
 	iface "github.com/LPinsight/smartMirror/interface"
 	"github.com/LPinsight/smartMirror/utils"
@@ -132,6 +133,24 @@ func (s *DisplayService) RemoveWidget(displayID, widgetID string) error {
 	for i, w := range d.Widgets {
 		if w.ID == widgetID {
 			d.Widgets = append(d.Widgets[:i], d.Widgets[i+1:]...)
+			return nil
+		}
+	}
+
+	return errors.New("widget not found")
+}
+
+// Widget Config updaten
+func (s *DisplayService) UpdateWidgetConfig(displayID, widgetID string, config map[string]interface{}) error {
+	fmt.Println("test2")
+	d, ok := s.displays[displayID]
+	if !ok {
+		return errors.New("display not found")
+	}
+
+	for _, w := range d.Widgets {
+		if w.ID == widgetID {
+			w.Config = config
 			return nil
 		}
 	}

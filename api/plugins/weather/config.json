@@ -3,7 +3,24 @@
   "inputType": ["Celsius", "Fahrenheit"],
   "default": "Celsius"
 },{
+  "name": "API-Key",
+  "inputType": "text",
+  "default": "XXXXX-XXXXX-XXXXX-XXXXX"
+},
+
+
+
+
+{
   "name": "showHumidity",
+  "inputType": "checkbox",
+  "default": true
+},{
+  "name": "Adresse",
+  "inputType": "text",
+  "default": "Adresse hier"
+},{
+  "name": "defaultLocation",
   "inputType": "checkbox",
   "default": true
 },{

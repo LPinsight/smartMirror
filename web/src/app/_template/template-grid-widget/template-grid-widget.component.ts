@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { eventLabel, Eventping } from '@interface/eventping';
-import { Widget } from '@interface/widget';
+import { PluginConfig, Widget } from '@interface/widget';
+import { PluginService } from '@service/plugin.service';
 
 @Component({
     selector: 'app-template-grid-widget',
@@ -14,8 +15,12 @@ export class TemplateGridWidgetComponent {
   @Output() ping: EventEmitter<any> = new EventEmitter<any>()
 
   public showSettings: boolean = false
+  public pluginConfig!: PluginConfig[]
 
-  constructor() {
+  constructor(private pluginService: PluginService) {
+    pluginService.getPlugins().subscribe( _ => {
+      this.pluginConfig = pluginService.getConfigByName(this.widget.plugin_name) ?? []
+    })
   }
 
   public deleteWidget(event?: any): void {

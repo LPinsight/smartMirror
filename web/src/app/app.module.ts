@@ -13,12 +13,13 @@ import { TemplateHeaderNavComponent } from './_template/template-header-nav/temp
 import { TemplateGridComponent } from './_template/template-grid/template-grid.component';
 import { TemplateGridWidgetComponent } from './_template/template-grid-widget/template-grid-widget.component';
 import { ToastrModule } from 'ngx-toastr';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TemplateDisplayComponent } from './_template/template-display/template-display.component';
 import { TemplateLocationComponent } from './_template/template-location/template-location.component';
-import { TemplateDynamicWidgetComponent } from './_template/template-dynamic-widget/template-dynamic-widget.component';
+import { TemplateDynamicWidgetViewComponent } from './_template/template-dynamic-widget-view/template-dynamic-widget-view.component';
 import { TemplatePluginListComponent } from './_template/template-plugin-list/template-plugin-list.component';
+import { TemplateDynamicWidgetConfigComponent } from './_template/template-dynamic-widget-config/template-dynamic-widget-config.component';
 
 const navigationRoutes: Routes = [
   {path: 'settings', component: PageSettingsComponent},
@@ -27,24 +28,32 @@ const navigationRoutes: Routes = [
   // {path: '**', redirectTo: '/'},
 ]
 
-@NgModule({ declarations: [
-        AppComponent,
-        PageConfigComponent,
-        PageSettingsComponent,
-        PageMirrorComponent,
-        TemplateHeaderComponent,
-        TemplateHeaderNavComponent,
-        TemplateGridComponent,
-        TemplateGridWidgetComponent,
-        TemplateDisplayComponent,
-        TemplateLocationComponent,
-        TemplateDynamicWidgetComponent,
-        TemplatePluginListComponent
-    ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
-        MatIconModule,
-        RouterModule.forRoot(navigationRoutes),
-        BrowserAnimationsModule,
-        ToastrModule.forRoot(),
-        FormsModule], providers: [provideHttpClient(withInterceptorsFromDi())] })
+@NgModule({
+  declarations: [
+    AppComponent,
+    PageConfigComponent,
+    PageSettingsComponent,
+    PageMirrorComponent,
+    TemplateHeaderComponent,
+    TemplateHeaderNavComponent,
+    TemplateGridComponent,
+    TemplateGridWidgetComponent,
+    TemplateDisplayComponent,
+    TemplateLocationComponent,
+    TemplateDynamicWidgetViewComponent,
+    TemplateDynamicWidgetConfigComponent,
+    TemplatePluginListComponent
+  ],
+  bootstrap: [AppComponent],
+  imports: [
+    BrowserModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    RouterModule.forRoot(navigationRoutes),
+    BrowserAnimationsModule,
+    ToastrModule.forRoot(),
+    FormsModule
+  ],
+    providers: [provideHttpClient(withInterceptorsFromDi())]
+})
 export class AppModule { }

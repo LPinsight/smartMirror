@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	iface "github.com/LPinsight/smartMirror/interface"
@@ -65,6 +66,28 @@ func DeleteWidget(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)["id"]
 
 	if err := widgetService.Delete(id); err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// PUT /api/display/{id}/widget/{id}
+func UpdateWidgetConfig(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("test")
+	displayID := mux.Vars(r)["id"]
+	widgetID := mux.Vars(r)["wid"]
+
+	var data map[string]interface{}
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	// widget, err := displayService.AddWidget(displayID, &widgetData)
+	err := displayService.UpdateWidgetConfig(displayID, widgetID, data)
+	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
 	}

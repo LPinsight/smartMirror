@@ -1,14 +1,15 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { PluginService } from '@service/plugin.service';
+import { Widget } from '@interface/widget';
 
 @Component({
-  selector: 'app-template-dynamic-widget',
-  templateUrl: './template-dynamic-widget.component.html',
-  styleUrls: ['./template-dynamic-widget.component.scss'],
+  selector: 'app-template-dynamic-widget-view',
+  templateUrl: './template-dynamic-widget-view.component.html',
+  styleUrls: ['./template-dynamic-widget-view.component.scss'],
   standalone: false
 })
-export class TemplateDynamicWidgetComponent implements OnInit {
-  @Input() pluginName!: string;
+export class TemplateDynamicWidgetViewComponent implements OnInit {
+  @Input() widget!: Widget;
   @Input() config: any;
   
   constructor(
@@ -18,12 +19,13 @@ export class TemplateDynamicWidgetComponent implements OnInit {
 
   async ngOnInit() {
     this.pluginService.getPlugins().subscribe(async _ => {
-      const info = this.pluginService.getPluginLoaderInfo(this.pluginName);
-      if (!info) return console.warn('Plugin not found', this.pluginName);
+      const info = this.pluginService.getPluginLoaderInfo(this.widget.plugin_name);
+      if (!info) return console.warn('Plugin not found', this.widget.plugin_name);
 
       await this.loadScript(info.scriptUrl);
 
       const pluginEl = document.createElement(info.elementName);
+      (pluginEl as any).config = this.widget.config;
       this.el.nativeElement.innerHTML = '';
       this.el.nativeElement.appendChild(pluginEl);
       

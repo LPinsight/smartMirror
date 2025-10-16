@@ -15,14 +15,22 @@ func NewRouter() http.Handler {
 	displayRouter := router.PathPrefix("/display").Subrouter()
 	displayRouter.HandleFunc("", handler.CreateDisplayHandler).Methods("POST", "OPTIONS")
 
+	// /display/<id>
 	displayById := displayRouter.PathPrefix("/{id:D-[0-9a-fA-F-]+}").Subrouter()
 	displayById.HandleFunc("", handler.GetDisplayByIDHandler).Methods("GET", "OPTIONS")
 	displayById.HandleFunc("", handler.UpdateDisplayHandler).Methods("PUT", "OPTIONS")
 	displayById.HandleFunc("", handler.DeleteDisplayHandler).Methods("DELETE", "OPTIONS")
-	displayById.HandleFunc("/widget", handler.AddWidgetToDisplay).Methods("POST", "OPTIONS")
 	displayById.HandleFunc("/location", handler.SetDisplayLocationHandler).Methods("PUT", "OPTIONS")
 	displayById.HandleFunc("/active", handler.SetActiveDisplayHandler).Methods("PUT", "OPTIONS")
-	displayById.HandleFunc("/widget/{wid:W-[0-9a-fA-F-]+}", handler.RemoveWidgetFromDisplay).Methods("DELETE", "OPTIONS")
+
+	// /display/<id>/widget
+	widgetRouter := displayById.PathPrefix("/widget").Subrouter()
+	widgetRouter.HandleFunc("", handler.AddWidgetToDisplay).Methods("POST", "OPTIONS")
+
+	// /display/<id>/widget/<wid>
+	WidgetById := widgetRouter.PathPrefix("/{wid:W-[0-9a-fA-F-]+}").Subrouter()
+	WidgetById.HandleFunc("", handler.RemoveWidgetFromDisplay).Methods("DELETE", "OPTIONS")
+	WidgetById.HandleFunc("", handler.UpdateWidgetConfig).Methods("PUT", "OPTIONS")
 
 	// /displays
 	displaysRouter := router.PathPrefix("/displays").Subrouter()

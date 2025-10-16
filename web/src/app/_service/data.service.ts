@@ -1,6 +1,6 @@
 // import { Display, Location } from './../_interface/display';
 import { Injectable } from '@angular/core';
-import { Widget } from '@interface/widget';
+import { Widget, WidgetConfig } from '@interface/widget';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, combineLatest, map, Observable, switchMap, tap, of, from } from 'rxjs';
 import { Display, Location } from '@interface/display';
@@ -148,6 +148,19 @@ export class DataService {
     return this.http.delete(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/widget/' + widget.id, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(map((res) => {
+      this.getDisplays().subscribe()      
+      return res
+    }))
+  }
+
+  public updateWidgetConfig(widget: Widget, config:WidgetConfig) {
+    console.log(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/widget/' + widget.id);
+    
+    return this.http.put(this.URL + 'display/' + this.selectedIdSubject.getValue() + '/widget/' + widget.id, config, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(map((res) => {
+      console.log(res);
+      
       this.getDisplays().subscribe()      
       return res
     }))

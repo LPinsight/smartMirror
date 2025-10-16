@@ -1,15 +1,19 @@
 export interface Widget {
   id?: string;
-  plugin_name: string;      // Name des Plugins
+  plugin_name: string;
   name: string
   point_start: point;
   point_end: point;
-  // config?: PluginConfig[];         // widget-spezifische Konfiguration
+  config?: WidgetConfig;         // widget-spezifische Konfiguration
 }
 
 interface point {
   x: number;
   y: number;
+}
+
+export interface WidgetConfig {
+  [key: string]: any;
 }
 
 export interface Plugin {

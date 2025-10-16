@@ -37,8 +37,13 @@ func (s *WidgetService) GetByID(id string) (*iface.Widget, error) {
 // Widget erstellen
 func (s *WidgetService) Create(data iface.WidgetData) *iface.Widget {
 
-	config, _ := s.pluginService.GetConfig(data.PluginName)
+	pluginConfig, _ := s.pluginService.GetConfig(data.PluginName)
 	api, _ := s.pluginService.GetAPI(data.PluginName)
+
+	config := make(map[string]interface{})
+	for _, opt := range pluginConfig {
+		config[opt.Name] = opt.Default
+	}
 
 	widget := &iface.Widget{
 		ID:         utils.NewWidgetID(),
@@ -49,7 +54,7 @@ func (s *WidgetService) Create(data iface.WidgetData) *iface.Widget {
 		PointEnd:   data.PointEnd,
 		// RefreshRate: data.RefreshRate,
 		Config: config,
-		Api: api,
+		Api:    api,
 	}
 	s.widgets[widget.ID] = widget
 	return widget

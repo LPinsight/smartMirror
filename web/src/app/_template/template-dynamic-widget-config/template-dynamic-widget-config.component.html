@@ -1,0 +1,45 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  @for (opt of configMeta; track opt; let x = $index) {
+  <div class="form-group">
+
+    <!-- Checkbox -->
+     @if (opt.inputType === 'checkbox') {
+      <ng-container>
+        <label>
+          <input type="checkbox" [formControlName]="opt.name" /> {{opt.name}}
+        </label>
+      </ng-container>
+    }
+    <!-- Number -->
+     @if (opt.inputType === 'number') {
+      <ng-container>
+        <label>{{opt.name}}:
+          <input type="number" [formControlName]="opt.name" />
+        </label>
+      </ng-container>
+    }
+    <!-- Select -->
+     @if (isArray(opt.inputType)) {
+      <ng-container>
+        <label>{{opt.name}}:
+          <select [formControlName]="opt.name">
+            @for (option of opt.inputType; track option; let x = $index) {
+            <option [value]="option">{{option}}</option>
+            }
+          </select>
+        </label>
+      </ng-container>
+    }
+    <!-- Text -->
+    @if (!['checkbox','number'].includes(opt.inputType) && !isArray(opt.inputType)) {
+      <ng-container>
+        <label>{{opt.name}}:
+          <input type="text" [formControlName]="opt.name" />
+        </label>
+      </ng-container>
+    }
+  </div>
+  }
+  
+  <button type="submit">Speichern</button>
+</form>

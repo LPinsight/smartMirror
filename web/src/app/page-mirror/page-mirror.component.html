@@ -18,8 +18,8 @@
 <!-- [config]="widget.config" -->
 
   @for (widget of display.grid; track widget; let x = $index) {
-    <app-template-dynamic-widget
-        [pluginName]="widget.plugin_name"
+    <app-template-dynamic-widget-view
+        [widget]="widget"
         
         [ngStyle]="{
           'grid-row-start': widget.point_start.y,
