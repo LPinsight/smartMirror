@@ -4,39 +4,27 @@
 
     <!-- Checkbox -->
      @if (opt.inputType === 'checkbox') {
-      <ng-container>
-        <label>
-          <input type="checkbox" [formControlName]="opt.name" /> {{opt.name}}
-        </label>
-      </ng-container>
+        <label>{{opt.name}}: </label>
+        <input type="checkbox" [formControlName]="opt.name" />
     }
     <!-- Number -->
      @if (opt.inputType === 'number') {
-      <ng-container>
-        <label>{{opt.name}}:
-          <input type="number" [formControlName]="opt.name" />
-        </label>
-      </ng-container>
+        <label>{{opt.name}}: </label>
+        <input type="number" [formControlName]="opt.name" />
     }
     <!-- Select -->
      @if (isArray(opt.inputType)) {
-      <ng-container>
-        <label>{{opt.name}}:
-          <select [formControlName]="opt.name">
+        <label>{{opt.name}}: </label>
+        <select [formControlName]="opt.name">
             @for (option of opt.inputType; track option; let x = $index) {
             <option [value]="option">{{option}}</option>
             }
           </select>
-        </label>
-      </ng-container>
     }
     <!-- Text -->
     @if (!['checkbox','number'].includes(opt.inputType) && !isArray(opt.inputType)) {
-      <ng-container>
-        <label>{{opt.name}}:
-          <input type="text" [formControlName]="opt.name" />
-        </label>
-      </ng-container>
+        <label>{{opt.name}}: </label>
+        <input type="text" [formControlName]="opt.name" />
     }
   </div>
   }

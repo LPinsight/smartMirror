@@ -26,9 +26,9 @@ Widget
   <div class="settingsMenu">
     <mat-icon (click)="showSettings=!showSettings" class="settingsButton">close</mat-icon>
     <mat-icon (click)="deleteWidget($event)" class="deleteButton">delete</mat-icon>
-    <h2 class="widgetTitle">"{{widget.name}}" - {{widget.plugin_name}}</h2>
+    <h1 class="widgetTitle">"{{widget.name}}" - {{widget.plugin_name}}</h1>
 
-    <div>
+    <div class="config">
       <app-template-dynamic-widget-config [configMeta]="pluginConfig" [widget]="widget"/>
     </div>
   </div>
