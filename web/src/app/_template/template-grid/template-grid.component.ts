@@ -161,7 +161,6 @@ export class TemplateGridComponent implements OnInit{
     if(event.label === eventLabel.update) {
       const result = await Swal.fire(this.alert.updateWidgetName(event.object.name))
       if(result.value) {
-        console.log("neuer Name: ", result.value);
         event.object.name = result.value
         this.dataService.updateWidget(event.object).subscribe()        
       }
