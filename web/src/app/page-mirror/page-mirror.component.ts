@@ -21,8 +21,6 @@ export class PageMirrorComponent implements OnInit {
     private pluginService: PluginService
   ) {
     this.display = dataService.createDisplayPlaceholder()
-    
-    // this.createGrid()
   }
   
   ngOnInit() {
@@ -32,8 +30,6 @@ export class PageMirrorComponent implements OnInit {
         this.createGrid()        
       }      
     })
-
-    this.pluginService.getPluginData('weather', '/data').subscribe(console.log);
   }
 
   public updateView(): void {
