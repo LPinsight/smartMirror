@@ -1,87 +1,94 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
 
+	"github.com/LPinsight/smartMirror/db"
 	iface "github.com/LPinsight/smartMirror/interface"
+	"github.com/LPinsight/smartMirror/models"
 	"github.com/LPinsight/smartMirror/utils"
+	"gorm.io/datatypes"
+	"gorm.io/gorm"
 )
 
 type WidgetService struct {
-	widgets       map[string]*iface.Widget
+	db            *gorm.DB
 	pluginService *PluginService
 }
 
 // Konstruktor
-func NewWidgetService(PluginService *PluginService) *WidgetService {
+func NewWidgetService(db *gorm.DB, PluginService *PluginService) *WidgetService {
 	return &WidgetService{
-		widgets:       make(map[string]*iface.Widget),
+		db:            db,
 		pluginService: PluginService,
 	}
 }
 
 // Alle Widgets abrufen
-func (s *WidgetService) GetAll() map[string]*iface.Widget {
-	return s.widgets
+func (s *WidgetService) GetAll(display *models.Display) []*iface.Widget {
+	widgets := make([]*iface.Widget, len(display.Widgets))
+
+	for i, w := range display.Widgets {
+		widgets[i] = db.ToIfaceWidget(&w)
+	}
+
+	return widgets
 }
 
 // Einzelnes Widget abrufen
-func (s *WidgetService) GetByID(id string) (*iface.Widget, error) {
-	w, ok := s.widgets[id]
-	if !ok {
-		return nil, errors.New("widget not found")
+func (s *WidgetService) GetByID(display *models.Display, widgetID string) (*iface.Widget, error) {
+	widget, err := s.SearchWidget(widgetID, display.DisplayID)
+	if err != nil {
+		return nil, err
 	}
-	return w, nil
+
+	return db.ToIfaceWidget(widget), nil
 }
 
 // Widget erstellen
-func (s *WidgetService) Create(data iface.WidgetData) *iface.Widget {
-
+func (s *WidgetService) Create(data iface.WidgetData, displayID string) (*iface.Widget, error) {
 	pluginConfig, _ := s.pluginService.GetConfig(data.PluginName)
-	api, _ := s.pluginService.GetAPI(data.PluginName)
-
 	config := make(map[string]interface{})
 	for _, opt := range pluginConfig {
 		config[opt.Name] = opt.Default
 	}
 
-	widget := &iface.Widget{
-		ID:         utils.NewWidgetID(),
+	configBytes, _ := json.Marshal(config)
+	// api, _ := s.pluginService.GetAPI(data.PluginName)
+
+	widget := &models.Widget{
+		WidgetID:   utils.NewWidgetID(),
+		DisplayID:  displayID,
 		Name:       data.Name,
 		PluginName: data.PluginName,
-		// Type:        data.Type,
-		PointStart: data.PointStart,
-		PointEnd:   data.PointEnd,
-		// RefreshRate: data.RefreshRate,
-		Config: config,
-		Api:    api,
+		PointStart: &models.Point{X: data.PointStart.X, Y: data.PointStart.Y},
+		PointEnd:   &models.Point{X: data.PointEnd.X, Y: data.PointEnd.Y},
+		Config:     datatypes.JSON(configBytes),
 	}
-	s.widgets[widget.ID] = widget
-	return widget
+
+	if err := s.db.Create(widget).Error; err != nil {
+		return nil, err
+	}
+
+	return db.ToIfaceWidget(widget), nil
 }
 
-// Widget aktualisieren
-func (s *WidgetService) Update(id string, data iface.WidgetData) (*iface.Widget, error) {
-	w, ok := s.widgets[id]
-	if !ok {
-		return nil, errors.New("widget not found")
+// ####################################################
+// #                                                  #
+// #                      assets                      #
+// #                                                  #
+// ####################################################
+
+func (s *WidgetService) SearchWidget(widgetID string, displayID string) (*models.Widget, error) {
+	var widget models.Widget
+
+	if err := s.db.First(&widget, "widget_id = ? AND display_id = ?", widgetID, displayID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, errors.New("widget not found")
+		}
+		return nil, err
 	}
 
-	w.Name = data.Name
-	// w.Type = data.Type
-	w.PointStart = data.PointStart
-	w.PointEnd = data.PointEnd
-	// w.RefreshRate = data.RefreshRate
-	// w.Config = data.Config
-
-	return w, nil
-}
-
-// Widget löschen
-func (s *WidgetService) Delete(id string) error {
-	if _, ok := s.widgets[id]; !ok {
-		return errors.New("widget not found")
-	}
-	delete(s.widgets, id)
-	return nil
+	return &widget, nil
 }

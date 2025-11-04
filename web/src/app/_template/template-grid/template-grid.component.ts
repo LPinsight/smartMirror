@@ -34,6 +34,7 @@ export class TemplateGridComponent implements OnInit{
             
       if(data != undefined) {
         this.display = data
+        
         this.createGrid()
       }      
     })

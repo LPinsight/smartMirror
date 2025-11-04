@@ -38,18 +38,17 @@ export class DataService {
   )
   
   public getDisplays() {
-    return this.http.get<{ [key: string]: Display }>(this.URL + 'displays')
+    return this.http.get<Display[]>(this.URL + 'displays')
       .pipe(map((res) => {
-        let displays = new Map<string, Display> 
+        let displays = new Map<string, Display>()
 
-        for (let key in res) {
-          if (res.hasOwnProperty(key)) {
-            displays.set(key, res[key])
-            if(res[key].active) {
-              this.selectedIdSubject.next(key)
+        for (let display of res) {
+          displays.set(display.id, display)
+            if(display.active) {
+              this.selectedIdSubject.next(display.id)
             }
           }
-        }
+          
         this.setDisplays(displays)
         return displays
       }))

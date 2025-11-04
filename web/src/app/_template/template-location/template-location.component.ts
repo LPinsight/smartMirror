@@ -34,6 +34,7 @@ export class TemplateLocationComponent implements AfterViewInit{
         this.removeHome();
         this.setView(value)
       }
+      
     }
     get location(): Location {
       return this._location
@@ -71,13 +72,17 @@ export class TemplateLocationComponent implements AfterViewInit{
 
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit() {   
     this.initMap()
     setTimeout(() => this.map.invalidateSize(), 100);
   
     this.map.on('click', (event) => {
       this.setMarker(event.latlng, this.markerLayer, 'neuer Standort')
     })
+
+    if (this.display != undefined && this.display.location.lat != 0 && this.display.location.lat != 0) {
+      this.setHome(this.display.location)
+    }
   }
 
   ngOnDestroy() {

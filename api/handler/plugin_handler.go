@@ -8,10 +8,7 @@ import (
 	"path/filepath"
 
 	iface "github.com/LPinsight/smartMirror/interface"
-	"github.com/LPinsight/smartMirror/service"
 )
-
-var pluginService = service.NewPluginService()
 
 func GetAllPlugins(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")

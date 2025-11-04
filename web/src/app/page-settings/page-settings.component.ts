@@ -35,10 +35,8 @@ export class PageSettingsComponent implements OnInit{
 
     this.pluginService.plugins$.subscribe(plugins => {
       this.pluginList = plugins
-      console.log(plugins);
-      
-
-    }) 
+      // console.log(plugins);
+    })     
   }
 
   public getLocation(): Location {

@@ -5,16 +5,16 @@ import (
 	"net/http"
 
 	iface "github.com/LPinsight/smartMirror/interface"
-	"github.com/LPinsight/smartMirror/service"
 	"github.com/gorilla/mux"
 )
 
-// Service-Instanz für alle Handler
-var displayService = service.NewDisplayService(widgetService)
-
 // GET /api/displays
 func GetAllDisplaysHandler(w http.ResponseWriter, r *http.Request) {
-	displays := displayService.GetAll()
+	displays, err := displayService.GetAll()
+
+	if err != nil {
+		writeJSON(w, err.Error(), http.StatusBadRequest)
+	}
 	writeJSON(w, displays, http.StatusOK)
 }
 
@@ -24,7 +24,7 @@ func GetDisplayByIDHandler(w http.ResponseWriter, r *http.Request) {
 
 	display, err := displayService.GetByID(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
@@ -39,7 +39,10 @@ func CreateDisplayHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	display := displayService.Create(data)
+	display, err := displayService.Create(data)
+	if err != nil {
+		writeJSON(w, err.Error(), http.StatusBadRequest)
+	}
 	writeJSON(w, display, http.StatusCreated)
 }
 
