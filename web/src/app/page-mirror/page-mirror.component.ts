@@ -2,7 +2,8 @@ import { Component, ElementRef, OnInit } from '@angular/core';
 import { Display } from '@interface/display';
 import { Widget } from '@interface/widget';
 import { DataService } from '@service/data.service';
-import { PluginService } from '../_service/plugin.service';
+import { PluginService } from '@service/plugin.service';
+import { WebSocketService } from '@service/webSocket.service';
 
 @Component({
     selector: 'app-page-mirror',
@@ -18,17 +19,26 @@ export class PageMirrorComponent implements OnInit {
   constructor(
     private elRef: ElementRef,
     private dataService: DataService,
-    private pluginService: PluginService
+    private pluginService: PluginService,
+    private wsService: WebSocketService
   ) {
     this.display = dataService.createDisplayPlaceholder()
   }
   
   ngOnInit() {
+    this.wsService.connect()
+
     this.dataService.selectedDisplay$.subscribe((data) => {
       if(data != undefined) {
         this.display = data
         this.createGrid()        
       }      
+    })
+
+    this.wsService.onMessage().subscribe(msg => {
+      if(msg === 'reloadMirror') {
+        window.location.reload()
+      }
     })
   }
 

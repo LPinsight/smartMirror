@@ -9,6 +9,7 @@ import (
 	"github.com/LPinsight/smartMirror/handler"
 	api "github.com/LPinsight/smartMirror/router"
 	"github.com/LPinsight/smartMirror/service"
+	"github.com/LPinsight/smartMirror/websocket"
 )
 
 func main() {
@@ -21,7 +22,10 @@ func main() {
 
 	handler.Init(displayService, widgetService, pluginService)
 
-	router := api.NewRouter()
+	wsService := websocket.NewWebSocketService()
+	wsService.Run()
+
+	router := api.NewRouter(wsService)
 
 	fmt.Println("Server started at http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", router))

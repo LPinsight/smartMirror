@@ -2,7 +2,7 @@
   <ul>
     <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"><mat-icon>tune</mat-icon>Konfiguration</a></li>
     <li><a routerLink="/settings" routerLinkActive="active"><mat-icon>settings</mat-icon>Einstellungen</a></li>
-    <li><a><mat-icon>sync</mat-icon> Spiegel Neuladen</a></li>
+    <li (click)="reloadSpiegel()"><a><mat-icon>sync</mat-icon> Spiegel Neuladen</a></li>
     <li><a routerLink="/mirror" routerLinkActive="active" target="_blank"><mat-icon>tv</mat-icon> zum Spiegel</a></li>
   </ul>
 </nav>

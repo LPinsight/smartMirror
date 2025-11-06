@@ -4,12 +4,16 @@ import (
 	"net/http"
 
 	"github.com/LPinsight/smartMirror/handler"
+	"github.com/LPinsight/smartMirror/websocket"
 	"github.com/gorilla/mux"
 )
 
-func NewRouter() http.Handler {
+func NewRouter(wsService *websocket.WebSocketService) http.Handler {
 	router := mux.NewRouter()
 	router.Use(enableCORS)
+
+	// WebSocket
+	router.HandleFunc("/ws", wsService.Handler)
 
 	// /display
 	displayRouter := router.PathPrefix("/display").Subrouter()
