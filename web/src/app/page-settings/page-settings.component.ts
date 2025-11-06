@@ -35,7 +35,6 @@ export class PageSettingsComponent implements OnInit{
 
     this.pluginService.plugins$.subscribe(plugins => {
       this.pluginList = plugins
-      // console.log(plugins);
     })     
   }
 
@@ -44,6 +43,12 @@ export class PageSettingsComponent implements OnInit{
     if (display) return display?.location
     
     return {lat: 0, lon: 0}
+  }
+
+  public addPlugin() {
+    console.log("add Plugin");
+    // TODO: add Plugin logik hinzufügen
+    
   }
 
 }

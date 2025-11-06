@@ -21,5 +21,10 @@ div.content {
   }
   div.plugins {
     min-width: 35rem;
+
+    button {
+      width: 100%;
+      font-weight: bold;
+    }
   }
 }

@@ -15,6 +15,8 @@
     <app-template-location [location]="getLocation()" [display]="displayList.get(selectedId)"></app-template-location>
   </div>
   <div class="plugins">
+    <button (click)="addPlugin()"><mat-icon>add</mat-icon>Plugin hinzufügen</button>
+
     @for (plugin of pluginList | keyvalue; track plugin.key) {
       <app-template-plugin-list [plugin]="plugin.value"></app-template-plugin-list>
     }
