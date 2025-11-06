@@ -29,6 +29,12 @@ func RegisterPlugins() map[string]*iface.Plugin {
 
 		name := d.Name()
 
+		// plugin.json
+		mainPath := filepath.Join(pluginDir, name, "plugin.json")
+		mainData, _ := os.ReadFile(mainPath)
+		main := iface.PluginJSON{}
+		json.Unmarshal(mainData, &main)
+
 		// config.json
 		cfgPath := filepath.Join(pluginDir, name, "config.json")
 		cfgData, _ := os.ReadFile(cfgPath)
@@ -43,11 +49,16 @@ func RegisterPlugins() map[string]*iface.Plugin {
 
 		uiUrl := fmt.Sprintf("plugins/%s/ui/main.js", name)
 
+		fmt.Println(main)
+
 		pluginService.Create(iface.Plugin{
-			Name:   name,
-			Config: cfg,
-			Api:    api,
-			UiUrl:  uiUrl,
+			Name:         main.Name,
+			Author:       main.Author,
+			Beschreibung: main.Beschreibung,
+			Version:      main.Version,
+			Config:       cfg,
+			Api:          api,
+			UiUrl:        uiUrl,
 		})
 	}
 

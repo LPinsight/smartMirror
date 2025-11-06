@@ -8,6 +8,13 @@ import (
 	"os"
 )
 
+type PluginMeta struct {
+	Name         string `json:"name"`
+	Version      string `json:"version"`
+	Beschreibung string `json:"beschreibung"`
+	Author       string `json:"author"`
+}
+
 type Endpoint struct {
 	Path    string   `json:"path"`
 	Methods []string `json:"methods"`
@@ -20,6 +27,13 @@ type PluginConfig struct {
 }
 
 func main() {
+	// api.json lesen
+	metaFile, _ := os.ReadFile("plugin.json")
+	var meta PluginMeta
+	json.Unmarshal(metaFile, &meta)
+
+	fmt.Printf("Starte Plugin: %s v%s\nBeschreibung: %s\n\n", meta.Name, meta.Version, meta.Beschreibung)
+
 	// api.json lesen
 	file, err := os.ReadFile("api.json")
 	if err != nil {

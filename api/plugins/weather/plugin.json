@@ -1,0 +1,7 @@
+{
+  "name": "Weather Plugin",
+  "version": "1.0.0",
+  "beschreibung": "Zeigt Wetterinformationen an",
+  "author": "Slibbo",
+  "entryPoint": "main.go"
+}

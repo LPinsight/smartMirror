@@ -1,5 +1,8 @@
 {
   "port": 9001,
+  "name": "Weather Plugin",
+  "version": "1.0.0",
+  "beschreibung": "Zeigt Wetterdaten an",
   "endpoints": [
     { "path": "/data", "methods": ["GET", "OPTIONS"], "handler": "DataHandler" }
   ]
