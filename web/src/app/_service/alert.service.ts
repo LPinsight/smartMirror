@@ -5,8 +5,6 @@ import { SweetAlertOptions } from 'sweetalert2';
   providedIn: 'root'
 })
 export class AlertService {
-  static testConfig: any;
-
   constructor() { }
 
   public MixinConfig(steps: string[]): SweetAlertOptions {

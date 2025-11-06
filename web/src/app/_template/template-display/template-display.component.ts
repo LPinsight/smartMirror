@@ -4,6 +4,7 @@ import { DataService } from '@service/data.service';
 import { ToastrService } from 'ngx-toastr';
 import { AlertService } from '@service/alert.service';
 import Swal from 'sweetalert2';
+import { ToastService } from '@service/toast.service';
 
 @Component({
     selector: 'app-template-display',
@@ -18,7 +19,7 @@ export class TemplateDisplayComponent implements OnInit {
   constructor(
     private alert: AlertService,
     public data: DataService,
-    private notification: ToastrService
+    private notification: ToastService
   ) {
 
   }
@@ -56,8 +57,13 @@ export class TemplateDisplayComponent implements OnInit {
       }
     }
     if (currentStep === steps.length) {      
-      this.data.updateDisplay(this.display.id, values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe(res => {
-        this.notification.success('Display wurde erfolgreich angepasst', 'Display aktualisiert', { progressBar: true })
+      this.data.updateDisplay(this.display.id, values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe({
+        next: res => {
+          this.notification.success('Display wurde erfolgreich angepasst', 'Display aktualisiert')
+        },
+        error: err => {
+          this.notification.error('Display konnte nicht angepasst werden', 'Fehler')
+        }
       })
     }
   }
@@ -66,8 +72,13 @@ export class TemplateDisplayComponent implements OnInit {
     const result = await Swal.fire(this.alert.removeDisplayConfig(this.display.name))
 
     if(result.isDenied) {
-      this.data.removeDisplay(this.display.id).subscribe(res => {
-        this.notification.success('Display wurde erfolgreich entfernt', 'Display entfernen', { progressBar: true })
+      this.data.removeDisplay(this.display.id).subscribe({
+        next: res => {
+          this.notification.success('Display wurde erfolgreich gelöscht', 'Display gelöscht')
+        },
+        error: err => {
+          this.notification.error('Display konnte nicht gelöscht werden', 'Fehler')
+        }
       })
     }
   }

@@ -5,8 +5,9 @@ import { Display } from '@interface/display';
 import { eventLabel, Eventping } from '@interface/eventping';
 import { Widget } from '@interface/widget';
 import Swal from 'sweetalert2';
-import { AlertService } from '../../_service/alert.service';
-import { PluginService } from '../../_service/plugin.service';
+import { AlertService } from '@service/alert.service';
+import { PluginService } from '@service/plugin.service';
+import { ToastService } from '@service/toast.service';
 
 @Component({
     selector: 'app-template-grid',
@@ -24,7 +25,7 @@ export class TemplateGridComponent implements OnInit{
     private elRef: ElementRef,
     private dataService: DataService,
     private pluginService: PluginService,
-    private notification: ToastrService
+    private notification: ToastService
   ) {
     this.display = dataService.createDisplayPlaceholder()
   }
@@ -92,15 +93,20 @@ export class TemplateGridComponent implements OnInit{
           plugin_name: values[0],
           point_start: { x: x1, y: y1 },
           point_end: {x: x2, y: y2},
-        }).subscribe(_ => {
+        }).subscribe({
+          next: _ => {
           this.editGrid = false
           this.resetNewWidget()
-          this.notification.success('Widget ' + values[1] +' wurde erfolgreich hinzugefügt', 'Widget Hinzufügen', { progressBar: true })
+          this.notification.success('Widget ' + values[1] +' wurde erfolgreich hinzugefügt', 'Widget Hinzufügen')
+        },
+          error: err => {
+            this.notification.error('Widget konnte nicht hinzugefügt werden', 'Fehler')
+          }
         })
       }
 
     } else {
-      this.notification.error('Bitte wähle zwei Felder aus', "Widget Hinzufügen", { progressBar: true })
+      this.notification.warning('Bitte wähle zwei Felder aus', "Widget Hinzufügen")
     }
   }
 
@@ -154,8 +160,13 @@ export class TemplateGridComponent implements OnInit{
 
   public async updateWidget(event: Eventping) {
     if (event.label === eventLabel.delete) {
-      this.dataService.deleteWidget(event.object).subscribe(_ => {
-        this.notification.success('Widget '+ event.object.name +' wurde erfolgreich entfernt', 'Widget Entfernt', { progressBar: true })
+      this.dataService.deleteWidget(event.object).subscribe({
+        next: _ => {
+        this.notification.success('Widget '+ event.object.name +' wurde erfolgreich entfernt', 'Widget Entfernt')
+      },
+        error: err => {
+          this.notification.error('Widget konnte nicht entfernt werden', 'Fehler')
+      }
       })
     }
 
@@ -172,7 +183,7 @@ export class TemplateGridComponent implements OnInit{
         if (this.newWidgetPosition.length < 2) {
           this.newWidgetPosition.push(event.object)
         } else {
-          this.notification.error('Bitte maximal zwei Felder auswählen', "Widget Hinzufügen", { progressBar: true })
+          this.notification.warning('Bitte maximal zwei Felder auswählen', "Widget Hinzufügen")
         }
       } else {
         this.newWidgetPosition = this.newWidgetPosition.filter(item => item.id !== event.object.id)

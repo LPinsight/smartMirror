@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { AlertService } from '@service/alert.service';
 import { GeocodingService } from '../../_service/geocoding.service';
+import { ToastService } from '@service/toast.service';
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: './../../assets/marker-icon-2x.png',
@@ -68,7 +69,7 @@ export class TemplateLocationComponent implements AfterViewInit{
     private dataService: DataService,
     private geocodingService: GeocodingService,
     private alert: AlertService,
-    private notification: ToastrService) {
+    private notification: ToastService) {
 
   }
 
@@ -105,7 +106,7 @@ export class TemplateLocationComponent implements AfterViewInit{
 
   async saveLocation () {
     if(this.markerLayer.getLayers().length == 0) {
-      this.notification.error('Bitte Standort in der Karte setzen', "Standort setzen", { progressBar: true })
+      this.notification.warning('Bitte Standort in der Karte setzen', "Standort setzen")
       return
     }
 
@@ -116,8 +117,13 @@ export class TemplateLocationComponent implements AfterViewInit{
         this.dataService.setLocation({
           lat: layer.getLatLng().lat,
           lon: layer.getLatLng().lng,
-        }).subscribe( _ => {
-          this.notification.success('Standort erfolgreich gesetzt', "Standort gesetzt", { progressBar: true })
+        }).subscribe({
+          next: _ => {
+            this.notification.success('Standort erfolgreich gesetzt', "Standort gesetzt")
+        },
+          error: _ => {
+            this.notification.error('Standort konnte nicht gesetzt werden', "Fehler")
+          }
         })
       }
     });
@@ -125,7 +131,7 @@ export class TemplateLocationComponent implements AfterViewInit{
 
   async removeLocation () {
     if (this._location.lat == 0 && this._location.lon == 0) {
-        this.notification.error('Kein Standort zum ausgewählten Display vorhanden', "Kein Standort vorhanden", { progressBar: true })
+        this.notification.warning('Kein Standort zum ausgewählten Display vorhanden', "Kein Standort vorhanden")
       return
     }
 
@@ -135,8 +141,13 @@ export class TemplateLocationComponent implements AfterViewInit{
       this.dataService.setLocation({
             lat: 0,
             lon: 0,
-      }).subscribe( _ => {
-        this.notification.success('Standort erfolgreich entfernt', "Standort entfernt", { progressBar: true })
+      }).subscribe({
+        next: _ => {
+        this.notification.success('Standort erfolgreich entfernt', "Standort entfernt")
+      },
+        error: _ => {
+          this.notification.error('Standort konnte nicht entfernt werden', "Fehler")
+        }
       })
     }    
   }
@@ -144,7 +155,7 @@ export class TemplateLocationComponent implements AfterViewInit{
   async searchAddress(address: string) {
     this.geocodingService.searchAddress(address).subscribe(res => {
       if(!res) {
-        this.notification.warning('Adresse nicht gefunden', 'Suche', { progressBar: true });
+        this.notification.info('Adresse nicht gefunden', 'Suche');
         return;
       }
 

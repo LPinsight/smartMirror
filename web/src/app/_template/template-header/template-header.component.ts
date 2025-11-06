@@ -4,6 +4,7 @@ import { Display } from '@interface/display';
 import { AlertService } from '@service/alert.service';
 import { DataService } from '@service/data.service';
 import Swal, { SweetAlertOptions } from 'sweetalert2';
+import { ToastService } from '@service/toast.service';
 
 @Component({
     selector: 'app-template-header',
@@ -18,7 +19,7 @@ export class TemplateHeaderComponent implements OnInit{
   constructor(
     private alert: AlertService,
     private data: DataService,
-    private notification: ToastrService) {
+    private notification: ToastService) {
   }
 
   ngOnInit(): void {
@@ -67,9 +68,13 @@ export class TemplateHeaderComponent implements OnInit{
       }
     }
     if (currentStep === steps.length) {      
-      this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe(_ => {
-        // this.data.setSelectedId(res.Id) // neues Display auswählen
-        this.notification.success('Display wurde erfolgreich hinzugefügt', 'Display Hinzufügen', { progressBar: true })
+      this.data.createDisplay(values[0], Number(values[1]), Number(values[2]), Number(values[3])).subscribe({
+        next: _ => {
+          this.notification.success('Display wurde erfolgreich hinzugefügt', 'Display Hinzufügen')
+      },
+        error: err => {
+          this.notification.error('Display konnte nicht erstellt werden', 'Fehler')
+        }
       })
     }
   }
