@@ -9,11 +9,16 @@ import { Plugin } from '@interface/widget';
 })
 export class TemplatePluginListComponent implements OnInit {
   @Input() plugin!: Plugin
-  // @Input() plugin!: string
 
   constructor() { }
 
   ngOnInit() {
+  }
+
+  removePlugin() {
+    // Logik zum Entfernen des Plugins
+    console.log("remove " + this.plugin.name);
+    // TODO: Implementieren Sie die tatsächliche Logik zum Entfernen des Plugins
   }
 
 }

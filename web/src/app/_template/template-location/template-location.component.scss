@@ -38,8 +38,8 @@ div#addressSearch {
 
 div#map {
   display: block;
-  height: 60rem;
-  width: 60rem;
+  min-height: 49.5rem;
+  min-width: 49.5rem;
   // border: 1px solid $prime;
   border-radius: 1rem;
   overflow: hidden;

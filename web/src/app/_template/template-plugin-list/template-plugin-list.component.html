@@ -1,5 +1,9 @@
-<p>
-  template-plugin-list works!
-</p>
+<div class="info">
+  <h2>{{plugin.name}} <span>v{{plugin.version}}</span></h2>
+  <h1>von {{plugin.author}}</h1>
+  <p>{{plugin.beschreibung}}</p>
+</div>
 
-<h3>{{plugin.name}}</h3>
+<div class="buttons">
+  <button class="delete" (click)="removePlugin()"><mat-icon>delete</mat-icon>Löschen</button>
+</div>

@@ -18,6 +18,9 @@ export interface WidgetConfig {
 
 export interface Plugin {
   name: string;
+  version: string;
+  beschreibung: string;
+  author: string;
   uiUrl: string;
   config: PluginConfig[];
   api: PluginAPI;

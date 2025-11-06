@@ -34,11 +34,11 @@ export class PluginService {
   }
 
   public getPluginLoaderInfo(name: string): { elementName: string; scriptUrl: string } | undefined {
-    const plugin = this.getPluginByName(name);
+    const plugin = this.getPluginByName(name);    
     if (!plugin) return undefined;
 
     return {
-      elementName: `${plugin.name}-plugin`,
+      elementName: `${plugin.name}`,
       scriptUrl: plugin.uiUrl.startsWith('http') ? plugin.uiUrl : `${this.URL}${plugin.uiUrl}`
     };
   }
