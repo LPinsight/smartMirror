@@ -18,10 +18,10 @@ export class PluginService {
     );
   }
 
-  public getPluginData(pluginName: string, endpoint: string): Observable<any> {
-    const url = `${this.URL}plugins/${pluginName}/api/${endpoint}`;
-    return this.http.get(url, { headers: { 'Content-Type': 'application/json' } });
-  }
+  // public getPluginData(pluginName: string, endpoint: string): Observable<any> {
+  //   const url = `${this.URL}plugins/${pluginName}/api/${endpoint}`;
+  //   return this.http.get(url, { headers: { 'Content-Type': 'application/json' } });
+  // }
 
   public getPluginByName(name: string): Plugin {
     return this.pluginsSubject.getValue().get(name) as Plugin;
@@ -33,20 +33,19 @@ export class PluginService {
     return plugin.config
   }
 
+  public getUiUrlByName(name: string): string {
+    const plugin = this.getPluginByName(name);
+    if (!plugin) return '';
+    return plugin.uiUrl;
+  }
+
   public getPluginLoaderInfo(name: string): { elementName: string; scriptUrl: string } | undefined {
     const plugin = this.getPluginByName(name);    
-    if (!plugin) return undefined;
+    if (!plugin) return undefined;  
 
     return {
       elementName: `${plugin.name}`,
-      scriptUrl: plugin.uiUrl.startsWith('http') ? plugin.uiUrl : `${this.URL}${plugin.uiUrl}`
+      scriptUrl: plugin.uiUrl + '/main.js'
     };
   }
-
-
-
-
-  // installPlugin(pluginFolder: string) {
-  //   return this.http.post('/api/plugins/install', { folder: pluginFolder });
-  // }
 }

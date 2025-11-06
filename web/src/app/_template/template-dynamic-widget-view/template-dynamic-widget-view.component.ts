@@ -26,6 +26,7 @@ export class TemplateDynamicWidgetViewComponent implements OnInit {
 
       const pluginEl = document.createElement(info.elementName);
       (pluginEl as any).config = this.widget.config;
+      pluginEl.setAttribute('base-url', this.pluginService.getUiUrlByName(this.widget.plugin_name));
       // this.el.nativeElement.innerHTML = '';
       this.el.nativeElement.appendChild(pluginEl);
       

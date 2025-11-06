@@ -16,7 +16,7 @@ func GetAllPlugins(w http.ResponseWriter, r *http.Request) {
 }
 
 func RegisterPlugins() map[string]*iface.Plugin {
-	pluginDir := "./../api/plugins"
+	pluginDir := "./../plugins"
 	dirs, err := os.ReadDir(pluginDir)
 	if err != nil {
 		panic(err)
@@ -47,7 +47,8 @@ func RegisterPlugins() map[string]*iface.Plugin {
 		api := iface.PluginAPI{}
 		json.Unmarshal(apiData, &api)
 
-		uiUrl := fmt.Sprintf("plugins/%s/ui/main.js", name)
+		uiUrl := fmt.Sprintf("http://localhost:%d/ui", api.Port)
+		// uiUrl := fmt.Sprintf("plugins/%s/ui/main.js", name)
 
 		pluginService.Create(iface.Plugin{
 			Name:         main.Name,
