@@ -55,6 +55,7 @@ func RegisterPlugins() map[string]*iface.Plugin {
 			Author:       main.Author,
 			Beschreibung: main.Beschreibung,
 			Version:      main.Version,
+			Repository:   main.Repository,
 			Config:       cfg,
 			Api:          api,
 			UiUrl:        uiUrl,

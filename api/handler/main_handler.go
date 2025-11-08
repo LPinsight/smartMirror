@@ -1,6 +1,10 @@
 package handler
 
-import "github.com/LPinsight/smartMirror/service"
+import (
+	"net/http"
+
+	"github.com/LPinsight/smartMirror/service"
+)
 
 var displayService *service.DisplayService
 var widgetService *service.WidgetService
@@ -10,4 +14,11 @@ func Init(ds *service.DisplayService, ws *service.WidgetService, ps *service.Plu
 	displayService = ds
 	widgetService = ws
 	pluginService = ps
+}
+
+func GetVersion(w http.ResponseWriter, r *http.Request) {
+
+	writeJSON(w, map[string]string{
+		"version": service.GetAppVersion(),
+	}, http.StatusOK)
 }

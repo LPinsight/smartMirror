@@ -22,9 +22,19 @@ div.content {
   div.plugins {
     min-width: 35rem;
 
-    button {
+    div#buttons {
       width: 100%;
-      font-weight: bold;
+      display: flex;
+      margin: 0;
+      button {
+        width: 100%;
+        font-weight: bold;
+
+      &.update {
+        width: 20rem;
+        font-weight: normal;
+      }
+    }
     }
   }
 }

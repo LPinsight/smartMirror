@@ -5,6 +5,7 @@ type Plugin struct {
 	Name         string         `json:"name"`
 	Author       string         `json:"author"`
 	Version      string         `json:"version"`
+	Repository   string         `json:"repository"`
 	Beschreibung string         `json:"beschreibung"`
 	Config       []ConfigOption `json:"config"`
 	Api          PluginAPI      `json:"api"`
@@ -15,6 +16,7 @@ type PluginJSON struct {
 	Name         string `json:"name"`
 	Author       string `json:"author"`
 	Version      string `json:"version"`
+	Repository   string `json:"repository"`
 	Beschreibung string `json:"beschreibung"`
 	EntryPoint   string `json:"entryPoint"`
 }

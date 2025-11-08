@@ -15,7 +15,10 @@ export class AppComponent {
     private pluginService: PluginService
   ) {
     dataService.getDisplays().subscribe()
-    pluginService.getPlugins().subscribe()
+    pluginService.getPlugins().subscribe(_ => {
+      pluginService.getThisPluginVersion();
+      pluginService.checkAllPluginsForUpdates(true);
+    })
 
   }
 }

@@ -19,6 +19,10 @@ div.info {
     span {
       color: $white;
       font-size: 1rem;
+
+      &.old {
+        border-bottom: 2px solid $red
+      }
     }
   }
   h1 {

@@ -19,6 +19,8 @@ export interface WidgetConfig {
 export interface Plugin {
   name: string;
   version: string;
+  latest: string;
+	repository: string;
   beschreibung: string;
   author: string;
   uiUrl: string;
@@ -42,4 +44,11 @@ export interface PluginEndpoint {
   path: string;
   methods: string[];
   handler: string;
+}
+
+export interface PluginUpdateResult {
+  plugin: Plugin;
+  success: boolean;
+  latestVersion?: string;
+  error?: any
 }

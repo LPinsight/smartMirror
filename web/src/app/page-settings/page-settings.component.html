@@ -15,10 +15,13 @@
     <app-template-location [location]="getLocation()" [display]="displayList.get(selectedId)"></app-template-location>
   </div>
   <div class="plugins">
-    <button (click)="addPlugin()"><mat-icon>add</mat-icon>Plugin hinzufügen</button>
+    <div id="buttons">
+      <button (click)="addPlugin()"><mat-icon>add</mat-icon>Plugin hinzufügen</button>
+      <button (click)="checkUpdate()" class="update"><mat-icon>update</mat-icon>Update prüfen</button>
+    </div>
 
     @for (plugin of pluginList | keyvalue; track plugin.key) {
-      <app-template-plugin-list [plugin]="plugin.value"></app-template-plugin-list>
+      <app-template-plugin-list [plugin]="plugin.value" [pluginKey]="plugin.key"></app-template-plugin-list>
     }
   </div>
 </div>

@@ -51,4 +51,8 @@ export class PageSettingsComponent implements OnInit{
     
   }
 
+  public checkUpdate() {
+    this.pluginService.checkAllPluginsForUpdates(false);
+  }
+
 }
