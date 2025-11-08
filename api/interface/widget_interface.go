@@ -12,7 +12,7 @@ type Widget struct {
 	PointStart *Point                 `json:"point_start"`
 	PointEnd   *Point                 `json:"point_end"`
 	Config     map[string]interface{} `json:"config"`
-	Api        PluginAPI              `json:"api"`
+	// Api        PluginAPI              `json:"api"`
 }
 
 type WidgetData struct {

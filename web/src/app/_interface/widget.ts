@@ -25,7 +25,6 @@ export interface Plugin {
   author: string;
   uiUrl: string;
   config: PluginConfig[];
-  api: PluginAPI;
 }
 
 export interface PluginConfig {
@@ -33,17 +32,6 @@ export interface PluginConfig {
   placeholder: string;
   inputType: any;
   default: any;
-}
-
-export interface PluginAPI {
-  port: number;
-  endpoints: PluginEndpoint[];
-}
-
-export interface PluginEndpoint {
-  path: string;
-  methods: string[];
-  handler: string;
 }
 
 export interface PluginUpdateResult {

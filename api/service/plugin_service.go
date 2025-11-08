@@ -45,11 +45,3 @@ func (s *PluginService) GetConfig(name string) ([]iface.ConfigOption, error) {
 	}
 	return plugin.Config, nil
 }
-
-func (s *PluginService) GetAPI(name string) (iface.PluginAPI, error) {
-	plugin, ok := s.plugins[name]
-	if !ok {
-		return iface.PluginAPI{}, errors.New("plugin not found")
-	}
-	return plugin.Api, nil
-}

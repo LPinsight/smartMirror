@@ -25,7 +25,7 @@ func main() {
 	wsService := websocket.NewWebSocketService()
 	wsService.Run()
 
-	router := api.NewRouter(wsService)
+	router := api.NewRouter(wsService, pluginService)
 
 	fmt.Println("Server started at http://localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", router))

@@ -4,11 +4,12 @@ import (
 	"net/http"
 
 	"github.com/LPinsight/smartMirror/handler"
+	"github.com/LPinsight/smartMirror/service"
 	"github.com/LPinsight/smartMirror/websocket"
 	"github.com/gorilla/mux"
 )
 
-func NewRouter(wsService *websocket.WebSocketService) http.Handler {
+func NewRouter(wsService *websocket.WebSocketService, pluginService *service.PluginService) http.Handler {
 	router := mux.NewRouter()
 	router.Use(enableCORS)
 
@@ -44,7 +45,7 @@ func NewRouter(wsService *websocket.WebSocketService) http.Handler {
 	displaysRouter := router.PathPrefix("/displays").Subrouter()
 	displaysRouter.HandleFunc("", handler.GetAllDisplaysHandler).Methods("GET", "OPTIONS")
 
-	RegisterPlugins(router)
+	RegisterPlugins(router, pluginService)
 
 	return router
 }
@@ -54,6 +55,7 @@ func enableCORS(next http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		// w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		// w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
 		if r.Method == http.MethodOptions {

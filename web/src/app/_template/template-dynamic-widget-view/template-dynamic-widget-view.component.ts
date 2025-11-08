@@ -43,6 +43,7 @@ export class TemplateDynamicWidgetViewComponent implements OnInit {
       const script = document.createElement('script');
       script.src = url;
       script.type = 'module';
+      script.crossOrigin = 'anonymous';
       script.onload = () => resolve();
       script.onerror = () => reject(new Error(`Failed to load ${url}`));
       document.body.appendChild(script);

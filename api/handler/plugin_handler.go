@@ -2,7 +2,6 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -15,8 +14,9 @@ func GetAllPlugins(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(pluginService.GetAll())
 }
 
-func RegisterPlugins() map[string]*iface.Plugin {
+func RegisterPlugins() {
 	pluginDir := "./../plugins"
+
 	dirs, err := os.ReadDir(pluginDir)
 	if err != nil {
 		panic(err)
@@ -28,27 +28,21 @@ func RegisterPlugins() map[string]*iface.Plugin {
 		}
 
 		name := d.Name()
-
-		// plugin.json
 		mainPath := filepath.Join(pluginDir, name, "plugin.json")
-		mainData, _ := os.ReadFile(mainPath)
-		main := iface.PluginJSON{}
-		json.Unmarshal(mainData, &main)
+		configPath := filepath.Join(pluginDir, name, "config.json")
 
-		// config.json
-		cfgPath := filepath.Join(pluginDir, name, "config.json")
-		cfgData, _ := os.ReadFile(cfgPath)
-		cfg := []iface.ConfigOption{}
-		json.Unmarshal(cfgData, &cfg)
+		var main iface.PluginInfo
+		var config []iface.ConfigOption
 
-		// api.json
-		apiPath := filepath.Join(pluginDir, name, "api.json")
-		apiData, _ := os.ReadFile(apiPath)
-		api := iface.PluginAPI{}
-		json.Unmarshal(apiData, &api)
+		if data, err := os.ReadFile(mainPath); err == nil {
+			json.Unmarshal(data, &main)
+		}
 
-		uiUrl := fmt.Sprintf("http://localhost:%d/ui", api.Port)
-		// uiUrl := fmt.Sprintf("plugins/%s/ui/main.js", name)
+		if data, err := os.ReadFile(configPath); err == nil {
+			json.Unmarshal(data, &config)
+		}
+
+		uiUrl := "http://localhost:8080/plugins/" + name + "/ui/"
 
 		pluginService.Create(iface.Plugin{
 			Name:         main.Name,
@@ -56,11 +50,8 @@ func RegisterPlugins() map[string]*iface.Plugin {
 			Beschreibung: main.Beschreibung,
 			Version:      main.Version,
 			Repository:   main.Repository,
-			Config:       cfg,
-			Api:          api,
+			Config:       config,
 			UiUrl:        uiUrl,
 		})
 	}
-
-	return pluginService.GetAll()
 }

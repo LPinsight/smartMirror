@@ -26,7 +26,7 @@ export class PluginService {
           repository: "https://github.com/LPinsight/smartMirror",
           beschreibung: "Hauptsystem des SmartMirror",
           author: "Slibbo",
-          api: { port: 0, endpoints: [] },
+          // api: { port: 0, endpoints: [] },
           config: [],
           uiUrl: '',
         };

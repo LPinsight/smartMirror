@@ -1,47 +1,50 @@
 package api
 
 import (
-	"fmt"
+	"log"
 	"net/http"
-	"net/http/httputil"
-	"net/url"
+	"path/filepath"
 
 	"github.com/LPinsight/smartMirror/handler"
+	"github.com/LPinsight/smartMirror/service"
 	"github.com/gorilla/mux"
 )
 
-// Proxy-Handler für ein Plugin
-func proxyHandler(target string, prefix string) http.Handler {
-	url, _ := url.Parse(target)
-	proxy := httputil.NewSingleHostReverseProxy(url)
-
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Pfad anpassen: /plugins/<name>/ -> /
-		r.URL.Path = r.URL.Path[len(prefix):]
-		proxy.ServeHTTP(w, r)
-	})
-}
-
 // RegisterPlugins registriert alle Plugins als Proxy
-func RegisterPlugins(router *mux.Router) {
-	var plugins = handler.RegisterPlugins()
+func RegisterPlugins(router *mux.Router, pluginService *service.PluginService) {
+	uiPath := filepath.Join("./../plugins")
 
-	for _, plugin := range plugins {
-		// Plugin-Port
-		port := plugin.Api.Port
+	handler.RegisterPlugins()
 
-		// Proxy: alles unter /plugins/<name>/api/ weiterleiten
-		apiPrefix := fmt.Sprintf("/plugins/%s/api/", plugin.Name)
-		target := fmt.Sprintf("http://localhost:%d", port)
-		router.PathPrefix(apiPrefix).Handler(proxyHandler(target, apiPrefix))
+	for name := range pluginService.GetAll() {
+		route := "/plugins/" + name + "/ui/"
+		path := filepath.Join(uiPath, name, "ui")
+		log.Println("UI-Route:", route, "->", path)
+		// fs := http.StripPrefix(route, http.FileServer(http.Dir(path)))
+		fs := http.FileServer(http.Dir(path))
 
-		fmt.Printf("Proxy für Plugin %s registriert: %s -> %s\n", plugin.Name, apiPrefix, target)
+		handler := func(w http.ResponseWriter, r *http.Request) {
+			// CORS Header
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+			w.Header().Set("Content-Type", "application/javascript")
+
+			// Preflight
+			if r.Method == http.MethodOptions {
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+
+			// Manuell StripPrefix
+			r2 := r.Clone(r.Context())
+			r2.URL.Path = r.URL.Path[len(route):]
+
+			fs.ServeHTTP(w, r2)
+		}
+
+		router.Handle(route+"{file:.*}", http.HandlerFunc(handler))
 	}
-
-	// Statische UI-Dateien bereitstellen (alles andere außer /api/)
-	router.PathPrefix("/plugins/").Handler(
-		http.StripPrefix("/plugins/",
-			http.FileServer(http.Dir("./plugins"))))
 
 	// Endpoint: liefert alle Plugins inkl. config + UI
 	router.HandleFunc("/plugins", handler.GetAllPlugins).Methods("GET")
