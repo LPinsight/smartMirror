@@ -70,9 +70,12 @@ export class TemplateGridComponent implements OnInit{
         Swal.fire('Keine Plugins gefunden', '', 'info');
         return;
       }
+      
       const pluginList = Object.fromEntries(
-        Array.from(pluginMap.values()).map(plugin => [plugin.name, plugin.name])
-      );
+        Array.from(pluginMap.entries())
+        .filter(([id]) => id !== '__core__')
+        .map(([_, plugin]) => [plugin.name, plugin.name])
+      );      
 
       for (currentStep = 0; currentStep < steps.length;) {
         const result = await swalQueue.fire(this.alert.newWidgetConfig(currentStep, values, pluginList))
