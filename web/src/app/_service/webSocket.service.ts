@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
+import { ToastService } from '@service/toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,28 +10,24 @@ export class WebSocketService {
   private socket!: WebSocket
   private messageSubject = new Subject<string>();
 
-  constructor() { }
+  constructor(private toastService: ToastService) { }
 
   connect(): void {
     if (this.socket && this.socket.readyState == WebSocket.OPEN) return;
 
     this.socket = new WebSocket(this.URL);
 
-    this.socket.onopen = (event) => {
-      console.log('WebSocket connected:', event);
-    };
-
     this.socket.onmessage = (event) => {
       this.messageSubject.next(event.data);
     };
 
     this.socket.onclose = (event) => {
-      console.log('WebSocket disconnected:', event);
-      // setTimeout(() => this.connect(), 5000); // Reconnect after 5 seconds
+      setTimeout(() => this.connect(), 5000); // Reconnect after 5 seconds
     };
 
     this.socket.onerror = (event) => {
       console.error('WebSocket error:', event);
+      this.toastService.warning(event.toString(), 'WebSocket-Fehler');
     }
   }
 
@@ -38,7 +35,7 @@ export class WebSocketService {
     if (this.socket && this.socket.readyState == WebSocket.OPEN) {
       this.socket.send(msg);
     } else {
-      console.error('WebSocket ist nicht verbunden.');
+      this.toastService.warning('WebSocket ist nicht verbunden.', 'WebSocket-Fehler');
     }
   }
 
