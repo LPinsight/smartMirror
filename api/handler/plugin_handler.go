@@ -7,11 +7,20 @@ import (
 	"path/filepath"
 
 	iface "github.com/LPinsight/smartMirror/interface"
+	"github.com/gorilla/mux"
 )
 
 func GetAllPlugins(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(pluginService.GetAll())
+}
+
+func GetConfigByName(w http.ResponseWriter, r *http.Request) {
+	name := mux.Vars(r)["name"]
+	config, _ := pluginService.GetConfig(name)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(config)
 }
 
 func RegisterPlugins() {

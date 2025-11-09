@@ -113,9 +113,5 @@ export class PluginService {
     this.http.get<{version: string}>(this.URL + 'version').subscribe( res => {      
       this.pluginsSubject.getValue().get('__core__')!.version = res.version;
     })
-
-    // Diese Funktion sollte die aktuelle Version des SmartMirror Core Plugins zurückgeben.
-    // Hier wird ein Platzhalterwert zurückgegeben. Implementieren Sie die Logik zum Abrufen der tatsächlichen Version.
-
   }
 }
