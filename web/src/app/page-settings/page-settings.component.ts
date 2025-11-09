@@ -3,6 +3,7 @@ import { DataService } from '@service/data.service';
 import { Display, Location } from '@interface/display';
 import { Plugin } from '@interface/widget';
 import { PluginService } from '@service/plugin.service';
+import { ToastService } from '@service/toast.service';
 
 @Component({
     selector: 'app-page-settings',
@@ -18,7 +19,8 @@ export class PageSettingsComponent implements OnInit{
 
   constructor(
     private dataService: DataService,
-    private pluginService: PluginService
+    private pluginService: PluginService,
+    private toastService: ToastService
   ) {
 
   }
@@ -52,7 +54,15 @@ export class PageSettingsComponent implements OnInit{
   }
 
   public checkUpdate() {
-    this.pluginService.checkAllPluginsForUpdates(false);
+    this.pluginService.checkAllPluginsForUpdates().subscribe({
+      next: (_) => {
+        this.toastService.success('Alle Plugins wurden auf Updates überprüft.', 'Update-Check abgeschlossen');
+        this.pluginService.getPlugins().subscribe()
+      },
+      error: (err) => {
+        this.toastService.warning(err.error.message, 'Update-Check fehlgeschlagen');
+      }
+    });
   }
 
 }

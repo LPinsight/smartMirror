@@ -15,10 +15,6 @@ export class AppComponent {
     private pluginService: PluginService
   ) {
     dataService.getDisplays().subscribe()
-    pluginService.getPlugins().subscribe(_ => {
-      pluginService.getThisPluginVersion();
-      // pluginService.checkAllPluginsForUpdates(true); // TODO: latest Version check speichern und nicht immer wieder ausführen
-    })
-
+    pluginService.getPlugins().subscribe()
   }
 }

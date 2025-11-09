@@ -5,6 +5,7 @@ type Plugin struct {
 	Name         string         `json:"name"`
 	Author       string         `json:"author"`
 	Version      string         `json:"version"`
+	Latest       string         `json:"latest"`
 	Repository   string         `json:"repository"`
 	Beschreibung string         `json:"beschreibung"`
 	Config       []ConfigOption `json:"config"`
@@ -27,4 +28,9 @@ type ConfigOption struct {
 	Placeholder string      `json:"placeholder"`
 	InputType   interface{} `json:"inputType"` // kann string oder []string sein
 	Default     interface{} `json:"default"`   // kann string, bool, float64 etc. sein
+}
+
+type GithubRelease struct {
+	TagName string `json:"tag_name"`
+	Name    string `json:"name"`
 }

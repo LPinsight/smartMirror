@@ -30,5 +30,6 @@ func RegisterPlugins(router *mux.Router, pluginService *service.PluginService) {
 
 	// Endpoint: liefert alle Plugins inkl. config + UI
 	router.HandleFunc("/plugins", handler.GetAllPlugins).Methods("GET", "OPTIONS")
+	router.HandleFunc("/plugins/version", handler.CheckPluginVersion).Methods("GET", "OPTIONS")
 	router.HandleFunc("/plugins/{name}/config", handler.GetConfigByName).Methods("GET", "OPTIONS")
 }
