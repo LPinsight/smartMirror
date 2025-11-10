@@ -34,3 +34,8 @@ type GithubRelease struct {
 	TagName string `json:"tag_name"`
 	Name    string `json:"name"`
 }
+
+type PluginData struct {
+	Name       string `json:"name"`
+	Repository string `json:"repository"`
+}

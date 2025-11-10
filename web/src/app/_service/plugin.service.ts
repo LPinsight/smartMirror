@@ -68,4 +68,46 @@ export class PluginService {
       return res
     }))
   }
+
+  public installPlugin(name: string, url: string) {
+    let json = {
+      "name": name,
+      "repository": url
+    }
+
+    return this.http.post<String>(this.URL + 'plugins/install', json, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      tap(() => {
+        // this.getPlugins().subscribe();
+      }))
+  }
+
+  public removePlugin(name: string, url: string) {
+    let json = {
+      "name": name,
+      "repository": url
+    }
+
+    return this.http.post<String>(this.URL + 'plugins/remove', json, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      tap(() => {
+        // this.getPlugins().subscribe();
+      }))
+  }
+
+  public updatePlugin(name: string, url: string) {
+    let json = {
+      "name": name,
+      "repository": url
+    }
+
+    return this.http.post<String>(this.URL + 'plugins/update', json, {
+      headers: { 'Content-Type': 'application/json' }
+    }).pipe(
+      tap(() => {
+        // this.getPlugins().subscribe();
+      }))
+  }
 }

@@ -190,4 +190,42 @@ export class AlertService {
     }
   }
 
+  public installPluginConfig(): SweetAlertOptions {
+    return {
+      title: 'Plugin installieren',
+      text: 'Geben Sie den Link des Plugins ein, das Sie installieren möchten.',
+      icon: 'question',
+      showCloseButton: true,
+      showDenyButton: true,
+      input: 'url',
+      inputPlaceholder: 'Plugin Link',
+      confirmButtonText: 'Plugin installieren',
+      denyButtonText: 'Abbrechen'
+    }
+  }
+
+  public removePluginConfig(name: string): SweetAlertOptions {
+    return {
+      title: 'Plugin entfernen',
+      text: 'Soll das Plugin "' + name + '" wirklich entfernt werden?',
+      icon: 'question',
+      showCloseButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Plugin nicht entfernen',
+      denyButtonText: 'Plugin entfernen'
+    }
+  }
+
+  public updatePluginConfig(name: string): SweetAlertOptions {
+    return {
+      title: 'Plugin aktualisieren',
+      text: 'Soll das Plugin "' + name + '" wirklich aktualisiert werden?',
+      icon: 'question',
+      showCloseButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Plugin aktualisieren',
+      denyButtonText: 'Abbrechen'
+    }
+  }
+
 }

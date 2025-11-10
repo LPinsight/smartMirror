@@ -73,10 +73,11 @@ update_plugin() {
     repo=$(get_github_repo "$git_url")
     local plugin_name
     plugin_name=$(basename "$repo")
-    
+
+    # Wenn das Plugin bereits existiert, altes löschen
     if [ -d "$PLUGIN_DIR/$plugin_name" ]; then
-        echo "Plugin '$plugin_name' ist bereits installiert."
-        return
+        echo "Plugin '$plugin_name' ist bereits installiert – entferne alte Version..."
+        rm -rf "$PLUGIN_DIR/$plugin_name"
     fi
 
     echo "Hole neuesten Release von $repo ..."

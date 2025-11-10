@@ -146,3 +146,51 @@ func normalizeRepoURL(url string) string {
 
 	return url
 }
+
+func InstallPlugin(w http.ResponseWriter, r *http.Request) {
+	var data iface.PluginData
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err := pluginService.Install(data.Repository)
+	if err != nil {
+		writeJSON(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	writeJSON(w, "Plugin installed successfully", http.StatusOK)
+}
+
+func RemovePlugin(w http.ResponseWriter, r *http.Request) {
+	var data iface.PluginData
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err := pluginService.Remove(data.Name)
+	if err != nil {
+		writeJSON(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	writeJSON(w, "Plugin removed successfully", http.StatusOK)
+}
+
+func UpdatePlugin(w http.ResponseWriter, r *http.Request) {
+	var data iface.PluginData
+	if err := json.NewDecoder(r.Body).Decode(&data); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	err := pluginService.Update(data.Repository)
+	if err != nil {
+		writeJSON(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	writeJSON(w, "Plugin updated successfully", http.StatusOK)
+}

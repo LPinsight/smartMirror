@@ -45,7 +45,9 @@ func NewRouter(wsService *websocket.WebSocketService, pluginService *service.Plu
 	displaysRouter := router.PathPrefix("/displays").Subrouter()
 	displaysRouter.HandleFunc("", handler.GetAllDisplaysHandler).Methods("GET", "OPTIONS")
 
-	RegisterPlugins(router, pluginService)
+	// /plugins
+	pluginRouter := router.PathPrefix("/plugins").Subrouter()
+	RegisterPlugins(pluginRouter, pluginService)
 
 	return router
 }

@@ -18,18 +18,21 @@ func RegisterPlugins(router *mux.Router, pluginService *service.PluginService) {
 
 	// Statischer File-Server für jede Plugin-UI
 	for name := range pluginService.GetAll() {
-		route := "/plugins/" + name + "/ui/"
+		route := "/plugins/" + name + "/ui"
 		path := filepath.Join(uiPath, name, "ui")
 
 		log.Println("UI-Route:", route, "->", path)
 
 		fs := http.StripPrefix(route, http.FileServer(http.Dir(path)))
 
-		router.PathPrefix(route).Handler(enableCORS(fs))
+		router.PathPrefix("/" + name + "/ui").Handler(enableCORS(fs))
 	}
 
 	// Endpoint: liefert alle Plugins inkl. config + UI
-	router.HandleFunc("/plugins", handler.GetAllPlugins).Methods("GET", "OPTIONS")
-	router.HandleFunc("/plugins/version", handler.CheckPluginVersion).Methods("GET", "OPTIONS")
-	router.HandleFunc("/plugins/{name}/config", handler.GetConfigByName).Methods("GET", "OPTIONS")
+	router.HandleFunc("", handler.GetAllPlugins).Methods("GET", "OPTIONS")
+	router.HandleFunc("/install", handler.InstallPlugin).Methods("POST", "OPTIONS")
+	router.HandleFunc("/remove", handler.RemovePlugin).Methods("POST", "OPTIONS")
+	router.HandleFunc("/update", handler.UpdatePlugin).Methods("POST", "OPTIONS")
+	router.HandleFunc("/version", handler.CheckPluginVersion).Methods("GET", "OPTIONS")
+	router.HandleFunc("/{name}/config", handler.GetConfigByName).Methods("GET", "OPTIONS")
 }

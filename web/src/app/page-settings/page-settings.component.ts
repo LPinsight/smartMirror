@@ -4,6 +4,8 @@ import { Display, Location } from '@interface/display';
 import { Plugin } from '@interface/widget';
 import { PluginService } from '@service/plugin.service';
 import { ToastService } from '@service/toast.service';
+import { AlertService } from '@service/alert.service';
+import Swal from 'sweetalert2';
 
 @Component({
     selector: 'app-page-settings',
@@ -20,7 +22,8 @@ export class PageSettingsComponent implements OnInit{
   constructor(
     private dataService: DataService,
     private pluginService: PluginService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private alertService: AlertService
   ) {
 
   }
@@ -47,10 +50,22 @@ export class PageSettingsComponent implements OnInit{
     return {lat: 0, lon: 0}
   }
 
-  public addPlugin() {
-    console.log("add Plugin");
-    // TODO: add Plugin logik hinzufügen
+  public async addPlugin() {
+    const result = await Swal.fire(this.alertService.installPluginConfig())
     
+    if (result.isConfirmed) {      
+      const pluginLink = result.value
+        
+        this.pluginService.installPlugin("New Plugin",pluginLink).subscribe({
+          next: (_) => {
+            this.toastService.success(`Plugin wurde erfolgreich installiert.`, 'Plugin installiert');
+            this.pluginService.getPlugins().subscribe()
+          },
+          error: (err) => {
+            this.toastService.error(err.error.message, 'Plugin-Installation fehlgeschlagen');
+          }
+        });
+    }    
   }
 
   public checkUpdate() {

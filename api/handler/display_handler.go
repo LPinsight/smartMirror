@@ -42,6 +42,7 @@ func CreateDisplayHandler(w http.ResponseWriter, r *http.Request) {
 	display, err := displayService.Create(data)
 	if err != nil {
 		writeJSON(w, err.Error(), http.StatusBadRequest)
+		return
 	}
 	writeJSON(w, display, http.StatusCreated)
 }
