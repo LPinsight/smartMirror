@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
+
+	"github.com/fvbock/endless"
 
 	"github.com/LPinsight/smartMirror/db"
 	"github.com/LPinsight/smartMirror/handler"
@@ -28,5 +29,6 @@ func main() {
 	router := api.NewRouter(wsService, pluginService)
 
 	fmt.Println("Server started at http://localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(endless.ListenAndServe(":8080", router))
+	// log.Fatal(http.ListenAndServe(":8080", router))
 }

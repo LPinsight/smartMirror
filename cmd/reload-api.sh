@@ -11,7 +11,7 @@ PID=$(lsof -t -i:$PORT)
 
 if [ -n "$PID" ]; then
   echo -e "${RED}→ Stoppe alte API (PID: $PID)...${NC}"
-  kill -9 $PID
+  kill -HUP $PID
   sleep 1
 fi
 
