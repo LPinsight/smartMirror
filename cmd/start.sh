@@ -1,51 +1,32 @@
 #!/bin/bash
+echo "=== Starting SmartMirror Container ==="
 
-# === SmartMirror Start Script (Background Version) ===
-# Startet Go-API und Angular-Frontend im Hintergrund
+echo "Initializing MySQL..."
+mkdir -p /run/mysqld
+chown -R mysql:mysql /var/lib/mysql /run/mysqld
 
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m'
+# MySQL einmalig initialisieren, falls noch nicht eingerichtet
+if [ ! -d /var/lib/mysql/mysql ]; then
+    echo "Initializing MySQL data directory..."
+    mysql_install_db --user=mysql --ldata=/var/lib/mysql
+fi
 
-echo -e "${GREEN}Starte SmartMirror...${NC}"
+# MySQL im Hintergrund starten
+echo "Starting MySQL..."
+mysqld --user=mysql --datadir=/var/lib/mysql &
+MYSQL_PID=$!
 
-# -------------------
-# Alte Prozesse beenden
-# -------------------
-echo -e "${GREEN}Beende alte Prozesse (falls vorhanden)...${NC}"
-for PORT in 8080 4200; do
-  PID=$(lsof -t -i:$PORT)
-  if [ -n "$PID" ]; then
-    echo -e "${RED}→ Prozess auf Port $PORT gefunden (PID: $PID), wird beendet...${NC}"
-    kill -9 $PID
-  fi
+# Warten bis MySQL bereit ist
+echo "Waiting for MySQL..."
+until mysqladmin ping --silent; do
+    sleep 1
 done
+echo "MySQL is ready."
 
-# -------------------
-# Backend starten
-# -------------------
-echo -e "${GREEN}Starte Go API...${NC}"
-cd ../api || exit
-go mod tidy >/dev/null 2>&1
-nohup go run main.go > ../logs/api.log 2>&1 &
-cd ..
+# API starten
+echo "Starting API..."
+/app/smartmirror-api &
 
-# -------------------
-# Frontend starten
-# -------------------
-echo -e "${GREEN}Starte Angular Frontend...${NC}"
-cd web || exit
-npm install >/dev/null 2>&1
-nohup npm start > ../logs/frontend.log 2>&1 &
-cd ..
-
-# -------------------
-# Fertigmeldung
-# -------------------
-echo ""
-echo -e "${GREEN}✅ SmartMirror gestartet!${NC}"
-echo "API läuft auf:      http://localhost:8080"
-echo "Frontend läuft auf: http://localhost:4200"
-echo ""
-echo "→ Logs findest du unter: ./logs/api.log und ./logs/frontend.log"
-echo ""
+# nginx starten
+echo "Starting nginx..."
+nginx -g "daemon off;"

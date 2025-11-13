@@ -12,7 +12,7 @@ import { AlertService } from '@service/alert.service';
 })
 export class DataService {
   // private displays: Map<string, Display> = new Map<string, Display>
-  private URL: string = 'http://localhost:8080/'
+  private URL: string = '/api/'
 
   displaysSubject = new BehaviorSubject<Map<string, Display> >(new Map());
   selectedIdSubject = new BehaviorSubject<string>('');

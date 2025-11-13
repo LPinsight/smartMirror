@@ -28,7 +28,7 @@ func main() {
 
 	router := api.NewRouter(wsService, pluginService)
 
-	fmt.Println("Server started at http://localhost:8080")
-	log.Fatal(endless.ListenAndServe(":8080", router))
+	fmt.Println("Server started at http://0.0.0.0:8080")
+	log.Fatal(endless.ListenAndServe("0.0.0.0:8080", router))
 	// log.Fatal(http.ListenAndServe(":8080", router))
 }

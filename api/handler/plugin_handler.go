@@ -42,6 +42,12 @@ func GetConfigByName(w http.ResponseWriter, r *http.Request) {
 func RegisterPlugins() {
 	pluginDir := "./../plugins"
 
+	// Prüfen, ob das Verzeichnis existiert
+	if _, err := os.Stat(pluginDir); os.IsNotExist(err) {
+		fmt.Println("⚠ Plugins-Verzeichnis existiert nicht oder ist leer, überspringe Registrierung")
+		return
+	}
+
 	dirs, err := os.ReadDir(pluginDir)
 	if err != nil {
 		panic(err)

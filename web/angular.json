@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "web": {
+    "smartMirror-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,9 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": {
-              "base": "dist/web"
-            },
+            "outputPath": "dist/web",
             "index": "src/index.html",
             "polyfills": [
               "zone.js"

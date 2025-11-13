@@ -1,6 +1,7 @@
 package db
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -23,8 +24,36 @@ func Init() {
 	host := os.Getenv("DB_HOST")
 	port := os.Getenv("DB_PORT")
 	name := os.Getenv("DB_NAME")
+	lokalDB := os.Getenv("USE_INTERNAL_DB")
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, port, name)
+	var dsn string
+
+	if lokalDB == "true" {
+		dsn = fmt.Sprintf("%s:%s@unix(/run/mysqld/mysqld.sock)/?charset=utf8mb4&parseTime=True&loc=Local", user, password)
+	} else {
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, port)
+	}
+
+	// 1️⃣ Verbindung zur MariaDB herstellen (ohne Datenbank)
+	sqlDB, err := sql.Open("mysql", dsn)
+	if err != nil {
+		log.Fatalf("❌ Konnte Verbindung zur DB herstellen: %v", err)
+	}
+
+	// 2️⃣ Datenbank anlegen, falls sie noch nicht existiert
+	_, err = sqlDB.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS `%s` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", name))
+	if err != nil {
+		log.Fatalf("❌ Konnte Datenbank nicht erstellen: %v", err)
+	}
+
+	sqlDB.Close() // Schließen der reinen SQL-Verbindung
+
+	// 3️⃣ Verbindung mit GORM zur richtigen Datenbank
+	if lokalDB == "true" {
+		dsn = fmt.Sprintf("%s:%s@unix(/run/mysqld/mysqld.sock)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, name)
+	} else {
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, port, name)
+	}
 
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
