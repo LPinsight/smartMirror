@@ -2,6 +2,14 @@
 
 PLUGIN_DIR="../plugins"
 RELOAD_SCRIPT="./reload-api.sh"
+LOG_FILE="../logs/plugin-manager.log"
+
+# Logging: Alles (stdout + stderr) in Datei und Konsole ausgeben
+exec > >(tee -a "$LOG_FILE") 2>&1
+
+echo "==============================="
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Starte Skript: $0 $@"
+echo "==============================="
 
 if [ ! -f "$RELOAD_SCRIPT" ]; then
     echo "Fehler: $RELOAD_SCRIPT nicht gefunden!"
@@ -9,21 +17,19 @@ if [ ! -f "$RELOAD_SCRIPT" ]; then
 fi
 
 # Hilfsfunktion: GitHub Repo aus URL extrahieren
-# Hilfsfunktion: GitHub Repo aus URL extrahieren
 get_github_repo() {
     local url="$1"
-    # Entfernt .git und alles davor, außerdem abschließenden Slash
     echo "$url" | sed -E 's|https://github.com/([^/]+/[^/]+)/?.*|\1|'
 }
 
-# Installieren: immer den latest Release
+# Plugin installieren (immer latest Release)
 install_plugin() {
     local git_url="$1"
     local repo
     repo=$(get_github_repo "$git_url")
     local plugin_name
     plugin_name=$(basename "$repo")
-    
+
     if [ -d "$PLUGIN_DIR/$plugin_name" ]; then
         echo "Plugin '$plugin_name' ist bereits installiert."
         return
@@ -31,7 +37,9 @@ install_plugin() {
 
     echo "Hole neuesten Release von $repo ..."
     local latest_tag
-    latest_tag=$(curl -s "https://api.github.com/repos/$repo/releases/latest" | grep -m1 '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    latest_tag=$(curl -s "https://api.github.com/repos/$repo/releases/latest" \
+        | grep -m1 '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
     if [ -z "$latest_tag" ]; then
         echo "Fehler: Kein Release gefunden."
         exit 1
@@ -39,12 +47,11 @@ install_plugin() {
 
     echo "Installiere $plugin_name Version $latest_tag ..."
     mkdir -p "$PLUGIN_DIR"
-    curl -L "https://github.com/$repo/archive/refs/tags/$latest_tag.zip" -o "/tmp/$plugin_name.zip"
+    curl -L "https://github.com/$repo/archive/refs/tags/$latest_tag.zip" \
+        -o "/tmp/$plugin_name.zip"
     unzip -q "/tmp/$plugin_name.zip" -d "$PLUGIN_DIR"
 
-    # Den automatisch entpackten Ordner herausfinden
     extracted_dir=$(unzip -Z -1 "/tmp/$plugin_name.zip" | head -n1 | cut -d/ -f1)
-
     mv "$PLUGIN_DIR/$extracted_dir" "$PLUGIN_DIR/$plugin_name"
     rm "/tmp/$plugin_name.zip"
 
@@ -52,7 +59,7 @@ install_plugin() {
     $RELOAD_SCRIPT
 }
 
-# Entfernen
+# Plugin entfernen
 remove_plugin() {
     local plugin_name="$1"
     if [ ! -d "$PLUGIN_DIR/$plugin_name" ]; then
@@ -66,7 +73,7 @@ remove_plugin() {
     $RELOAD_SCRIPT
 }
 
-# Aktualisieren = latest Release herunterladen und altes Plugin ersetzen
+# Plugin aktualisieren (latest Release)
 update_plugin() {
     local git_url="$1"
     local repo
@@ -74,7 +81,6 @@ update_plugin() {
     local plugin_name
     plugin_name=$(basename "$repo")
 
-    # Wenn das Plugin bereits existiert, altes löschen
     if [ -d "$PLUGIN_DIR/$plugin_name" ]; then
         echo "Plugin '$plugin_name' ist bereits installiert – entferne alte Version..."
         rm -rf "$PLUGIN_DIR/$plugin_name"
@@ -82,7 +88,9 @@ update_plugin() {
 
     echo "Hole neuesten Release von $repo ..."
     local latest_tag
-    latest_tag=$(curl -s "https://api.github.com/repos/$repo/releases/latest" | grep -m1 '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    latest_tag=$(curl -s "https://api.github.com/repos/$repo/releases/latest" \
+        | grep -m1 '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+
     if [ -z "$latest_tag" ]; then
         echo "Fehler: Kein Release gefunden."
         exit 1
@@ -90,13 +98,11 @@ update_plugin() {
 
     echo "Installiere $plugin_name Version $latest_tag ..."
     mkdir -p "$PLUGIN_DIR"
-    curl -L "https://github.com/$repo/archive/refs/tags/$latest_tag.zip" -o "/tmp/$plugin_name.zip"
+    curl -L "https://github.com/$repo/archive/refs/tags/$latest_tag.zip" \
+        -o "/tmp/$plugin_name.zip"
     unzip -q "/tmp/$plugin_name.zip" -d "$PLUGIN_DIR"
 
-    # Automatisch entpackten Ordner herausfinden
     extracted_dir=$(unzip -Z -1 "/tmp/$plugin_name.zip" | head -n1 | cut -d/ -f1)
-
-    # Umbenennen in nur den Plugin-Namen
     mv "$PLUGIN_DIR/$extracted_dir" "$PLUGIN_DIR/$plugin_name"
     rm "/tmp/$plugin_name.zip"
 
@@ -123,3 +129,6 @@ case "$1" in
         exit 1
         ;;
 esac
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] Skript beendet."
+echo
