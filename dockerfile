@@ -47,31 +47,28 @@ RUN echo 'server { \
   listen 80; \
   root /var/www/html; \
   index index.html; \
+  location / { \
+    try_files $uri $uri/ /index.html; \
+  } \
   location /api/ { \
     proxy_pass http://127.0.0.1:8080/; \
     proxy_set_header Host $host; \
     proxy_set_header X-Real-IP $remote_addr; \
   } \
-  location /ws/ { \
-    proxy_pass http://127.0.0.1:8080/ws/; \
+  location /ws { \
+    proxy_pass http://127.0.0.1:8080/ws; \
     proxy_http_version 1.1; \
     proxy_set_header Upgrade $http_upgrade; \
     proxy_set_header Connection "Upgrade"; \
     proxy_set_header Host $host; \
-    proxy_set_header X-Real-IP $remote_addr; \
   } \
 }' > /etc/nginx/http.d/default.conf
 
 # Environment vars
 ENV USE_INTERNAL_DB=true
-ENV DB_USER=root
-ENV DB_PASSWORD=example
-ENV DB_NAME=smartMirror
-ENV DB_HOST=127.0.0.1
-ENV DB_PORT=3306
 
 # Ports
-EXPOSE 80 8080 3306
+EXPOSE 80
 
 # Volumes
 VOLUME ["/app/logs", "/app/plugins", "/var/lib/mysql"]

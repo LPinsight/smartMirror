@@ -6,8 +6,7 @@ import { ToastService } from '@service/toast.service';
   providedIn: 'root'
 })
 export class WebSocketService {
-  private URL: string = 'ws://localhost:8080/ws'
-  // private URL: string = 'http://localhost:8080/ws'
+  private URL: string = `ws://${window.location.host}/ws`
   private socket!: WebSocket
   private messageSubject = new Subject<string>();
 

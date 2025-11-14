@@ -16,22 +16,51 @@ import (
 
 var DB *gorm.DB
 
+const (
+	internalUser     = "root"
+	internalPassword = "example"
+	internalDBName   = "smartMirror"
+	internalSocket   = "/run/mysqld/mysqld.sock"
+)
+
 func Init() {
 	_ = godotenv.Load()
 
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
-	name := os.Getenv("DB_NAME")
-	lokalDB := os.Getenv("USE_INTERNAL_DB")
+	useInternal := os.Getenv("USE_INTERNAL_DB") == "true"
+
+	var user, password, host, port, name string
+
+	if useInternal {
+		// interne DB -> hardcoded Werte
+		user = internalUser
+		password = internalPassword
+		name = internalDBName
+
+		// host/port irrelevant
+		host = ""
+		port = ""
+	} else {
+		// externe DB -> aus ENV
+		user = os.Getenv("DB_USER")
+		password = os.Getenv("DB_PASSWORD")
+		host = os.Getenv("DB_HOST")
+		port = os.Getenv("DB_PORT")
+		name = os.Getenv("DB_NAME")
+
+		if user == "" || password == "" || host == "" || port == "" || name == "" {
+			log.Fatal("❌ Externe DB aktiviert, aber Variablen fehlen (DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)")
+		}
+	}
 
 	var dsn string
 
-	if lokalDB == "true" {
-		dsn = fmt.Sprintf("%s:%s@unix(/run/mysqld/mysqld.sock)/?charset=utf8mb4&parseTime=True&loc=Local", user, password)
+	if useInternal {
+		// Verbinde ohne DB
+		dsn = fmt.Sprintf("%s:%s@unix(%s)/?charset=utf8mb4&parseTime=True&loc=Local",
+			user, password, internalSocket)
 	} else {
-		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, port)
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local",
+			user, password, host, port)
 	}
 
 	// 1️⃣ Verbindung zur MariaDB herstellen (ohne Datenbank)
@@ -49,10 +78,12 @@ func Init() {
 	sqlDB.Close() // Schließen der reinen SQL-Verbindung
 
 	// 3️⃣ Verbindung mit GORM zur richtigen Datenbank
-	if lokalDB == "true" {
-		dsn = fmt.Sprintf("%s:%s@unix(/run/mysqld/mysqld.sock)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, name)
+	if useInternal {
+		dsn = fmt.Sprintf("%s:%s@unix(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+			user, password, internalSocket, name)
 	} else {
-		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, password, host, port, name)
+		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+			user, password, host, port, name)
 	}
 
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
