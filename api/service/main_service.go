@@ -1,6 +1,6 @@
 package service
 
-var appVersion = "v1.0.0-alpha"
+var appVersion = "v1.0.1-alpha"
 
 func GetAppVersion() string {
 	return appVersion

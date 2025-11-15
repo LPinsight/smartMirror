@@ -47,6 +47,8 @@ RUN echo 'server { \
   listen 80; \
   root /var/www/html; \
   index index.html; \
+  access_log /app/logs/nginx_access.log; \
+  error_log /app/logs/nginx_error.log; \
   location / { \
     try_files $uri $uri/ /index.html; \
   } \

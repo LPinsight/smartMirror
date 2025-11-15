@@ -44,12 +44,6 @@ nohup ./smartmirror-api >"$LOG_DIR/api.log" 2>&1 &
 cd - >/dev/null
 
 # -------------------
-# nginx starten (Vordergrund)
-# -------------------
-echo -e "${GREEN}Starting nginx in foreground...${NC}"
-exec nginx -g "daemon off;"
-
-# -------------------
 # Fertigmeldung
 # -------------------
 echo ""
@@ -57,5 +51,11 @@ echo -e "${GREEN}✅ SmartMirror gestartet!${NC}"
 echo "→ Logs:"
 echo "   MySQL:     $LOG_DIR/mysql.log"
 echo "   API:       $LOG_DIR/api.log"
-echo "   nginx:     $LOG_DIR/nginx.log"
+echo "   nginx access:     $LOG_DIR/nginx_access.log"
+echo "   nginx error:     $LOG_DIR/nginx_error.log"
 echo ""
+
+# -------------------
+# nginx starten (Vordergrund)
+# -------------------
+exec nginx -g "daemon off;"
