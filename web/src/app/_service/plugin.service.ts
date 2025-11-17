@@ -79,7 +79,7 @@ export class PluginService {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
       tap(() => {
-        // this.getPlugins().subscribe();
+        this.getPlugins().subscribe();
       }))
   }
 
@@ -93,7 +93,7 @@ export class PluginService {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
       tap(() => {
-        // this.getPlugins().subscribe();
+        this.getPlugins().subscribe();
       }))
   }
 
@@ -107,7 +107,7 @@ export class PluginService {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
       tap(() => {
-        // this.getPlugins().subscribe();
+        this.getPlugins().subscribe();
       }))
   }
 }

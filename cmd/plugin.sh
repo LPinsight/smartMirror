@@ -1,8 +1,8 @@
 #!/bin/bash
 
-PLUGIN_DIR="../plugins"
-RELOAD_SCRIPT="./reload-api.sh"
-LOG_FILE="../logs/plugin-manager.log"
+PLUGIN_DIR="/app/plugins"
+RELOAD_SCRIPT="/app/cmd/reload-api.sh"
+LOG_FILE="/app/logs/plugin-manager.log"
 
 # Logging: Alles (stdout + stderr) in Datei und Konsole ausgeben
 exec > >(tee -a "$LOG_FILE") 2>&1
@@ -22,13 +22,15 @@ get_github_repo() {
     echo "$url" | sed -E 's|https://github.com/([^/]+/[^/]+)/?.*|\1|'
 }
 
+extract_zip_root() {
+    unzip -l "$1" | awk '/\/$/ {print $4; exit}' | cut -d/ -f1
+}
+
 # Plugin installieren (immer latest Release)
 install_plugin() {
     local git_url="$1"
-    local repo
-    repo=$(get_github_repo "$git_url")
-    local plugin_name
-    plugin_name=$(basename "$repo")
+    local repo=$(get_github_repo "$git_url")
+    local plugin_name=$(basename "$repo")
 
     if [ -d "$PLUGIN_DIR/$plugin_name" ]; then
         echo "Plugin '$plugin_name' ist bereits installiert."
@@ -36,8 +38,7 @@ install_plugin() {
     fi
 
     echo "Hole neuesten Release von $repo ..."
-    local latest_tag
-    latest_tag=$(curl -s "https://api.github.com/repos/$repo/releases/latest" \
+    local latest_tag=$(curl -s "https://api.github.com/repos/$repo/releases/latest" \
         | grep -m1 '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 
     if [ -z "$latest_tag" ]; then
@@ -47,13 +48,22 @@ install_plugin() {
 
     echo "Installiere $plugin_name Version $latest_tag ..."
     mkdir -p "$PLUGIN_DIR"
+
     curl -L "https://github.com/$repo/archive/refs/tags/$latest_tag.zip" \
         -o "/tmp/$plugin_name.zip"
+
     unzip -q "/tmp/$plugin_name.zip" -d "$PLUGIN_DIR"
 
-    extracted_dir=$(unzip -Z -1 "/tmp/$plugin_name.zip" | head -n1 | cut -d/ -f1)
+    extracted_dir=$(extract_zip_root "/tmp/$plugin_name.zip")
+
     mv "$PLUGIN_DIR/$extracted_dir" "$PLUGIN_DIR/$plugin_name"
     rm "/tmp/$plugin_name.zip"
+
+    # Warten bis Verzeichnis existiert
+    while [ ! -d "$PLUGIN_DIR/$plugin_name" ]; do
+        sleep 0.1
+    done
+    sync
 
     echo "Plugin '$plugin_name' installiert."
     $RELOAD_SCRIPT
@@ -69,6 +79,13 @@ remove_plugin() {
 
     echo "Entferne Plugin '$plugin_name'..."
     rm -rf "$PLUGIN_DIR/$plugin_name"
+
+    # Warten bis Plugin wirklich weg ist
+    while [ -d "$PLUGIN_DIR/$plugin_name" ]; do
+        sleep 0.1
+    done
+    sync
+
     echo "Plugin '$plugin_name' entfernt."
     $RELOAD_SCRIPT
 }
@@ -76,19 +93,19 @@ remove_plugin() {
 # Plugin aktualisieren (latest Release)
 update_plugin() {
     local git_url="$1"
-    local repo
-    repo=$(get_github_repo "$git_url")
-    local plugin_name
-    plugin_name=$(basename "$repo")
+    local repo=$(get_github_repo "$git_url")
+    local plugin_name=$(basename "$repo")
 
     if [ -d "$PLUGIN_DIR/$plugin_name" ]; then
         echo "Plugin '$plugin_name' ist bereits installiert – entferne alte Version..."
         rm -rf "$PLUGIN_DIR/$plugin_name"
+
+        while [ -d "$PLUGIN_DIR/$plugin_name" ]; do sleep 0.1; done
+        sync
     fi
 
     echo "Hole neuesten Release von $repo ..."
-    local latest_tag
-    latest_tag=$(curl -s "https://api.github.com/repos/$repo/releases/latest" \
+    local latest_tag=$(curl -s "https://api.github.com/repos/$repo/releases/latest" \
         | grep -m1 '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
 
     if [ -z "$latest_tag" ]; then
@@ -102,9 +119,15 @@ update_plugin() {
         -o "/tmp/$plugin_name.zip"
     unzip -q "/tmp/$plugin_name.zip" -d "$PLUGIN_DIR"
 
-    extracted_dir=$(unzip -Z -1 "/tmp/$plugin_name.zip" | head -n1 | cut -d/ -f1)
+    extracted_dir=$(extract_zip_root "/tmp/$plugin_name.zip")
     mv "$PLUGIN_DIR/$extracted_dir" "$PLUGIN_DIR/$plugin_name"
     rm "/tmp/$plugin_name.zip"
+
+     # Warten bis Verzeichnis existiert
+    while [ ! -d "$PLUGIN_DIR/$plugin_name" ]; do
+        sleep 0.1
+    done
+    sync
 
     echo "Plugin '$plugin_name' auf neueste Version aktualisiert."
     $RELOAD_SCRIPT

@@ -25,7 +25,7 @@ RUN npm run build
 FROM alpine:3.20
 
 # Install dependencies
-RUN apk add --no-cache bash nginx mysql mysql-client
+RUN apk add --no-cache bash nginx mysql mysql-client curl unzip
 
 # Create directories
 WORKDIR /app
