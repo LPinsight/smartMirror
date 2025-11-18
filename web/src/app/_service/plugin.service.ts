@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, catchError, forkJoin, map, Observable, of, tap } from "rxjs";
+import { BehaviorSubject, catchError, forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
 import { Plugin, PluginConfig, PluginUpdateResult } from "@interface/widget";
 import { ToastService } from "./toast.service";
 
@@ -12,9 +12,26 @@ export class PluginService {
   private URL: string = '/api/'
 
   constructor(
-    private http: HttpClient,
-    private toastService: ToastService
+    private http: HttpClient
   ) {
+  }
+
+  private waitForApiReady(): Observable<boolean> {
+    return new Observable(observer => {
+      const check = () => {
+        this.http.get(this.URL + 'health').subscribe({
+          next: () => {
+            observer.next(true);
+            observer.complete();
+          },
+          error: () => {
+            setTimeout(check, 300); // alle 300ms erneut prüfen
+          }
+        });
+      };
+
+      check();
+    });
   }
 
   public getPlugins(): Observable<{[key: string]: Plugin}> {
@@ -78,9 +95,9 @@ export class PluginService {
     return this.http.post<String>(this.URL + 'plugins/install', json, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
-      tap(() => {
-        // this.getPlugins().subscribe();
-      }))
+      switchMap(() => this.waitForApiReady()),
+      switchMap(() => this.getPlugins())
+    )
   }
 
   public removePlugin(name: string, url: string) {
@@ -92,9 +109,9 @@ export class PluginService {
     return this.http.post<String>(this.URL + 'plugins/remove', json, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
-      tap(() => {
-        // this.getPlugins().subscribe();
-      }))
+      switchMap(() => this.waitForApiReady()),
+      switchMap(() => this.getPlugins())
+    )
   }
 
   public updatePlugin(name: string, url: string) {
@@ -106,8 +123,8 @@ export class PluginService {
     return this.http.post<String>(this.URL + 'plugins/update', json, {
       headers: { 'Content-Type': 'application/json' }
     }).pipe(
-      tap(() => {
-        // this.getPlugins().subscribe();
-      }))
+      switchMap(() => this.waitForApiReady()),
+      switchMap(() => this.getPlugins())
+    )
   }
 }

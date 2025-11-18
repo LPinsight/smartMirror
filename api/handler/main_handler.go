@@ -22,3 +22,8 @@ func GetVersion(w http.ResponseWriter, r *http.Request) {
 		"version": service.GetAppVersion(),
 	}, http.StatusOK)
 }
+
+func HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"status":"ok"}`))
+}

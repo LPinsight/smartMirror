@@ -1,25 +1,40 @@
 #!/bin/bash
 
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m'
+APP="smartmirror-api"
+LOG_FILE="/app/logs/api.log"
 
-echo -e "${GREEN}🔄 Reload SmartMirror API...${NC}"
+echo "🔄 Reload SmartMirror API..."
 
-PORT=8080
-PID=$(lsof -t -i:$PORT)
+# 1️⃣ PIDs korrekt finden
+# PIDS=$(pidof smartmirror-api)
+PIDS=$(pgrep -f "$APP")
 
-if [ -n "$PID" ]; then
-  echo -e "${RED}→ Stoppe alte API (PID: $PID)...${NC}"
-  kill -HUP $PID
-  sleep 1
+if [ -n "$PIDS" ]; then
+    echo "→ Stoppe API (PID: $PIDS)..."
+
+    # Alle gefundenen Instanzen sauber beenden
+    for PID in $PIDS; do
+        kill -TERM "$PID"
+    done
+
+    # 2️⃣ Warten bis Prozess WIRKLICH beendet ist
+    for i in {1..20}; do
+        if ! pgrep -f "$APP" >/dev/null; then
+            echo "✔ API gestoppt."
+            break
+        fi
+
+        sleep 0.2
+    done
+else
+    echo "⚠ Keine laufende API gefunden."
 fi
 
-cd ../api || exit
-go mod tidy >/dev/null 2>&1
-nohup go run main.go > ../logs/api.log 2>&1 &
-cd ..
+# 3️⃣ Kurze Pause, sonst startet sie zu früh neu
+sleep 0.5
 
-echo -e "${GREEN}✅ API neu gestartet!${NC}"
-echo "Läuft auf: http://localhost:$PORT"
-echo "Logs: ./logs/api.log"
+# 4️⃣ Neustart
+echo "🚀 Starte API neu..."
+nohup /app/smartmirror-api >> "$LOG_FILE" 2>&1 &
+
+echo "✅ API neu gestartet!"

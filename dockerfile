@@ -25,7 +25,7 @@ RUN npm run build
 FROM alpine:3.20
 
 # Install dependencies
-RUN apk add --no-cache bash nginx mysql mysql-client
+RUN apk add --no-cache bash nginx mysql mysql-client curl unzip
 
 # Create directories
 WORKDIR /app
@@ -47,6 +47,8 @@ RUN echo 'server { \
   listen 80; \
   root /var/www/html; \
   index index.html; \
+  access_log /app/logs/nginx_access.log; \
+  error_log /app/logs/nginx_error.log; \
   location / { \
     try_files $uri $uri/ /index.html; \
   } \

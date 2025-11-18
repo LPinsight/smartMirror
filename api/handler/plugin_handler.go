@@ -40,7 +40,7 @@ func GetConfigByName(w http.ResponseWriter, r *http.Request) {
 }
 
 func RegisterPlugins() {
-	pluginDir := "./../plugins"
+	pluginDir := "/app/plugins"
 
 	// Prüfen, ob das Verzeichnis existiert
 	if _, err := os.Stat(pluginDir); os.IsNotExist(err) {

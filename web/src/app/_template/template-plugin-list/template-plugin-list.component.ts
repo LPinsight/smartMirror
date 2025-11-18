@@ -27,32 +27,34 @@ export class TemplatePluginListComponent implements OnInit {
   async removePlugin() {
     const result = await Swal.fire(this.alertService.removePluginConfig(this.plugin.name));
       
-    if (result.isDenied) {            
-        this.pluginService.removePlugin(this.plugin.name, this.plugin.repository).subscribe({
-          next: (_) => {
-            this.toastService.success(`Plugin wurde erfolgreich entfernt.`, 'Plugin entfernt');
-            this.pluginService.getPlugins().subscribe()
-          },
-          error: (err) => {
-            this.toastService.error(err.error.message, 'Fehler beim Entfernen des Plugins');
-          }
-        });
+    if (result.isDenied) {
+      this.toastService.info(`Plugin wird entfernt.`, 'Plugin entfernen'); 
+      this.pluginService.removePlugin(this.plugin.name, this.plugin.repository).subscribe({
+        next: (_) => {
+          this.toastService.success(`Plugin wurde erfolgreich entfernt.`, 'Plugin entfernt');
+          this.pluginService.getPlugins().subscribe()
+        },
+        error: (err) => {
+          this.toastService.error(err.error.message, 'Fehler beim Entfernen des Plugins');
+        }
+      });
     }
   }
 
   async updatePlugin() {
     const result = await Swal.fire(this.alertService.updatePluginConfig(this.plugin.name));
       
-    if (result.isConfirmed) {            
-        this.pluginService.updatePlugin(this.plugin.name, this.plugin.repository).subscribe({
-          next: (_) => {
-            this.toastService.success('Plugin wurde erfolgreich aktualisiert', 'Plugin aktualisiert');
-            this.pluginService.getPlugins().subscribe()
-          },
-          error: (err) => {
-            this.toastService.error(err.error.message, 'Fehler beim Aktualisieren des Plugins');
-          }
-        });
+    if (result.isConfirmed) {       
+      this.toastService.info(`Plugin wird aktualisiert.`, 'Plugin aktualisieren');      
+      this.pluginService.updatePlugin(this.plugin.name, this.plugin.repository).subscribe({
+        next: (_) => {
+          this.toastService.success('Plugin wurde erfolgreich aktualisiert', 'Plugin aktualisiert');
+          this.pluginService.getPlugins().subscribe()
+        },
+        error: (err) => {
+          this.toastService.error(err.error.message, 'Fehler beim Aktualisieren des Plugins');
+        }
+      });
     }
   }
 
