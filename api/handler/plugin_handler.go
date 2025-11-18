@@ -86,7 +86,7 @@ func RegisterPlugins() {
 			json.Unmarshal(data, &config)
 		}
 
-		uiUrl := "http://localhost:8080/plugins/" + name + "/ui/"
+		uiUrl := "/api/plugins/" + name + "/ui"
 
 		latestVersion := getLatestPluginVersion(main.Repository)
 
