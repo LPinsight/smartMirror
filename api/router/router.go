@@ -18,6 +18,7 @@ func NewRouter(wsService *websocket.WebSocketService, pluginService *service.Plu
 
 	// Main API routes
 	router.HandleFunc("/version", handler.GetVersion).Methods("GET", "OPTIONS")
+	router.HandleFunc("/health", handler.HealthCheckHandler).Methods("GET", "OPTIONS")
 
 	// /display
 	displayRouter := router.PathPrefix("/display").Subrouter()

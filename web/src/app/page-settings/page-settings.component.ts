@@ -53,7 +53,8 @@ export class PageSettingsComponent implements OnInit{
   public async addPlugin() {
     const result = await Swal.fire(this.alertService.installPluginConfig())
     
-    if (result.isConfirmed) {      
+    if (result.isConfirmed) {
+      this.toastService.info(`Plugin wird installiert.`, 'Plugin installieren'); 
       const pluginLink = result.value
         
         this.pluginService.installPlugin("New Plugin",pluginLink).subscribe({
