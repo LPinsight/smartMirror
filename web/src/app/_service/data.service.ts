@@ -11,8 +11,9 @@ import { AlertService } from '@service/alert.service';
   providedIn: 'root'
 })
 export class DataService {
-  // private displays: Map<string, Display> = new Map<string, Display>
-  private URL: string = '/api/'
+  //TODO: Verzeichnis Route anpassen
+  private URL: string = 'http://localhost:8080/'
+  // private URL: string = '/api/'
 
   displaysSubject = new BehaviorSubject<Map<string, Display> >(new Map());
   selectedIdSubject = new BehaviorSubject<string>('');

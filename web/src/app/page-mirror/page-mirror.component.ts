@@ -19,7 +19,6 @@ export class PageMirrorComponent implements OnInit {
   constructor(
     private elRef: ElementRef,
     private dataService: DataService,
-    private pluginService: PluginService,
     private wsService: WebSocketService
   ) {
     this.display = dataService.createDisplayPlaceholder()

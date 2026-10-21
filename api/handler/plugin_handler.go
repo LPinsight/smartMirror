@@ -40,7 +40,9 @@ func GetConfigByName(w http.ResponseWriter, r *http.Request) {
 }
 
 func RegisterPlugins() {
-	pluginDir := "/app/plugins"
+	//TODO: Verzeichnis Route anpassen
+	pluginDir := "./../plugins"
+	// pluginDir := "/app/plugins"
 
 	// Prüfen, ob das Verzeichnis existiert
 	if _, err := os.Stat(pluginDir); os.IsNotExist(err) {
@@ -86,7 +88,9 @@ func RegisterPlugins() {
 			json.Unmarshal(data, &config)
 		}
 
-		uiUrl := "/api/plugins/" + name + "/ui"
+		//TODO: Verzeichnis Route anpassen
+		uiUrl := "http://localhost:8080/plugins/" + name + "/ui"
+		// uiUrl := "/api/plugins/" + name + "/ui"
 
 		latestVersion := getLatestPluginVersion(main.Repository)
 

@@ -9,7 +9,9 @@ export class PluginService {
   pluginsSubject = new BehaviorSubject<Map<string, Plugin>>(new Map());
   plugins$ = this.pluginsSubject.asObservable();
 
-  private URL: string = '/api/'
+  //TODO: Verzeichnis Route anpassen
+  private URL: string = 'http://localhost:8080/'
+  // private URL: string = '/api/'
 
   constructor(
     private http: HttpClient

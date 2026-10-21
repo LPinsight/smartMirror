@@ -6,7 +6,9 @@ import { ToastService } from '@service/toast.service';
   providedIn: 'root'
 })
 export class WebSocketService {
-  private URL: string = `ws://${window.location.host}/ws`
+  //TODO: Verzeichnis Route anpassen
+  private URL: string = `ws://localhost:8080/ws`
+  // private URL: string = `ws://${window.location.host}/ws`
   private socket!: WebSocket
   private messageSubject = new Subject<string>();
 
@@ -26,6 +28,7 @@ export class WebSocketService {
     };
 
     this.socket.onerror = (event) => {
+      
       this.reconnect()
     }
   }
@@ -34,9 +37,10 @@ export class WebSocketService {
       setTimeout(() => this.connect(), delay); // Reconnect after 5 seconds
   }
 
-  sendMessage(msg: string) {
+  sendMessage(msg: string) {    
     if (this.socket && this.socket.readyState == WebSocket.OPEN) {
       this.socket.send(msg);
+      
     } else {
       this.toastService.warning('WebSocket ist nicht verbunden.', 'WebSocket-Fehler');
     }
