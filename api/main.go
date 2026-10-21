@@ -3,10 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
 
-	"github.com/fvbock/endless"
-
-	"github.com/LPinsight/smartMirror/db"
 	"github.com/LPinsight/smartMirror/handler"
 	api "github.com/LPinsight/smartMirror/router"
 	"github.com/LPinsight/smartMirror/service"
@@ -14,14 +12,22 @@ import (
 )
 
 func main() {
-	db.Init()
+	// Datenbank-Service erstellen und vorhandene ENV-Konfiguration prüfen.
+	databaseService := service.NewDatabaseService("./.env")
+	databaseService.LoadFromEnv()
 
-	// Services erzeugen
+	// Services ohne Datenbank initialisieren.
 	pluginService := service.NewPluginService()
-	widgetService := service.NewWidgetService(db.DB, pluginService)
-	displayService := service.NewDisplayService(db.DB, widgetService)
+	handler.Init(nil, nil, pluginService)
+	handler.InitDatabase(databaseService)
 
-	handler.Init(displayService, widgetService, pluginService)
+	// DB-abhängige Services nur bei erfolgreicher Verbindung erstellen.
+	database := databaseService.Database()
+	if database != nil {
+		widgetService := service.NewWidgetService(database, pluginService)
+		displayService := service.NewDisplayService(database, widgetService)
+		handler.Init(displayService, widgetService, pluginService)
+	}
 
 	wsService := websocket.NewWebSocketService()
 	wsService.Run()
@@ -29,6 +35,6 @@ func main() {
 	router := api.NewRouter(wsService, pluginService)
 
 	fmt.Println("Server started at http://0.0.0.0:8080")
-	log.Fatal(endless.ListenAndServe("0.0.0.0:8080", router))
-	// log.Fatal(http.ListenAndServe(":8080", router))
+	// log.Fatal(endless.ListenAndServe("0.0.0.0:8080", router))
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

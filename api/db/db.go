@@ -1,109 +1,62 @@
 package db
 
 import (
-	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
-	"os"
 
 	iface "github.com/LPinsight/smartMirror/interface"
 	"github.com/LPinsight/smartMirror/models"
-	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
-const (
-	internalUser     = "root"
-	internalPassword = "example"
-	internalDBName   = "smartMirror"
-	internalSocket   = "/run/mysqld/mysqld.sock"
-)
-
-func Init() {
-	_ = godotenv.Load()
-
-	useInternal := os.Getenv("USE_INTERNAL_DB") == "true"
-
-	var user, password, host, port, name string
-
-	if useInternal {
-		// interne DB -> hardcoded Werte
-		user = internalUser
-		password = internalPassword
-		name = internalDBName
-
-		// host/port irrelevant
-		host = ""
-		port = ""
-	} else {
-		// externe DB -> aus ENV
-		user = os.Getenv("DB_USER")
-		password = os.Getenv("DB_PASSWORD")
-		host = os.Getenv("DB_HOST")
-		port = os.Getenv("DB_PORT")
-		name = os.Getenv("DB_NAME")
-
-		if user == "" || password == "" || host == "" || port == "" || name == "" {
-			log.Fatal("❌ Externe DB aktiviert, aber Variablen fehlen (DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)")
-		}
+func Connect(config iface.DatabaseConfig) (*gorm.DB, error) {
+	if config.User == "" ||
+		config.Password == "" ||
+		config.Host == "" ||
+		config.Port == "" ||
+		config.Name == "" {
+		return nil, fmt.Errorf("Datenbankkonfiguration unvollständig")
 	}
 
-	var dsn string
-
-	if useInternal {
-		// Verbinde ohne DB
-		dsn = fmt.Sprintf("%s:%s@unix(%s)/?charset=utf8mb4&parseTime=True&loc=Local",
-			user, password, internalSocket)
-	} else {
-		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/?charset=utf8mb4&parseTime=True&loc=Local",
-			user, password, host, port)
-	}
-
-	// 1️⃣ Verbindung zur MariaDB herstellen (ohne Datenbank)
-	sqlDB, err := sql.Open("mysql", dsn)
-	if err != nil {
-		log.Fatalf("❌ Konnte Verbindung zur DB herstellen: %v", err)
-	}
-
-	// 2️⃣ Datenbank anlegen, falls sie noch nicht existiert
-	_, err = sqlDB.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS `%s` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", name))
-	if err != nil {
-		log.Fatalf("❌ Konnte Datenbank nicht erstellen: %v", err)
-	}
-
-	sqlDB.Close() // Schließen der reinen SQL-Verbindung
-
-	// 3️⃣ Verbindung mit GORM zur richtigen Datenbank
-	if useInternal {
-		dsn = fmt.Sprintf("%s:%s@unix(%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			user, password, internalSocket, name)
-	} else {
-		dsn = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-			user, password, host, port, name)
-	}
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		config.User,
+		config.Password,
+		config.Host,
+		config.Port,
+		config.Name,
+	)
 
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("❌ Konnte keine Verbindung zur DB aufbauen: %v", err)
+		return nil, fmt.Errorf("Verbindung zur Datenbank fehlgeschlagen")
+	}
+
+	sqlDB, err := database.DB()
+	if err != nil {
+		return nil, fmt.Errorf("Datenbankverbindung konnte nicht geprüft werden")
+	}
+
+	if err := sqlDB.Ping(); err != nil {
+		sqlDB.Close()
+		return nil, fmt.Errorf("Verbindung zur Datenbank fehlgeschlagen")
 	}
 
 	// Automatische Migration (alle Models)
-	err = database.AutoMigrate(
+	if err := database.AutoMigrate(
 		&models.Display{},
 		&models.Location{},
 		&models.Widget{},
 		// weitere Models...
-	)
-	if err != nil {
-		log.Fatalf("❌ Migration fehlgeschlagen: %v", err)
+	); err != nil {
+		sqlDB.Close()
+		return nil, fmt.Errorf("Datenbankmigration fehlgeschlagen")
 	}
 
-	DB = database
-	log.Println("✅ MySQL-Verbindung steht & Migration abgeschlossen")
+	return database, nil
 }
 
 func ToIfaceDisplay(m *models.Display) *iface.Display {
@@ -145,7 +98,6 @@ func ToIfaceWidget(m *models.Widget) *iface.Widget {
 		Name:       m.Name,
 		PluginName: m.PluginName,
 		Config:     config,
-		//Api: XX,
 	}
 
 	if m.PointStart != nil {

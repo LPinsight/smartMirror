@@ -20,6 +20,11 @@ func NewRouter(wsService *websocket.WebSocketService, pluginService *service.Plu
 	router.HandleFunc("/version", handler.GetVersion).Methods("GET", "OPTIONS")
 	router.HandleFunc("/health", handler.HealthCheckHandler).Methods("GET", "OPTIONS")
 
+	// /db
+	databaseRouter := router.PathPrefix("/db").Subrouter()
+	databaseRouter.HandleFunc("/status", handler.GetDatabaseStatus).Methods("GET", "OPTIONS")
+	databaseRouter.HandleFunc("/config", handler.SaveDatabaseConfig).Methods("POST", "OPTIONS")
+
 	// /display
 	displayRouter := router.PathPrefix("/display").Subrouter()
 	displayRouter.HandleFunc("", handler.CreateDisplayHandler).Methods("POST", "OPTIONS")

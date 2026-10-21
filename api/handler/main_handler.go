@@ -9,11 +9,16 @@ import (
 var displayService *service.DisplayService
 var widgetService *service.WidgetService
 var pluginService *service.PluginService
+var databaseService *service.DatabaseService
 
 func Init(ds *service.DisplayService, ws *service.WidgetService, ps *service.PluginService) {
 	displayService = ds
 	widgetService = ws
 	pluginService = ps
+}
+
+func InitDatabase(ds *service.DatabaseService) {
+	databaseService = ds
 }
 
 func GetVersion(w http.ResponseWriter, r *http.Request) {

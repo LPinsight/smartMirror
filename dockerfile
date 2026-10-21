@@ -25,11 +25,11 @@ RUN npm run build
 FROM alpine:3.20
 
 # Install dependencies
-RUN apk add --no-cache bash nginx mysql mysql-client curl unzip
+RUN apk add --no-cache bash nginx curl unzip
 
 # Create directories
 WORKDIR /app
-RUN mkdir -p /app/logs /app/plugins /app/cmd /var/lib/mysql /run/mysqld
+RUN mkdir -p /app/logs /app/plugins /app/cmd
 
 # Copy built binaries & frontend
 COPY --from=go-builder /smartmirror-api /app/
@@ -65,9 +65,6 @@ RUN echo 'server { \
     proxy_set_header Host $host; \
   } \
 }' > /etc/nginx/http.d/default.conf
-
-# Environment vars
-ENV USE_INTERNAL_DB=true
 
 # Ports
 EXPOSE 80
