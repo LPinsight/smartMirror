@@ -12,7 +12,7 @@ import (
 
 // RegisterPlugins registriert alle Plugins als Proxy
 func RegisterPlugins(router *mux.Router, pluginService *service.PluginService) {
-	uiPath := filepath.Join("./../plugins")
+	uiPath := filepath.Join("/app/plugins")
 
 	handler.RegisterPlugins()
 
