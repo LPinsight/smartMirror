@@ -9,8 +9,13 @@ import { API_CONFIG } from '../_config/api.config';
   providedIn: 'root'
 })
 export class WebSocketService {
-  private URL: string = API_CONFIG.websocketUrl
-  private URL_DB: string = API_CONFIG.databaseUrl
+  private readonly URL: string = API_CONFIG.websocketUrl
+  private readonly URL_DB: string = API_CONFIG.databaseUrl
+
+  private readonly maxReconnectAttempts = 5
+  private reconnectAttempts = 0
+  private persistebtReconnect = false
+  private reconnectTimer?: ReturnType<typeof setTimeout>
 
   private socket!: WebSocket
   private messageSubject = new Subject<string>();
@@ -23,12 +28,24 @@ export class WebSocketService {
     private http: HttpClient
   ) { }
 
-  connect(): void {
-    if (this.socket && this.socket.readyState == WebSocket.OPEN) return;
+  connect(options?: {persistent?: boolean}): void {
+    if (options?.persistent !== undefined) {
+      this.persistebtReconnect = options.persistent
+    }
+
+    if (
+      this.socket && (
+        this.socket.readyState == WebSocket.OPEN ||
+        this.socket.readyState == WebSocket.CONNECTING
+      )
+    ) {
+      return
+    }
 
     this.socket = new WebSocket(this.URL);
 
     this.socket.onopen = () => {
+      this.reconnectAttempts = 0
       this.connectionSatusSubject.next('connected')
     }
 
@@ -38,17 +55,39 @@ export class WebSocketService {
 
     this.socket.onclose = (event) => {
       this.connectionSatusSubject.next('error')
-      this.reconnect()
+      this.scheduleReconnect()
     };
 
     this.socket.onerror = (event) => {
       this.connectionSatusSubject.next('error')
-      this.reconnect()
     }
   }
 
-  private reconnect(delay = 5000) {
-      setTimeout(() => this.connect(), delay); // Reconnect after 5 seconds
+  private scheduleReconnect() {
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer)
+    }
+
+    if (!this.persistebtReconnect && this.reconnectAttempts >= this.maxReconnectAttempts) {
+      return
+    }
+
+    this.reconnectAttempts++
+
+    this.reconnectTimer = setTimeout(() => {
+      this.connect()
+    }, 5000)
+  }
+
+  retryNow() {
+    this.reconnectAttempts = 0
+
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer)
+      this.reconnectTimer = undefined
+    }
+
+    this.connect()
   }
 
   sendMessage(msg: string) {    

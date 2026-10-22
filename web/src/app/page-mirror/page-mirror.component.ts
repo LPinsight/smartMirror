@@ -25,7 +25,7 @@ export class PageMirrorComponent implements OnInit {
   }
   
   ngOnInit() {
-    this.wsService.connect()
+    this.wsService.connect({persistent: true})
 
     this.dataService.selectedDisplay$.subscribe((data) => {
       if(data != undefined) {

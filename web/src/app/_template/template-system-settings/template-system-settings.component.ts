@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DatabaseStatus, DatabaseConfig, DatabaseSettings } from '../../_interface/database';
-import { WebsocketStatus } from '../../_interface/websocket';
+import { WebsocketConnectionState, WebsocketStatus } from '../../_interface/websocket';
 import { DatabaseService } from '../../_service/database.service';
 import { WebSocketService } from '../../_service/webSocket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-template-system-settings',
@@ -10,7 +11,10 @@ import { WebSocketService } from '../../_service/webSocket.service';
   styleUrls: ['./template-system-settings.component.scss'],
   standalone: false
 })
-export class TemplateSystemSettingsComponent implements OnInit {
+export class TemplateSystemSettingsComponent implements OnInit, OnDestroy {
+  private webSocketStatusSubscription?: Subscription
+  private websocketClientCountTimer?: ReturnType<typeof setInterval>
+
   public databaseStatus: DatabaseStatus = {
     configured: false,
     status: 'not_configured'
@@ -43,7 +47,29 @@ export class TemplateSystemSettingsComponent implements OnInit {
   ngOnInit() {
     this.loadDatabaseStatus();
     this.loadDatabaseConfig();
+
+    this.webSocketStatusSubscription = this.webSocketService.connectionStatus$.subscribe(status => {
+      this.websocketStatus = {
+        ...this.websocketStatus,
+        status
+      }
+
+      if (status === 'connected' ) {
+        this.startWebSocketStatusPolling();
+      } else {
+        this.stopWebSocketStatusPolling();
+      }
+    })
+
     this.loadWebSocketStatus();
+  }
+
+  ngOnDestroy(): void {
+    this.webSocketStatusSubscription?.unsubscribe()
+
+    if (this.websocketClientCountTimer) {
+      clearInterval(this.websocketClientCountTimer)
+    }
   }
 
   public loadDatabaseStatus(): void {
@@ -79,9 +105,36 @@ export class TemplateSystemSettingsComponent implements OnInit {
   });
   }
 
+  private startWebSocketStatusPolling() {
+    if (this.websocketClientCountTimer) {
+      return
+    }
+
+    this.loadWebSocketStatus();
+
+    this.websocketClientCountTimer = setInterval(() => {
+      this.loadWebSocketStatus();
+    }, 5000);
+  }
+
+  private stopWebSocketStatusPolling(): void {
+    if (!this.websocketClientCountTimer) {
+      return;
+    }
+
+    clearInterval(this.websocketClientCountTimer);
+    this.websocketClientCountTimer = undefined;
+  }
+
   public loadWebSocketStatus(): void {
     this.webSocketService.getServerStatus().subscribe({
-      next: status => this.websocketStatus = status,
+      next: serverStatus => {
+        this.websocketStatus = {
+          ... this.websocketStatus,
+          clients: serverStatus.clients,
+          message: serverStatus.message
+        }
+      },
       error: () => {
         this.websocketStatus = {
           status: 'error',
@@ -101,7 +154,6 @@ export class TemplateSystemSettingsComponent implements OnInit {
   }
 
   public testDatabaseConnection() {
-    
     this.testingDatabase = true
     this.databaseTestStatus = undefined
 
@@ -119,5 +171,9 @@ export class TemplateSystemSettingsComponent implements OnInit {
         this.testingDatabase = false;
       }
     })
+  }
+
+  public retryWebSocket() {
+    this.webSocketService.retryNow();
   }
 }
