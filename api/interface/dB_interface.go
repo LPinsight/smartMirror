@@ -13,3 +13,12 @@ type DatabaseStatus struct {
 	Status     string `json:"status"`
 	Message    string `json:"message,omitempty"`
 }
+
+type DatabaseSettings struct {
+	Configured         bool   `json:"configured"`
+	User               string `json:"user"`
+	Host               string `json:"host"`
+	Port               string `json:"port"`
+	Name               string `json:"name"`
+	PasswordConfigured bool   `json:"passwordConfigured"`
+}

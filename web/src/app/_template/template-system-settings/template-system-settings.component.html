@@ -1,0 +1,163 @@
+<section class="system-settings">
+  <h2>Systemstatus</h2>
+
+  <div class="status-grid">
+    <!-- Datenbankstatus -->
+    <article class="status-card">
+      <h3>Datenbank</h3>
+
+      @if (databaseStatus.status === 'connected') {
+        <p class="status connected">
+          <mat-icon>check_circle</mat-icon>
+          Verbunden
+        </p>
+      } @else if (databaseStatus.status === 'error') {
+        <p class="status error">
+          <mat-icon>error</mat-icon>
+          Fehler
+        </p>
+
+        @if (databaseStatus.message) {
+          <p class="status-message">{{ databaseStatus.message }}</p>
+        }
+
+        <button
+          type="button"
+          (click)="reconnectDatabase()"
+          [disabled]="reconnectingDatabase">
+          <mat-icon>refresh</mat-icon>
+          {{ reconnectingDatabase
+            ? 'Verbindung wird hergestellt …'
+            : 'DB-Verbindung neuherstellen' }}
+        </button>
+      } @else {
+        <p class="status not-configured">
+          <mat-icon>info</mat-icon>
+          Nicht eingerichtet
+        </p>
+      }
+    </article>
+
+    <!-- WebSocket-Status -->
+    <article class="status-card">
+      <h3>WebSocket</h3>
+
+      @if (websocketStatus.status === 'connected') {
+        <p class="status connected">
+          <mat-icon>check_circle</mat-icon>
+          Verbunden · {{ websocketStatus.clients }} Clients
+        </p>
+      } @else if (websocketStatus.status === 'error') {
+        <p class="status error">
+          <mat-icon>error</mat-icon>
+          Fehler
+        </p>
+
+        @if (websocketStatus.message) {
+          <p class="status-message">{{ websocketStatus.message }}</p>
+        }
+      } @else {
+        <p class="status not-configured">
+          <mat-icon>info</mat-icon>
+          Nicht eingerichtet
+        </p>
+      }
+    </article>
+  </div>
+
+  <!-- Datenbankformular -->
+  <form
+    #databaseForm="ngForm"
+    (ngSubmit)="saveDatabaseConfig()"
+    novalidate>
+
+    <h2>Datenbankeinstellungen</h2>
+
+    <p class="form-description">
+      Trage hier die Verbindungsdaten deiner MySQL-Datenbank ein.
+    </p>
+
+    <div class="form-grid">
+      <label for="db-user">Benutzername</label>
+      <input
+        id="db-user"
+        type="text"
+        name="user"
+        [(ngModel)]="databaseConfig.user"
+        autocomplete="username"
+        required>
+
+      <label for="db-password">Passwort</label>
+      <input
+        id="db-password"
+        type="password"
+        name="password"
+        [(ngModel)]="databaseConfig.password"
+        autocomplete="new-password"
+        [placeholder]="databaseSettings?.passwordConfigured ? 'Gespeichertes Passwort ist hinterlegt' : 'Datenbankpasswort'"
+        required>
+
+      <label for="db-host">Host</label>
+      <input
+        id="db-host"
+        type="text"
+        name="host"
+        [(ngModel)]="databaseConfig.host"
+        placeholder="z. B. 192.168.1.10"
+        required>
+
+      <label for="db-port">Port</label>
+      <input
+        id="db-port"
+        type="number"
+        name="port"
+        [(ngModel)]="databaseConfig.port"
+        min="1"
+        max="65535"
+        required>
+
+      <label for="db-name">Datenbankname</label>
+      <input
+        id="db-name"
+        type="text"
+        name="name"
+        [(ngModel)]="databaseConfig.name"
+        required>
+    </div>
+
+    @if (databaseTestStatus) {
+      @if (databaseTestStatus.status === 'connected') {
+        <p class="status connected">
+          <mat-icon>check_circle</mat-icon>
+          {{ databaseTestStatus.message }}
+        </p>
+      } @else {
+        <p class="status error">
+          <mat-icon>error</mat-icon>
+          {{ databaseTestStatus.message }}
+        </p>
+      }
+    }
+
+    <div class="form-actions">
+      <button
+        type="button"
+        (click)="testDatabaseConnection()"
+        [disabled]="databaseForm.invalid || testingDatabase">
+        <mat-icon>wifi_tethering</mat-icon>
+        {{ testingDatabase
+          ? 'Verbindung wird getestet …'
+          : 'DB-Verbindung testen' }}
+      </button>
+
+      <button
+        type="submit"
+        [disabled]="databaseForm.invalid || savingDatabase">
+        <mat-icon>save</mat-icon>
+        {{ savingDatabase
+          ? 'Wird gespeichert …'
+          : 'DB-Verbindung speichern' }}
+      </button>
+    </div>
+  </form>
+</section>

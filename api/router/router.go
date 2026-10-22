@@ -15,6 +15,9 @@ func NewRouter(wsService *websocket.WebSocketService, pluginService *service.Plu
 
 	// WebSocket
 	router.HandleFunc("/ws", wsService.Handler)
+	websocketRouter := router.PathPrefix("/ws").Subrouter()
+	websocketRouter.HandleFunc("", wsService.Handler)
+	websocketRouter.HandleFunc("/status", handler.GetWebSocketStatus).Methods("GET", "OPTIONS")
 
 	// Main API routes
 	router.HandleFunc("/version", handler.GetVersion).Methods("GET", "OPTIONS")
@@ -23,7 +26,9 @@ func NewRouter(wsService *websocket.WebSocketService, pluginService *service.Plu
 	// /db
 	databaseRouter := router.PathPrefix("/db").Subrouter()
 	databaseRouter.HandleFunc("/status", handler.GetDatabaseStatus).Methods("GET", "OPTIONS")
+	databaseRouter.HandleFunc("/config", handler.GetDatabaseConfig).Methods("GET", "OPTIONS")
 	databaseRouter.HandleFunc("/config", handler.SaveDatabaseConfig).Methods("POST", "OPTIONS")
+	databaseRouter.HandleFunc("/test", handler.TestDatabaseConnection).Methods("POST", "OPTIONS")
 
 	// /display
 	displayRouter := router.PathPrefix("/display").Subrouter()

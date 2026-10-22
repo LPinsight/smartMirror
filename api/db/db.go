@@ -3,6 +3,7 @@ package db
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	iface "github.com/LPinsight/smartMirror/interface"
 	"github.com/LPinsight/smartMirror/models"
@@ -11,6 +12,12 @@ import (
 )
 
 var DB *gorm.DB
+
+const (
+	dbConnectionTimeout = 3 * time.Second
+	dbRetryDelay        = 1 * time.Second
+	dbMaxAttempts       = 3
+)
 
 func Connect(config iface.DatabaseConfig) (*gorm.DB, error) {
 	if config.User == "" ||
@@ -22,12 +29,15 @@ func Connect(config iface.DatabaseConfig) (*gorm.DB, error) {
 	}
 
 	dsn := fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=%s&readTimeout=%s&writeTimeout=%s",
 		config.User,
 		config.Password,
 		config.Host,
 		config.Port,
 		config.Name,
+		dbConnectionTimeout,
+		dbConnectionTimeout,
+		dbConnectionTimeout,
 	)
 
 	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -57,6 +67,62 @@ func Connect(config iface.DatabaseConfig) (*gorm.DB, error) {
 	}
 
 	return database, nil
+}
+
+func CheckConnection(config iface.DatabaseConfig) error {
+	if config.User == "" ||
+		config.Password == "" ||
+		config.Host == "" ||
+		config.Port == "" ||
+		config.Name == "" {
+		return fmt.Errorf("Datenbankkonfiguration unvollständig")
+	}
+
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&timeout=%s&readTimeout=%s&writeTimeout=%s",
+		config.User,
+		config.Password,
+		config.Host,
+		config.Port,
+		config.Name,
+		dbConnectionTimeout,
+		dbConnectionTimeout,
+		dbConnectionTimeout,
+	)
+
+	var lastErr error
+
+	for attempt := 1; attempt <= dbMaxAttempts; attempt++ {
+		lastErr = checkConnectionOnce(dsn)
+		if lastErr == nil {
+			return nil
+		}
+
+		if attempt < dbMaxAttempts {
+			time.Sleep(dbRetryDelay)
+		}
+	}
+
+	return fmt.Errorf(
+		"Verbindung nach %d Versuchen fehlgeschlagen: %w",
+		dbMaxAttempts,
+		lastErr,
+	)
+}
+
+func checkConnectionOnce(dsn string) error {
+	database, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return err
+	}
+
+	sqlDB, err := database.DB()
+	if err != nil {
+		return err
+	}
+	defer sqlDB.Close()
+
+	return sqlDB.Ping()
 }
 
 func ToIfaceDisplay(m *models.Display) *iface.Display {

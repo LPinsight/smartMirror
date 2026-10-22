@@ -31,6 +31,7 @@ func main() {
 
 	wsService := websocket.NewWebSocketService()
 	wsService.Run()
+	handler.InitWebSocket(wsService)
 
 	router := api.NewRouter(wsService, pluginService)
 
