@@ -8,8 +8,15 @@ import (
 )
 
 func GetDatabaseStatus(w http.ResponseWriter, r *http.Request) {
-	status := databaseService.GetStatus()
-	writeJSON(w, status, http.StatusOK)
+	if databaseService == nil {
+		writeJSON(w, map[string]string{
+			"configured": "false",
+			"status":     "unavailable",
+		}, http.StatusServiceUnavailable)
+		return
+	}
+
+	writeJSON(w, databaseService.RefreshStatus(), http.StatusOK)
 }
 
 func SaveDatabaseConfig(w http.ResponseWriter, r *http.Request) {

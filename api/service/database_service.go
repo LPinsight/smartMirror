@@ -1,7 +1,9 @@
 package service
 
 import (
+	"context"
 	"os"
+	"time"
 
 	"github.com/LPinsight/smartMirror/db"
 	iface "github.com/LPinsight/smartMirror/interface"
@@ -78,6 +80,37 @@ func (s *DatabaseService) LoadFromEnv() {
 }
 
 func (s *DatabaseService) GetStatus() iface.DatabaseStatus {
+	return s.status
+}
+
+func (s *DatabaseService) RefreshStatus() iface.DatabaseStatus {
+	if s.database == nil {
+		return s.status
+	}
+
+	sqlDB, err := s.database.DB()
+	if err == nil {
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+		defer cancel()
+
+		err = sqlDB.PingContext(ctx)
+	}
+
+	if err != nil {
+		s.status = iface.DatabaseStatus{
+			Configured: s.settings.Configured,
+			Status:     "error",
+			Message:    "Datenbankverbindung fehlgeschlagen",
+		}
+		return s.status
+	}
+
+	s.status = iface.DatabaseStatus{
+		Configured: true,
+		Status:     "connected",
+		Message:    "Datenbankverbindung erfolgreich",
+	}
+
 	return s.status
 }
 

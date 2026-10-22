@@ -14,6 +14,10 @@ import { Subscription } from 'rxjs';
 export class TemplateSystemSettingsComponent implements OnInit, OnDestroy {
   private webSocketStatusSubscription?: Subscription
   private websocketClientCountTimer?: ReturnType<typeof setInterval>
+  
+  private readonly maxDatabaseStatusFailures = 5
+  private databaseStatusFailures = 0
+  private databaseStatusTimer?: ReturnType<typeof setInterval>
 
   public databaseStatus: DatabaseStatus = {
     configured: false,
@@ -64,23 +68,37 @@ export class TemplateSystemSettingsComponent implements OnInit, OnDestroy {
     this.loadWebSocketStatus();
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.webSocketStatusSubscription?.unsubscribe()
-
-    if (this.websocketClientCountTimer) {
-      clearInterval(this.websocketClientCountTimer)
-    }
+    this.stopWebSocketStatusPolling()
+    this.stopDatabaseStatusPolling()
   }
 
   public loadDatabaseStatus(): void {
     this.databaseService.getStatus().subscribe({
-      next: status => this.databaseStatus = status,
+      next: status => {
+        this.databaseStatus = status
+
+        if (status.status === 'connected') {
+          this.databaseStatusFailures = 0;
+          this.startDatabaseStatusPolling()
+          return
+        }
+
+        if (status.status === 'not_configured') {
+          this.databaseStatusFailures = 0
+          this.stopDatabaseStatusPolling()
+          return
+        }
+
+        this.handleDatabaseStatusFailure(status)
+      },
       error: () => {
-        this.databaseStatus = {
-          configured: false,
+        this.handleDatabaseStatusFailure({
+          configured: true,
           status: 'error',
           message: 'DB-Status konnte nicht geladen werden'
-        }
+        })
       }
     })
   }
@@ -175,5 +193,41 @@ export class TemplateSystemSettingsComponent implements OnInit, OnDestroy {
 
   public retryWebSocket() {
     this.webSocketService.retryNow();
+  }
+
+  private handleDatabaseStatusFailure(status: DatabaseStatus) {
+    this.databaseStatusFailures++
+
+    if (this.databaseStatusFailures >= this.maxDatabaseStatusFailures) {
+      this.stopDatabaseStatusPolling();
+      this.databaseStatus = {
+        ...status,
+        message: `Statusprüfung nach ${this.maxDatabaseStatusFailures} fehlgeschlagenen Versuchen pausiert.`
+      };
+
+      return;
+    }
+
+    this.databaseStatus = status
+    this.startDatabaseStatusPolling()
+  }
+
+  private startDatabaseStatusPolling() {
+    if (this.databaseStatusTimer) {
+      return
+    }
+
+    this.databaseStatusTimer = setInterval(() => {
+      this.loadDatabaseStatus();
+    }, 5000)
+  }
+
+  private stopDatabaseStatusPolling() {
+    if (!this.databaseStatusTimer) {
+      return
+    }
+
+    clearInterval(this.databaseStatusTimer)
+    this.databaseStatusTimer = undefined
   }
 }
