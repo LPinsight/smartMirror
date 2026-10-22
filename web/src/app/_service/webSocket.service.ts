@@ -3,18 +3,15 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { ToastService } from '@service/toast.service';
 import { WebsocketConnectionState, WebsocketStatus } from '../_interface/websocket';
 import { HttpClient } from '@angular/common/http';
+import { API_CONFIG } from '../_config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketService {
-  //TODO: Verzeichnis Route anpassen
-  private URL: string = `ws://localhost:8080/ws`
-  // private URL: string = `ws://${window.location.host}/ws`
+  private URL: string = API_CONFIG.websocketUrl
+  private URL_DB: string = API_CONFIG.databaseUrl
 
-  //TODO: Verzeichnis Route anpassen
-  private URL_DB: string = 'http://localhost:8080/'
-  // private URL: string = '/api/'
   private socket!: WebSocket
   private messageSubject = new Subject<string>();
 
