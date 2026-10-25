@@ -20,6 +20,8 @@
       <button (click)="checkUpdate()" class="update"><mat-icon>update</mat-icon>Update prüfen</button>
     </div>
 
+    <button (click)="reloadPlugins()" class="reload"><mat-icon>sync</mat-icon>Plugins neuladen</button>
+
     @for (plugin of pluginList | keyvalue; track plugin.key) {
       <app-template-plugin-list [plugin]="plugin.value" [pluginKey]="plugin.key"></app-template-plugin-list>
     }

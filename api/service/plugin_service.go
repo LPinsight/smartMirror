@@ -48,6 +48,11 @@ func (s *PluginService) GetConfig(name string) ([]iface.ConfigOption, error) {
 	return plugin.Config, nil
 }
 
+// entfernt alle aktuell registrierten Plugins
+func (s *PluginService) Clear() {
+	s.plugins = make(map[string]*iface.Plugin)
+}
+
 // Plugin installieren
 func (s *PluginService) Install(RepoURL string) error {
 	fmt.Println("Installing plugin from:", RepoURL)

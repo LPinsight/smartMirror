@@ -4,17 +4,17 @@
 
     <!-- Checkbox -->
      @if (opt.inputType === 'checkbox') {
-        <label>{{opt.name}}: </label>
+        <label>{{opt.displayname}}: </label>
         <input type="checkbox" [formControlName]="opt.name" />
     }
     <!-- Number -->
      @if (opt.inputType === 'number') {
-        <label>{{opt.name}}: </label>
+        <label>{{opt.displayname}}: </label>
         <input type="number" [formControlName]="opt.name" />
     }
     <!-- Select -->
      @if (isArray(opt.inputType)) {
-        <label>{{opt.name}}: </label>
+        <label>{{opt.displayname}}: </label>
         <select [formControlName]="opt.name">
             @for (option of opt.inputType; track option; let x = $index) {
             <option [value]="option">{{option}}</option>
@@ -23,7 +23,7 @@
     }
     <!-- Text -->
     @if (!['checkbox','number'].includes(opt.inputType) && !isArray(opt.inputType)) {
-        <label>{{opt.name}}: </label>
+        <label>{{opt.displayname}}: </label>
         <input type="text" [formControlName]="opt.name" placeholder="{{opt.placeholder}}" />
     }
   </div>

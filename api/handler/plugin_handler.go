@@ -39,21 +39,33 @@ func GetConfigByName(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(config)
 }
 
-func RegisterPlugins() {
+func ReloadPlugins(w http.ResponseWriter, r *http.Request) {
+	if err := RegisterPlugins(); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	writeJSON(w, "Plugins wurden neu geladen", http.StatusOK)
+}
+
+func RegisterPlugins() error {
 	//TODO: Verzeichnis Route anpassen
-	pluginDir := "./../plugins"
+	// pluginDir := "./../plugins"
+	pluginDir := "./../../smartMirror-plugins"
 	// pluginDir := "/app/plugins"
 
 	// Prüfen, ob das Verzeichnis existiert
-	if _, err := os.Stat(pluginDir); os.IsNotExist(err) {
+	if _, err := os.Stat(pluginDir); err != nil {
 		fmt.Println("⚠ Plugins-Verzeichnis existiert nicht oder ist leer, überspringe Registrierung")
-		return
+		return fmt.Errorf("Plugin-Verzeichnis %q kann nicht gelesen werden: %w", pluginDir, err)
 	}
 
 	dirs, err := os.ReadDir(pluginDir)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("Plugin-Verzeichnis %q kann nicht gelesen werden: %w", pluginDir, err)
 	}
+
+	pluginService.Clear()
 
 	// Registriere das Core-Plugin
 	pluginService.Create(iface.Plugin{
@@ -105,6 +117,8 @@ func RegisterPlugins() {
 			UiUrl:        uiUrl,
 		})
 	}
+
+	return nil
 }
 
 func getLatestPluginVersion(name string) string {

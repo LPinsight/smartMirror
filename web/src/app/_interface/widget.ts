@@ -29,6 +29,7 @@ export interface Plugin {
 
 export interface PluginConfig {
   name: string;
+  displayname: string;
   placeholder: string;
   inputType: any;
   default: any;

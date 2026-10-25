@@ -87,6 +87,12 @@ export class PluginService {
     }))
   }
 
+  public reloadPlugins() {
+    return this.http.post(this.URL + 'plugins/reload', {}, {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+
   public installPlugin(name: string, url: string) {
     let json = {
       "name": name,
