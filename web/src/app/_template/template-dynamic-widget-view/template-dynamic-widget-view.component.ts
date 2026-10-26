@@ -33,9 +33,7 @@ export class TemplateDynamicWidgetViewComponent implements OnInit {
     })
   }
 
-  private loadScript(url: string): Promise<void> {
-    console.log(url);
-    
+  private loadScript(url: string): Promise<void> {    
     return new Promise((resolve, reject) => {
       // Script nur laden, wenn es noch nicht existiert
       if (document.querySelector(`script[src="${url}"]`)) {

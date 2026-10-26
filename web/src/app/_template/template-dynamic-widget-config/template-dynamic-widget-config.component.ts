@@ -70,7 +70,6 @@ export class TemplateDynamicWidgetConfigComponent implements OnInit {
   }
 
   submit() {
-    console.log('Aktuelle Config:', this.form.value);
     this.dataService.updateWidgetConfig(this.widget, this.form.value).subscribe(_ => {
       this.wsService.sendMessage('reloadMirror')
     })
