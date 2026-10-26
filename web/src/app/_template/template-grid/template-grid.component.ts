@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import { AlertService } from '@service/alert.service';
 import { PluginService } from '@service/plugin.service';
 import { ToastService } from '@service/toast.service';
+import { WebSocketService } from '../../_service/webSocket.service';
 
 @Component({
     selector: 'app-template-grid',
@@ -25,7 +26,8 @@ export class TemplateGridComponent implements OnInit{
     private elRef: ElementRef,
     private dataService: DataService,
     private pluginService: PluginService,
-    private notification: ToastService
+    private notification: ToastService,
+    private wsService: WebSocketService,
   ) {
     this.display = dataService.createDisplayPlaceholder()
   }
@@ -101,6 +103,7 @@ export class TemplateGridComponent implements OnInit{
           this.editGrid = false
           this.resetNewWidget()
           this.notification.success('Widget ' + values[1] +' wurde erfolgreich hinzugefügt', 'Widget Hinzufügen')
+          this.wsService.sendMessage('reloadMirror')
         },
           error: err => {
             this.notification.error('Widget konnte nicht hinzugefügt werden', 'Fehler')
@@ -166,6 +169,7 @@ export class TemplateGridComponent implements OnInit{
       this.dataService.deleteWidget(event.object).subscribe({
         next: _ => {
         this.notification.success('Widget '+ event.object.name +' wurde erfolgreich entfernt', 'Widget Entfernt')
+        this.wsService.sendMessage('reloadMirror')
       },
         error: err => {
           this.notification.error('Widget konnte nicht entfernt werden', 'Fehler')

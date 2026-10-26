@@ -24,7 +24,12 @@
     <!-- Text -->
     @if (!['checkbox','number'].includes(opt.inputType) && !isArray(opt.inputType)) {
         <label>{{opt.displayname}}: </label>
-        <input type="text" [formControlName]="opt.name" placeholder="{{opt.placeholder}}" />
+        <input
+          type="text"
+          placeholder="{{opt.placeholder}}"
+          [formControlName]="opt.name"
+          [readOnly]="(opt.name === 'lat' || opt.name === 'lon') && form.get('system_location')?.value === true"
+        />
     }
   </div>
   }
