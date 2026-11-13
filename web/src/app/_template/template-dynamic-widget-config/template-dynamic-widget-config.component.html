@@ -2,6 +2,57 @@
   @for (opt of configMeta; track opt; let x = $index) {
   <div class="form-group">
 
+    <!-- repeatable -->
+    @if (opt.inputType === 'repeatable'){
+      <section class="repeatable-group">
+        <label>{{opt.displayname}}:</label>
+
+        <div [formArrayName]="opt.name">
+          @for (item of getRepeatableArray(opt.name).controls; track item; let i = $index){
+            <div class="repeatable-item" [formGroupName]="i">
+              @for (field of opt.fields ?? []; track field.name) {
+                <div class="form-group">
+
+                  <!-- Checkbox -->
+                  @if (field.inputType === 'checkbox') {
+                      <label>{{field.displayname}}: </label>
+                      <input type="checkbox" [formControlName]="field.name" />
+                  }
+                  <!-- Number -->
+                  @if (field.inputType === 'number') {
+                      <label>{{field.displayname}}: </label>
+                      <input type="number" [formControlName]="field.name" />
+                  }
+                  <!-- Select -->
+                  @if (isArray(field.inputType)) {
+                      <label>{{field.displayname}}: </label>
+                      <select [formControlName]="field.name">
+                          @for (option of field.inputType; track option; let x = $index) {
+                          <option [value]="option">{{option}}</option>
+                          }
+                        </select>
+                  }
+                  <!-- Text -->
+                  @if (!['checkbox','number','repeatable'].includes(field.inputType) && !isArray(field.inputType)) {
+                      <label>{{field.displayname}}: </label>
+                      <input
+                        type="text"
+                        placeholder="{{field.placeholder}}"
+                        [formControlName]="field.name"
+                        [readOnly]="(field.name === 'lat' || field.name === 'lon') && form.get('system_location')?.value === true"
+                      />
+                  }
+                </div>
+              }
+
+              <button type="button" (click)="removeRepeatableItem(opt, i)">Entfernen</button>
+            </div>
+          }
+        </div>
+
+        <button type="button" (click)="addRepeatableItem(opt)">{{opt.displayname}} hinzufügen</button>
+      </section>
+    }
     <!-- Checkbox -->
      @if (opt.inputType === 'checkbox') {
         <label>{{opt.displayname}}: </label>
@@ -22,7 +73,7 @@
           </select>
     }
     <!-- Text -->
-    @if (!['checkbox','number'].includes(opt.inputType) && !isArray(opt.inputType)) {
+    @if (!['checkbox','number','repeatable'].includes(opt.inputType) && !isArray(opt.inputType)) {
         <label>{{opt.displayname}}: </label>
         <input
           type="text"

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { PluginConfig, Widget, WidgetConfig } from '@interface/widget';
 import { DataService } from '@service/data.service';
 import { WebSocketService } from '../../_service/webSocket.service';
@@ -35,19 +35,18 @@ export class TemplateDynamicWidgetConfigComponent implements OnInit {
   }
 
   private initForm(location: Location | null | undefined) {
-    const group: any = {};
+    const group: Record<string, any> = {};
 
     this.configMeta.forEach(opt => {
-      let value = this.widget.config?.[opt.name] ?? opt.default;
+      const value = this.widget.config?.[opt.name] ?? opt.default ?? '';
 
-      if (opt.inputType === 'checkbox') {
-        group[opt.name] = [!!value];
-      } else if (opt.inputType === 'number') {
-        group[opt.name] = [Number(value)];
-      } else if (Array.isArray(opt.inputType)) {
-        group[opt.name] = [value ?? opt.inputType[0]];
+      if (opt.inputType === 'repeatable') {
+        group[opt.name] = this.fb.array(
+          (Array.isArray(value) ? value : [])
+          .map((item: Record<string, any>) => this.createRepeatableItem(opt, item))
+        )
       } else {
-        group[opt.name] = [value ?? ''];
+        group[opt.name] = this.createControl(opt,value)
       }
     });
 
@@ -80,5 +79,42 @@ export class TemplateDynamicWidgetConfigComponent implements OnInit {
     return Array.isArray(val);
   }
 
+  private createControl(opt: PluginConfig, value: any): FormControl {
+    if(opt.inputType === 'checkbox'){
+      return this.fb.control(!!value)
+    }
 
+    if(opt.inputType === 'number'){
+      return this.fb.control(Number(value ?? opt.default ?? 0))
+    }
+
+    if(Array.isArray(opt.inputType)){
+      return this.fb.control(value ?? opt.inputType[0])
+    }
+
+    return this.fb.control(value ?? '')
+  }
+
+  private createRepeatableItem(listConfig: PluginConfig, item: Record<string, any> = {}):FormGroup {
+    const group: Record<string, FormControl> = {};
+
+    (listConfig.fields ?? []).forEach(field => {
+      const value = item[field.name] ?? field.default ?? ''
+      group[field.name] = this.createControl(field, value)
+    });
+
+    return this.fb.group(group)
+  }
+
+  getRepeatableArray(name: string): FormArray {
+    return this.form.get(name) as FormArray
+  }
+
+  addRepeatableItem(config:PluginConfig){
+    this.getRepeatableArray(config.name).push(this.createRepeatableItem(config))
+  }
+
+  removeRepeatableItem(config: PluginConfig, index: number){
+    this.getRepeatableArray(config.name).removeAt(index)
+  }
 }

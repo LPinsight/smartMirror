@@ -33,6 +33,7 @@ export interface PluginConfig {
   placeholder: string;
   inputType: any;
   default: any;
+  fields?: PluginConfig[];
 }
 
 export interface PluginUpdateResult {
