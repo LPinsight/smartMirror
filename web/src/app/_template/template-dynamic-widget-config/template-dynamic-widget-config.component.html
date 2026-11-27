@@ -1,89 +1,67 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
   @for (opt of configMeta; track opt; let x = $index) {
-  <div class="form-group">
-
     <!-- repeatable -->
     @if (opt.inputType === 'repeatable'){
       <section class="repeatable-group">
-        <label>{{opt.displayname}}:</label>
+        <h2>{{opt.displayname}}:</h2>
 
         <div [formArrayName]="opt.name">
           @for (item of getRepeatableArray(opt.name).controls; track item; let i = $index){
             <div class="repeatable-item" [formGroupName]="i">
-              @for (field of opt.fields ?? []; track field.name) {
-                <div class="form-group">
+              <section class="input">
+                @for (field of opt.fields ?? []; track field.name) {
+                  <ng-container [ngTemplateOutlet]="fieldTemplate" [ngTemplateOutletContext]="{field: field, parent: item}"/>
+                }
+              </section>
 
-                  <!-- Checkbox -->
-                  @if (field.inputType === 'checkbox') {
-                      <label>{{field.displayname}}: </label>
-                      <input type="checkbox" [formControlName]="field.name" />
-                  }
-                  <!-- Number -->
-                  @if (field.inputType === 'number') {
-                      <label>{{field.displayname}}: </label>
-                      <input type="number" [formControlName]="field.name" />
-                  }
-                  <!-- Select -->
-                  @if (isArray(field.inputType)) {
-                      <label>{{field.displayname}}: </label>
-                      <select [formControlName]="field.name">
-                          @for (option of field.inputType; track option; let x = $index) {
-                          <option [value]="option">{{option}}</option>
-                          }
-                        </select>
-                  }
-                  <!-- Text -->
-                  @if (!['checkbox','number','repeatable'].includes(field.inputType) && !isArray(field.inputType)) {
-                      <label>{{field.displayname}}: </label>
-                      <input
-                        type="text"
-                        placeholder="{{field.placeholder}}"
-                        [formControlName]="field.name"
-                        [readOnly]="(field.name === 'lat' || field.name === 'lon') && form.get('system_location')?.value === true"
-                      />
-                  }
-                </div>
-              }
-
-              <button type="button" (click)="removeRepeatableItem(opt, i)">Entfernen</button>
+              <button type="button" class="remove" (click)="removeRepeatableItem(opt, i)">Entfernen</button>
             </div>
           }
         </div>
 
-        <button type="button" (click)="addRepeatableItem(opt)">{{opt.displayname}} hinzufügen</button>
+        <button type="button" class="remove" (click)="addRepeatableItem(opt)">{{opt.displayname}} hinzufügen</button>
       </section>
+    } @else {
+      <ng-container [ngTemplateOutlet]="fieldTemplate" [ngTemplateOutletContext]="{field: opt, parent: form}"/>
     }
-    <!-- Checkbox -->
-     @if (opt.inputType === 'checkbox') {
-        <label>{{opt.displayname}}: </label>
-        <input type="checkbox" [formControlName]="opt.name" />
-    }
-    <!-- Number -->
-     @if (opt.inputType === 'number') {
-        <label>{{opt.displayname}}: </label>
-        <input type="number" [formControlName]="opt.name" />
-    }
-    <!-- Select -->
-     @if (isArray(opt.inputType)) {
-        <label>{{opt.displayname}}: </label>
-        <select [formControlName]="opt.name">
-            @for (option of opt.inputType; track option; let x = $index) {
-            <option [value]="option">{{option}}</option>
-            }
-          </select>
-    }
-    <!-- Text -->
-    @if (!['checkbox','number','repeatable'].includes(opt.inputType) && !isArray(opt.inputType)) {
-        <label>{{opt.displayname}}: </label>
-        <input
-          type="text"
-          placeholder="{{opt.placeholder}}"
-          [formControlName]="opt.name"
-          [readOnly]="(opt.name === 'lat' || opt.name === 'lon') && form.get('system_location')?.value === true"
-        />
-    }
-  </div>
   }
   
   <button type="submit">Speichern</button>
 </form>
+
+
+<!-- ######################
+###########################
+###################### -->
+
+<ng-template #fieldTemplate let-field="field" let-parent="parent">
+  <div class="form-group">
+    <label>{{field.displayname}}: </label>
+
+    <!-- Checkbox -->
+    @if (field.inputType === 'checkbox') {
+      <input type="checkbox" [formControl]="parent.get(field.name)" />
+    }
+    <!-- Number -->
+    @if (field.inputType === 'number') {
+      <input type="number" [formControl]="parent.get(field.name)" />
+    }
+    <!-- Select -->
+    @if (isArray(field.inputType)) {
+      <select [formControl]="parent.get(field.name)">
+        @for (option of field.inputType; track option) {
+        <option [value]="option">{{option}}</option>
+        }
+      </select>
+    }
+    <!-- Text -->
+    @if (!['checkbox','number','repeatable'].includes(field.inputType) && !isArray(field.inputType)) {
+      <input
+        type="text"
+        placeholder="{{field.placeholder}}"
+        [formControl]="parent.get(field.name)"
+        [readOnly]="(parent.get(field.name) === 'lat' || parent.get(field.name) === 'lon') && form.get('system_location')?.value === true"
+      />
+    }
+  </div>
+</ng-template>

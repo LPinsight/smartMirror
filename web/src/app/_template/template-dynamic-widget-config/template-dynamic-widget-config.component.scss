@@ -3,6 +3,7 @@
 div.form-group {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   margin-bottom: 0.5rem;
   label {
     margin-right: 0.5rem;
@@ -10,5 +11,20 @@ div.form-group {
   }
   input {
     padding: 0 0.25rem;
+  }
+}
+
+div.repeatable-item {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.5rem;
+
+  div.form-group {
+    justify-content: space-between;
+  }
+
+  button.remove {
+    background: $red;
+    color: $white;
   }
 }
