@@ -1,35 +1,37 @@
 #!/bin/bash
-# === SmartMirror Start Script mit Logs ===
 
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m'
+set -u
 
 LOG_DIR="/app/logs"
-mkdir -p $LOG_DIR
+API_LOG="$LOG_DIR/api.log"
+mkdir -p "$LOG_DIR"
 
-echo -e "${GREEN}=== Starting SmartMirror Container ===${NC}"
+echo "=== Starting SmartMirror Container ==="
 
-# -------------------
-# API starten
-# -------------------
-echo -e "${GREEN}Starting API...${NC}"
-cd /app || exit
-nohup ./smartmirror-api >"$LOG_DIR/api.log" 2>&1 &
-cd - >/dev/null
+echo "Starting API..."
+cd /app || exit 1
+./smartmirror-api >"$API_LOG" 2>&1 &
+API_PID=$!
 
-# -------------------
-# Fertigmeldung
-# -------------------
-echo ""
-echo -e "${GREEN}✅ SmartMirror gestartet!${NC}"
-echo "→ Logs:"
-echo "   API:       $LOG_DIR/api.log"
-echo "   nginx access:     $LOG_DIR/nginx_access.log"
-echo "   nginx error:     $LOG_DIR/nginx_error.log"
-echo ""
+echo "Waiting for API health check..."
+for i in {1..30}; do
+    if ! kill -0 "$API_PID" 2>/dev/null; then
+        echo "API exited before becoming ready. See $API_LOG"
+        exit 1
+    fi
 
-# -------------------
-# nginx starten (Vordergrund)
-# -------------------
+    if curl --fail --silent http://127.0.0.1:8080/health >/dev/null; then
+        echo "API is ready."
+        break
+    fi
+
+    if [ "$i" -eq 30 ]; then
+        echo "API did not become ready within 30 seconds. See $API_LOG"
+        exit 1
+    fi
+
+    sleep 1
+done
+
+echo "Starting Nginx..."
 exec nginx -g "daemon off;"
