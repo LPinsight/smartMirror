@@ -1,5 +1,5 @@
 # --- 1️⃣ Build GO Backend ---
-FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS go-builder
+FROM --platform=$BUILDPLATFORM golang:1.27.4-alpine AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -31,10 +31,11 @@ RUN npm run build
 # RUN npm run build -- --output-path=dist/web
 
 # --- 3️⃣ Final Image ---
-FROM alpine:3.20
+FROM alpine:3.24
 
 # Install dependencies
 RUN apk add --no-cache bash nginx curl unzip ca-certificates
+RUN apk upgrade --no-cache
 
 # Create directories
 WORKDIR /app
