@@ -62,8 +62,8 @@ func (s *PluginService) Install(RepoURL string) error {
 
 	// Setze Arbeitsverzeichnis auf "../cmd" (wo dein Script liegt)
 	//TODO: Verzeichnis Route anpassen
-	cmd.Dir = "./../cmd"
-	// cmd.Dir = "/app/cmd"
+	// cmd.Dir = "./../cmd"
+	cmd.Dir = "/app/cmd"
 
 	// Standardausgabe und -fehler an Go weiterleiten
 	cmd.Stdout = nil
@@ -90,8 +90,8 @@ func (s *PluginService) Remove(name string) error {
 
 	// Setze Arbeitsverzeichnis auf "../cmd" (wo dein Script liegt)
 	//TODO: Verzeichnis Route anpassen
-	cmd.Dir = "./../cmd"
-	// cmd.Dir = "/app/cmd"
+	// cmd.Dir = "./../cmd"
+	cmd.Dir = "/app/cmd"
 
 	// Standardausgabe und -fehler an Go weiterleiten
 	cmd.Stdout = nil
@@ -118,8 +118,8 @@ func (s *PluginService) Update(RepoURL string) error {
 
 	// Setze Arbeitsverzeichnis auf "../cmd" (wo dein Script liegt)
 	//TODO: Verzeichnis Route anpassen
-	cmd.Dir = "./../cmd"
-	// cmd.Dir = "/app/cmd"
+	// cmd.Dir = "./../cmd"
+	cmd.Dir = "/app/cmd"
 
 	// Standardausgabe und -fehler an Go weiterleiten
 	cmd.Stdout = nil

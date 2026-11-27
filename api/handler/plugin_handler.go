@@ -50,9 +50,8 @@ func ReloadPlugins(w http.ResponseWriter, r *http.Request) {
 
 func RegisterPlugins() error {
 	//TODO: Verzeichnis Route anpassen
-	// pluginDir := "./../plugins"
-	pluginDir := "./../../smartMirror-plugins"
-	// pluginDir := "/app/plugins"
+	// pluginDir := "./../../smartMirror-plugins"
+	pluginDir := "/app/plugins"
 
 	// Prüfen, ob das Verzeichnis existiert
 	if _, err := os.Stat(pluginDir); err != nil {
@@ -101,8 +100,8 @@ func RegisterPlugins() error {
 		}
 
 		//TODO: Verzeichnis Route anpassen
-		uiUrl := "http://localhost:8080/plugins/" + name + "/ui"
-		// uiUrl := "/api/plugins/" + name + "/ui"
+		// uiUrl := "http://localhost:8080/plugins/" + name + "/ui"
+		uiUrl := "/api/plugins/" + name + "/ui"
 
 		latestVersion := getLatestPluginVersion(main.Repository)
 

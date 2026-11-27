@@ -12,23 +12,10 @@ import (
 // RegisterPlugins registriert alle Plugins als Proxy
 func RegisterPlugins(router *mux.Router, pluginService *service.PluginService) {
 	//TODO: Verzeichnis Route anpassen
-	// uiPath := filepath.Join("./../plugins")
-	uiPath := filepath.Join("./../../smartMirror-plugins")
-	// uiPath := filepath.Join("/app/plugins")
+	// uiPath := filepath.Join("./../../smartMirror-plugins")
+	uiPath := filepath.Join("/app/plugins")
 
 	handler.RegisterPlugins()
-
-	// Statischer File-Server für jede Plugin-UI
-	// for name := range pluginService.GetAll() {
-	// 	route := "/plugins/" + name + "/ui"
-	// 	path := filepath.Join(uiPath, name, "ui")
-
-	// 	log.Println("UI-Route:", route, "->", path)
-
-	// 	fs := http.StripPrefix(route, http.FileServer(http.Dir(path)))
-
-	// 	router.PathPrefix("/" + name + "/ui").Handler(enableCORS(fs))
-	// }
 
 	router.PathPrefix("/{name}/ui").Handler(enableCORS(http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
