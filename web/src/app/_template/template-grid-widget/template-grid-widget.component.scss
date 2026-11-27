@@ -49,6 +49,7 @@ div.settingsMenu {
     top: 1rem;
     right: 1rem;
     cursor: pointer;
+    z-index: 999;
   }
 
   mat-icon.deleteButton {
@@ -57,6 +58,7 @@ div.settingsMenu {
     top: 1rem;
     left: 1rem;
     cursor: pointer;
+    z-index: 999;
   }
 
   mat-icon.editButton {
@@ -64,12 +66,14 @@ div.settingsMenu {
     top: 1rem;
     right: 4.5rem;
     cursor: pointer;
+    z-index: 999;
   }
 
   h1.widgetTitle {
     position: absolute;
     top: 1rem;
     text-align: center;
+    z-index: 0;
   }
 }
 

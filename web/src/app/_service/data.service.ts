@@ -6,13 +6,13 @@ import { BehaviorSubject, combineLatest, map, Observable, switchMap, tap, of, fr
 import { Display, Location } from '@interface/display';
 import Swal from 'sweetalert2';
 import { AlertService } from '@service/alert.service';
+import { API_CONFIG } from '../_config/api.config';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  // private displays: Map<string, Display> = new Map<string, Display>
-  private URL: string = '/api/'
+  private readonly URL: string = API_CONFIG.databaseUrl
 
   displaysSubject = new BehaviorSubject<Map<string, Display> >(new Map());
   selectedIdSubject = new BehaviorSubject<string>('');

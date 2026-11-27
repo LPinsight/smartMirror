@@ -4,16 +4,27 @@ import (
 	"net/http"
 
 	"github.com/LPinsight/smartMirror/service"
+	"github.com/LPinsight/smartMirror/websocket"
 )
 
 var displayService *service.DisplayService
 var widgetService *service.WidgetService
 var pluginService *service.PluginService
+var databaseService *service.DatabaseService
+var webSocketService *websocket.WebSocketService
 
 func Init(ds *service.DisplayService, ws *service.WidgetService, ps *service.PluginService) {
 	displayService = ds
 	widgetService = ws
 	pluginService = ps
+}
+
+func InitDatabase(ds *service.DatabaseService) {
+	databaseService = ds
+}
+
+func InitWebSocket(ws *websocket.WebSocketService) {
+	webSocketService = ws
 }
 
 func GetVersion(w http.ResponseWriter, r *http.Request) {

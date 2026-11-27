@@ -3,13 +3,14 @@ import { Injectable } from "@angular/core";
 import { BehaviorSubject, catchError, forkJoin, map, Observable, of, switchMap, tap } from "rxjs";
 import { Plugin, PluginConfig, PluginUpdateResult } from "@interface/widget";
 import { ToastService } from "./toast.service";
+import { API_CONFIG } from "../_config/api.config";
 
 @Injectable({ providedIn: 'root' })
 export class PluginService {
   pluginsSubject = new BehaviorSubject<Map<string, Plugin>>(new Map());
   plugins$ = this.pluginsSubject.asObservable();
 
-  private URL: string = '/api/'
+  private readonly URL: string = API_CONFIG.databaseUrl
 
   constructor(
     private http: HttpClient
@@ -84,6 +85,12 @@ export class PluginService {
     }).pipe(map((res) => {
       return res
     }))
+  }
+
+  public reloadPlugins() {
+    return this.http.post(this.URL + 'plugins/reload', {}, {
+      headers: { 'Content-Type': 'application/json' }
+    })
   }
 
   public installPlugin(name: string, url: string) {

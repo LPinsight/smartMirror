@@ -132,3 +132,47 @@ button {
     background-color: $red;
   }
 }
+
+// ##########################################################
+// # Page Mirror
+// ##########################################################
+
+app-page-mirror h1 {
+  font-size: 6rem;
+  font-weight: bold;
+}
+
+app-page-mirror h2 {
+  font-size: 5rem;
+  font-weight: bold;
+}
+
+app-page-mirror h3 {
+  font-size: 4rem;
+  font-weight: normal;
+}
+
+app-page-mirror h4 {
+  font-size: 3rem;
+  font-weight: normal;
+}
+
+app-page-mirror h5 {
+  font-size: 2.5rem;
+  font-weight: normal;
+}
+
+app-page-mirror h6 {
+  font-size: 1.5rem;
+  font-weight: normal;
+}
+
+app-page-mirror p {
+  font-size: 2rem;
+  font-weight: normal;
+}
+
+app-page-mirror .headline {
+  text-align: center;
+  font-weight: bold;
+}

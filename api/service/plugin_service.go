@@ -48,6 +48,11 @@ func (s *PluginService) GetConfig(name string) ([]iface.ConfigOption, error) {
 	return plugin.Config, nil
 }
 
+// entfernt alle aktuell registrierten Plugins
+func (s *PluginService) Clear() {
+	s.plugins = make(map[string]*iface.Plugin)
+}
+
 // Plugin installieren
 func (s *PluginService) Install(RepoURL string) error {
 	fmt.Println("Installing plugin from:", RepoURL)
@@ -56,6 +61,8 @@ func (s *PluginService) Install(RepoURL string) error {
 	cmd := exec.Command("./plugin.sh", "install", RepoURL)
 
 	// Setze Arbeitsverzeichnis auf "../cmd" (wo dein Script liegt)
+	//TODO: Verzeichnis Route anpassen
+	// cmd.Dir = "./../cmd"
 	cmd.Dir = "/app/cmd"
 
 	// Standardausgabe und -fehler an Go weiterleiten
@@ -82,6 +89,8 @@ func (s *PluginService) Remove(name string) error {
 	cmd := exec.Command("./plugin.sh", "remove", name)
 
 	// Setze Arbeitsverzeichnis auf "../cmd" (wo dein Script liegt)
+	//TODO: Verzeichnis Route anpassen
+	// cmd.Dir = "./../cmd"
 	cmd.Dir = "/app/cmd"
 
 	// Standardausgabe und -fehler an Go weiterleiten
@@ -108,6 +117,8 @@ func (s *PluginService) Update(RepoURL string) error {
 	cmd := exec.Command("./plugin.sh", "update", RepoURL)
 
 	// Setze Arbeitsverzeichnis auf "../cmd" (wo dein Script liegt)
+	//TODO: Verzeichnis Route anpassen
+	// cmd.Dir = "./../cmd"
 	cmd.Dir = "/app/cmd"
 
 	// Standardausgabe und -fehler an Go weiterleiten

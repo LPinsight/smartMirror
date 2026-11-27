@@ -1,61 +1,37 @@
 #!/bin/bash
-# === SmartMirror Start Script mit Logs ===
 
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m'
+set -u
 
 LOG_DIR="/app/logs"
-mkdir -p $LOG_DIR
+API_LOG="$LOG_DIR/api.log"
+mkdir -p "$LOG_DIR"
 
-echo -e "${GREEN}=== Starting SmartMirror Container ===${NC}"
+echo "=== Starting SmartMirror Container ==="
 
-# -------------------
-# MySQL starten
-# -------------------
-echo -e "${GREEN}Initializing MySQL...${NC}"
-mkdir -p /run/mysqld
-chown -R mysql:mysql /var/lib/mysql /run/mysqld
+echo "Starting API..."
+cd /app || exit 1
+./smartmirror-api >"$API_LOG" 2>&1 &
+API_PID=$!
 
-# MySQL einmalig initialisieren, falls noch nicht eingerichtet
-if [ ! -d /var/lib/mysql/mysql ]; then
-    echo -e "${GREEN}Initializing MySQL data directory...${NC}"
-    mysql_install_db --user=mysql --ldata=/var/lib/mysql
-fi
+echo "Waiting for API health check..."
+for i in {1..30}; do
+    if ! kill -0 "$API_PID" 2>/dev/null; then
+        echo "API exited before becoming ready. See $API_LOG"
+        exit 1
+    fi
 
-# MySQL im Hintergrund starten
-echo -e "${GREEN}Starting MySQL...${NC}"
-mysqld --user=mysql --datadir=/var/lib/mysql >"$LOG_DIR/mysql.log" 2>&1 &
-MYSQL_PID=$!
+    if curl --fail --silent http://127.0.0.1:8080/health >/dev/null; then
+        echo "API is ready."
+        break
+    fi
 
-# Warten bis MySQL bereit ist
-echo -e "${GREEN}Waiting for MySQL...${NC}"
-until mysqladmin ping --silent; do
+    if [ "$i" -eq 30 ]; then
+        echo "API did not become ready within 30 seconds. See $API_LOG"
+        exit 1
+    fi
+
     sleep 1
 done
-echo -e "${GREEN}MySQL is ready.${NC}"
 
-# -------------------
-# API starten
-# -------------------
-echo -e "${GREEN}Starting API...${NC}"
-cd /app || exit
-nohup ./smartmirror-api >"$LOG_DIR/api.log" 2>&1 &
-cd - >/dev/null
-
-# -------------------
-# Fertigmeldung
-# -------------------
-echo ""
-echo -e "${GREEN}✅ SmartMirror gestartet!${NC}"
-echo "→ Logs:"
-echo "   MySQL:     $LOG_DIR/mysql.log"
-echo "   API:       $LOG_DIR/api.log"
-echo "   nginx access:     $LOG_DIR/nginx_access.log"
-echo "   nginx error:     $LOG_DIR/nginx_error.log"
-echo ""
-
-# -------------------
-# nginx starten (Vordergrund)
-# -------------------
+echo "Starting Nginx..."
 exec nginx -g "daemon off;"

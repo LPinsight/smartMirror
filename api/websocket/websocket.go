@@ -75,3 +75,10 @@ func (ws *WebSocketService) Handler(w http.ResponseWriter, r *http.Request) {
 func (ws *WebSocketService) BroadcastMessage(msg string) {
 	ws.broadcast <- msg
 }
+
+func (ws *WebSocketService) ClientCount() int {
+	ws.mutex.RLock()
+	defer ws.mutex.RUnlock()
+
+	return len(ws.clients)
+}

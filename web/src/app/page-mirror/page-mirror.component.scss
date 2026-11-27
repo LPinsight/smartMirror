@@ -23,7 +23,7 @@ div.grid {
   grid-template-columns: repeat(var(--grid-columns), var(--point-size));
   grid-template-rows: repeat(var(--grid-rows), var(--point-size));
   // row-gap: 1rem;
-  column-gap: auto;
+  // column-gap: auto;
   // overflow: hidden;
   // justify-content: center;
 }

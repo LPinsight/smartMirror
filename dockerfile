@@ -1,8 +1,17 @@
 # --- 1️⃣ Build GO Backend ---
-FROM golang:1.23-alpine AS go-builder
-WORKDIR /app/api
-COPY api/ .
-RUN go mod tidy && go build -o /smartmirror-api .
+FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS go-builder
+
+ARG TARGETOS
+ARG TARGETARCH
+
+WORKDIR /src/api
+
+COPY api/go.mod api/go.sum ./
+RUN go mod download
+
+COPY api/ ./
+RUN CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -trimpath -ldflags="-s -w" -o /smartmirror-api .
 
 # --- 2️⃣ Build Angular Frontend ---
 FROM node:22-alpine AS ng-builder
@@ -25,11 +34,11 @@ RUN npm run build
 FROM alpine:3.20
 
 # Install dependencies
-RUN apk add --no-cache bash nginx mysql mysql-client curl unzip
+RUN apk add --no-cache bash nginx curl unzip ca-certificates
 
 # Create directories
 WORKDIR /app
-RUN mkdir -p /app/logs /app/plugins /app/cmd /var/lib/mysql /run/mysqld
+RUN mkdir -p /app/logs /app/plugins /app/cmd
 
 # Copy built binaries & frontend
 COPY --from=go-builder /smartmirror-api /app/
@@ -66,13 +75,17 @@ RUN echo 'server { \
   } \
 }' > /etc/nginx/http.d/default.conf
 
-# Environment vars
-ENV USE_INTERNAL_DB=true
-
 # Ports
 EXPOSE 80
 
+# ENV
+ENV DB_HOST=''
+ENV DB_PORT=3306
+ENV DB_NAME=''
+ENV DB_USER=''
+ENV DB_PASSWORD=''
+
 # Volumes
-VOLUME ["/app/logs", "/app/plugins", "/var/lib/mysql"]
+VOLUME ["/app/logs", "/app/plugins"]
 
 ENTRYPOINT ["/app/cmd/start.sh"]

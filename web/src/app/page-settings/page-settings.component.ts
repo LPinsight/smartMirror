@@ -81,4 +81,13 @@ export class PageSettingsComponent implements OnInit{
     });
   }
 
+  public reloadPlugins() {
+    this.pluginService.reloadPlugins().subscribe({
+      next: (_) => {
+        this.toastService.success('Alle Plugins wurden neugeladen', 'Plugin reload');
+        this.pluginService.getPlugins().subscribe()
+      }
+    })
+  }
+
 }

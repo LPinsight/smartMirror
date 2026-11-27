@@ -20,6 +20,7 @@ import { TemplateLocationComponent } from './_template/template-location/templat
 import { TemplateDynamicWidgetViewComponent } from './_template/template-dynamic-widget-view/template-dynamic-widget-view.component';
 import { TemplatePluginListComponent } from './_template/template-plugin-list/template-plugin-list.component';
 import { TemplateDynamicWidgetConfigComponent } from './_template/template-dynamic-widget-config/template-dynamic-widget-config.component';
+import { TemplateSystemSettingsComponent } from './_template/template-system-settings/template-system-settings.component';
 
 const navigationRoutes: Routes = [
   {path: 'settings', component: PageSettingsComponent},
@@ -42,7 +43,8 @@ const navigationRoutes: Routes = [
     TemplateLocationComponent,
     TemplateDynamicWidgetViewComponent,
     TemplateDynamicWidgetConfigComponent,
-    TemplatePluginListComponent
+    TemplatePluginListComponent,
+    TemplateSystemSettingsComponent
   ],
   bootstrap: [AppComponent],
   imports: [

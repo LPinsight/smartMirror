@@ -24,10 +24,12 @@ type PluginInfo struct {
 
 // ConfigOption beschreibt eine einzelne Konfigurationsoption
 type ConfigOption struct {
-	Name        string      `json:"name"`
-	Placeholder string      `json:"placeholder"`
-	InputType   interface{} `json:"inputType"` // kann string oder []string sein
-	Default     interface{} `json:"default"`   // kann string, bool, float64 etc. sein
+	Name        string         `json:"name"`
+	Displayname string         `json:"displayname"`
+	Placeholder string         `json:"placeholder"`
+	InputType   interface{}    `json:"inputType"` // kann string oder []string sein
+	Default     interface{}    `json:"default"`   // kann string, bool, float64 etc. sein
+	Fields      []ConfigOption `json:"fields,omitempty"`
 }
 
 type GithubRelease struct {
